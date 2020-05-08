@@ -1,5 +1,10 @@
 ---
 - hosts: webservers
+  vars:
+    install_path: /srv
+    folder_name: Waterspout
+    virtualenv_folder_name: venv_waterspout
+    python_executable: python3.8
   tasks:
     - name: Configure firewall
         ufw:
@@ -23,6 +28,7 @@
     - name: Enable firewall
         ufw:
           state: enabled
+
       # install some basic packages we'll want for this project
     - name: Install system apt packages
         become: true
@@ -39,15 +45,23 @@
           - software-properties-common
           - python-software-properties
           - postgresql
+
+    # need to verify that it's not going to make a folder /srv/Waterspout/Waterspout with this
+    - name: Clone Waterspout to machine
+        git:
+          clone: yes
+          repo: https://github.com/Water-Systems-Management-UCM/Waterspout
+          dest: {{ install_path }}/{{ folder_name }}
+
     # make sure Python has virtualenv installed
     - name: Configure Python - Install virtualenv
         pip:
           name: virtualenv
-          executable: python3.8
+          executable: {{ python_executable }}
     - name: Install Python requirements
         pip:
-          chdir: /srv/
-          virtualenv: /srv/venv_waterspout/
-          virtualenv_python: python3.8
+          chdir: {{ install_path }}
+          virtualenv: {{ install_path }}/{{ virtualenv_folder_name }}/
+          virtualenv_python: {{ python_executable }}
           virtualenv_site_packages: no
-          requirements: ./Waterspout/requirements.txt
+          requirements: {{ install_path }}/{{ folder_name }}/requirements.txt
