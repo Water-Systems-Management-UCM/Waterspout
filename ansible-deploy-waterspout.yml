@@ -1,0 +1,31 @@
+---
+- hosts: webservers
+  tasks:
+      # install some basic packages we'll want for this project
+    - name: Install system apt packages
+        become: true
+        become_method: sudo
+        apt: update_cache=yes name={{ item }} state=present
+        # not sure if the python-pip here will install it for python 3.8 - I'm not sure it will based on experience
+        # we may need to adjust how we get pip
+        with_items:
+          - git
+          - nginx-full
+          - python3.8
+          - python3.8-dev
+          - python-pip
+          - software-properties-common
+          - python-software-properties
+          - postgresql
+    # make sure Python has virtualenv installed
+    - name: Configure Python - Install virtualenv
+      pip:
+        name: virtualenv
+        executable: python3.8
+    - name: Install Python requirements
+      pip:
+        chdir: /srv/
+        virtualenv: /srv/venv_waterspout/
+        virtualenv_python: python3.8
+        virtualenv_site_packages: no
+        requirements: ./Waterspout/requirements.txt
