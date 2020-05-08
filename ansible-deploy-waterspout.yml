@@ -1,6 +1,28 @@
 ---
 - hosts: webservers
   tasks:
+    - name: Configure firewall
+        ufw:
+          direction: in
+          default: deny
+    - name: Allow and limit SSH
+        ufw:
+          rule: limit
+          port: ssh
+          proto: tcp
+    - name: Allow Port 80
+        ufw:
+          rule: allow
+          port: 80
+          proto: tcp
+    - name: Allow Port 443 (SSL/TLS)
+        ufw:
+          rule: allow
+          port: 443
+          proto: tcp
+    - name: Enable firewall
+        ufw:
+          state: enabled
       # install some basic packages we'll want for this project
     - name: Install system apt packages
         become: true
@@ -19,13 +41,13 @@
           - postgresql
     # make sure Python has virtualenv installed
     - name: Configure Python - Install virtualenv
-      pip:
-        name: virtualenv
-        executable: python3.8
+        pip:
+          name: virtualenv
+          executable: python3.8
     - name: Install Python requirements
-      pip:
-        chdir: /srv/
-        virtualenv: /srv/venv_waterspout/
-        virtualenv_python: python3.8
-        virtualenv_site_packages: no
-        requirements: ./Waterspout/requirements.txt
+        pip:
+          chdir: /srv/
+          virtualenv: /srv/venv_waterspout/
+          virtualenv_python: python3.8
+          virtualenv_site_packages: no
+          requirements: ./Waterspout/requirements.txt
