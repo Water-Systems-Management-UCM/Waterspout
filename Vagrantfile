@@ -51,11 +51,8 @@ Vagrant.configure("2") do |config|
   # Example for VirtualBox:
   #
   config.vm.provider "hyperv" do |hv|
-     # Display the VirtualBox GUI when booting the machine
-     hv.gui = false
-
      # Customize the amount of memory on the VM:
-     hv.memory = "2048"
+     hv.memory = "1024"
   end
   #
   # View the documentation for the provider you are using for more
