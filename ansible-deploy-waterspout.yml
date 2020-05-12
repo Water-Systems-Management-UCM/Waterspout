@@ -7,61 +7,81 @@
     python_executable: python3.8
   tasks:
     - name: Configure firewall
-        ufw:
-          direction: in
-          default: deny
+      become: true
+      become_method: sudo
+      ufw:
+        direction: incoming
+        default: deny
     - name: Allow and limit SSH
-        ufw:
-          rule: limit
-          port: ssh
-          proto: tcp
+      become: true
+      become_method: sudo
+      ufw:
+        rule: limit
+        port: ssh
+        proto: tcp
     - name: Allow Port 80
-        ufw:
-          rule: allow
-          port: 80
-          proto: tcp
+      become: true
+      become_method: sudo
+      ufw:
+        rule: allow
+        port: '80'
+        proto: tcp
     - name: Allow Port 443 (SSL/TLS)
-        ufw:
-          rule: allow
-          port: 443
-          proto: tcp
+      become: true
+      become_method: sudo
+      ufw:
+        rule: allow
+        port: '443'
+        proto: tcp
     - name: Enable firewall
-        ufw:
-          state: enabled
+      become: true
+      become_method: sudo
+      ufw:
+        state: enabled
 
       # install some basic packages we'll want for this project
     - name: Install system apt packages
-        become: true
-        become_method: sudo
-        apt: update_cache=yes name={{ item }} state=present
-        # not sure if the python-pip here will install it for python 3.8 - I'm not sure it will based on experience
-        # we may need to adjust how we get pip
-        with_items:
-          - git
-          - nginx-full
-          - python3.8
-          - python3.8-dev
-          - python-pip
-          - software-properties-common
-          - python-software-properties
-          - postgresql
+      become: true
+      become_method: sudo
+      apt:
+        update_cache: yes
+        name: ['git','nginx-full','{{ python_executable }}','{{ python_executable }}-dev','python3-pip','postgresql','gdal','gdal-dev']
+        state: present
+      # not sure if the python-pip here will install it for python 3.8 - I'm not sure it will based on experience
+      # we may need to adjust how we get pip
 
     # need to verify that it's not going to make a folder /srv/Waterspout/Waterspout with this
     - name: Clone Waterspout to machine
-        git:
-          clone: yes
-          repo: https://github.com/Water-Systems-Management-UCM/Waterspout
-          dest: {{ install_path }}/{{ folder_name }}
+      git:
+        clone: yes
+        repo: https://github.com/Water-Systems-Management-UCM/Waterspout
+        dest: "{{ install_path }}/{{ folder_name }}"
 
     # make sure Python has virtualenv installed
     - name: Configure Python - Install virtualenv
-        pip:
-          name: virtualenv
-          executable: {{ python_executable }}
+      pip:
+        name: virtualenv
+        executable: "{{ python_executable }}"
     - name: Install Python requirements
-        pip:
-          chdir: {{ install_path }}
-          virtualenv: {{ install_path }}/{{ virtualenv_folder_name }}/
-          virtualenv_python: {{ python_executable }}
-          virtualenv_site_packages: no
-          requirements: {{ install_path }}/{{ folder_name }}/requirements.txt
+      pip:
+        chdir: "{{ install_path }}"
+        virtualenv: "{{ install_path }}/{{ virtualenv_folder_name }}/"
+        virtualenv_python: "{{ python_executable }}"
+        virtualenv_site_packages: no
+        requirements: "{{ install_path }}/{{ folder_name }}/requirements.txt"
+
+    # TODO: Somewhere up above, configure GDAL
+    # TODO: copy and reconfigure local settings
+    #     Can we generate and configure postgres user accounts and store them in variables
+    #     to plug into local settings files? Do I need a separate script that dumps local_settings files?
+    #     or can I do a replacement of a template string with ansible?
+    # TODO: Create user account for application to run as
+    # TODO: Set permissions on application srv directory
+    # TODO: Configure service for application
+    # TODO: Run migrations
+    # TODO: Process static files
+    # TODO: Configure nginx reverse proxying
+    # TODO: Fail2ban and other services
+    # TODO: Move SSH port?
+    # TODO: Check groundwater site setup instructions for other things that go here
+    # TODO: Make application update playbook
