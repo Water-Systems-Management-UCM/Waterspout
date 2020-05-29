@@ -1,12 +1,14 @@
 ---
 - hosts: webservers
   vars:
-    install_path: /srv
+    install_path: "~" # we'll move it to /srv once we set up a new user and group in this script
     folder_name: Waterspout
     virtualenv_folder_name: venv_waterspout
-    python_executable: python3.8
+    python_version: 3.8
+    python_executable: "python{{ python_version }}"
+    pip_executable: "pip{{ python_version }}"
   tasks:
-    - name: Configure firewall
+    - name: Configure firewall to deny incoming traffic by default
       become: true
       become_method: sudo
       ufw:
@@ -39,16 +41,47 @@
       ufw:
         state: enabled
 
+    # we don't update afterward because we still need to add the key before we can
+    - name: Add Ubuntu GIS PPA so we can get GDAL in next step
+      become: true
+      become_method: sudo
+      apt_repository:
+        repo: ppa:ubuntugis/ppa
+        update_cache: no
+
+    - name: Add Ubuntu GIS PPA Key
+      become: true
+      become_method: sudo
+      apt_key:
+        id: 314DF160
+
       # install some basic packages we'll want for this project
     - name: Install system apt packages
       become: true
       become_method: sudo
       apt:
         update_cache: yes
-        name: ['git','nginx-full','{{ python_executable }}','{{ python_executable }}-dev','python3-pip','postgresql','gdal','gdal-dev']
+        name: ['git','nginx-full','{{ python_executable }}','{{ python_executable }}-dev','python3-pip','virtualenv','postgresql','gdal-bin','libgdal-dev']
         state: present
       # not sure if the python-pip here will install it for python 3.8 - I'm not sure it will based on experience
       # we may need to adjust how we get pip
+
+    - name: Get installed GDAL version so we can install corresponding version in Python
+      command: "gdalinfo --version"
+      register: gdal_version_text
+
+    - name: Installed GDAL Version Full Text
+      debug:
+        msg: "GDAL Version Detected: {{ gdal_version_text.stdout }}"
+
+    # parse the gdal version reported to get the numeric representation for Python
+    - name: Parse GDAL Version
+      set_fact:
+        gdal_version: "{{ gdal_version_text.stdout | regex_search('GDAL\\s(.*?),.*', '\\1') }}"
+
+    - name: Installed GDAL Version
+      debug:
+        msg: "GDAL Version Detected: {{ gdal_version[0] }}"
 
     # need to verify that it's not going to make a folder /srv/Waterspout/Waterspout with this
     - name: Clone Waterspout to machine
@@ -57,17 +90,18 @@
         repo: https://github.com/Water-Systems-Management-UCM/Waterspout
         dest: "{{ install_path }}/{{ folder_name }}"
 
-    # make sure Python has virtualenv installed
-    - name: Configure Python - Install virtualenv
+    - name: Make virtualenv and install Python GDAL before rest of requirements (so it's present and matches correct version)
       pip:
-        name: virtualenv
-        executable: "{{ python_executable }}"
+        virtualenv: "{{ install_path }}/{{ virtualenv_folder_name }}/"
+        virtualenv_python: "{{ python_executable }}"
+        virtualenv_site_packages: no
+        name: "GDAL"
+        version: "{{ gdal_version[0] }}"
+
     - name: Install Python requirements
       pip:
         chdir: "{{ install_path }}"
         virtualenv: "{{ install_path }}/{{ virtualenv_folder_name }}/"
-        virtualenv_python: "{{ python_executable }}"
-        virtualenv_site_packages: no
         requirements: "{{ install_path }}/{{ folder_name }}/requirements.txt"
 
     # TODO: Somewhere up above, configure GDAL
