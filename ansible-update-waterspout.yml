@@ -1,0 +1,59 @@
+---
+- hosts: webservers
+  tasks:
+    - name: Loading variables
+      include_vars: ansible-waterspout-variables.yml
+
+    - name: Git Pull and Update
+      git:
+        clone: no
+        force: yes  # we'll need to discard modified manage.py because we need to modify it to run it here
+        repo: "{{ application_folder }}"
+
+    - name: Install Python requirements
+      pip:
+        chdir: "{{ install_path }}"
+        virtualenv: "{{ virtualenv_folder }}"
+        requirements: "{{ application_folder }}/requirements.txt"
+
+    - name: Create/Update local_settings.py from template
+      copy:
+        remote_src: yes
+        force: yes
+        src: "{{ application_folder}}/Waterspout/local_settings_template.py"
+        dest: "{{ local_settings_file }}"
+
+    - name: Make sure DEBUG is False
+      lineinfile:
+        path: "{{ local_settings_file }}"
+        regexp: '^DEBUG\s*='
+        line: DEBUG = False
+
+    - name: Inserting new SECRET_KEY
+      lineinfile:
+        path: "{{ local_settings_file }}"
+        regexp: '^SECRET_KEY\s*='
+        line: SECRET_KEY = "{{ lookup('password', '/tmp/passwordfile chars=ascii_letters,digits,punctuation length=50') }}"
+
+    - name: Allowing all hosts to connect to Django
+      lineinfile:
+        path: "{{ local_settings_file }}"
+        regexp: '^ALLOWED_HOSTS\s*='
+        line: ALLOWED_HOSTS = ["0.0.0.0"]
+
+    - name: Setting Shebang Line in manage.py
+      lineinfile:
+        path: "{{ application_folder }}/manage.py"
+        regexp: '#!/usr/bin/env python'
+        line: "#!{{ virtualenv_folder }} python"
+
+    - name: Make manage.py executable  # seems like I shouldn't need to, but OK
+      file:
+        path: "{{ application_folder }}/manage.py"
+        mode: 0740  # user rwx, group r, everyone nothing
+
+    - name: Migrate DB
+      django_manage:
+        command: migrate
+        app_path: "{{ application_folder }}"
+        virtualenv: "{{ virtualenv_folder }}"

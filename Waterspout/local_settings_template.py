@@ -9,7 +9,6 @@ SECRET_KEY = ''  # this isn't a real key - make sure to CHANGE THIS
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 

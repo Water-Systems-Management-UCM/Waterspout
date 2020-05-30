@@ -1,13 +1,9 @@
 ---
 - hosts: webservers
-  vars:
-    install_path: "~" # we'll move it to /srv once we set up a new user and group in this script
-    folder_name: Waterspout
-    virtualenv_folder_name: venv_waterspout
-    python_version: 3.8
-    python_executable: "python{{ python_version }}"
-    pip_executable: "pip{{ python_version }}"
   tasks:
+    - name: Loading variables
+      include_vars: ansible-waterspout-variables.yml
+
     - name: Configure firewall to deny incoming traffic by default
       become: true
       become_method: sudo
@@ -87,32 +83,27 @@
     - name: Clone Waterspout to machine
       git:
         clone: yes
+        force: yes  # if we run this after we've run the update script, then we'll have modified manage.py and need to force it to discard changes
         repo: https://github.com/Water-Systems-Management-UCM/Waterspout
-        dest: "{{ install_path }}/{{ folder_name }}"
+        dest: "{{ application_folder }}"
 
     - name: Make virtualenv and install Python GDAL before rest of requirements (so it's present and matches correct version)
       pip:
-        virtualenv: "{{ install_path }}/{{ virtualenv_folder_name }}/"
+        virtualenv: "{{ virtualenv_folder }}"
         virtualenv_python: "{{ python_executable }}"
         virtualenv_site_packages: no
         name: "GDAL"
         version: "{{ gdal_version[0] }}"
 
-    - name: Install Python requirements
-      pip:
-        chdir: "{{ install_path }}"
-        virtualenv: "{{ install_path }}/{{ virtualenv_folder_name }}/"
-        requirements: "{{ install_path }}/{{ folder_name }}/requirements.txt"
+# now we're done with the standard setup, run the code that runs both the first time and for every update
+- import_playbook: ansible-update-waterspout.yml
 
-    # TODO: Somewhere up above, configure GDAL
-    # TODO: copy and reconfigure local settings
     #     Can we generate and configure postgres user accounts and store them in variables
     #     to plug into local settings files? Do I need a separate script that dumps local_settings files?
     #     or can I do a replacement of a template string with ansible?
     # TODO: Create user account for application to run as
     # TODO: Set permissions on application srv directory
     # TODO: Configure service for application
-    # TODO: Run migrations
     # TODO: Process static files
     # TODO: Configure nginx reverse proxying
     # TODO: Fail2ban and other services
