@@ -1,4 +1,6 @@
-from django.contrib.gis.db import models as models  # we're going to geodjango this one - might not need it, but could make some things nicer
+from django.db import models  # we're going to geodjango this one - might not need it, but could make some things nicer
+
+
 
 class Organization(models.Model):
 	"""
@@ -9,10 +11,25 @@ class Organization(models.Model):
 	name = models.CharField(max_length=255, null=False, blank=False)
 
 
-class Region(models.Model):
-	name = models.CharField()
+class RegionGroup(models.Model):
+	name = models.CharField(max_length=255, null=False, blank=False)
+	internal_id = models.CharField(max_length=100, null=False, blank=False)  # typically we have some kind of known ID to feed to a model that means something to people
+	organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
 
-	geometry = models.MultiPolygonField()
+	geometry = models.TextField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
+
+
+class Region(models.Model):
+	name = models.CharField(max_length=255, null=False, blank=False)
+	internal_id = models.CharField(max_length=100, null=False, blank=False)  # typically we have some kind of known ID to feed to a model that means something to people
+
+	geometry = models.TextField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
+
+	organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+	group = models.ForeignKey(RegionGroup, on_delete=models.CASCADE)  # there could be a reason to make it a many to many instead, but
+																	# I can't think of a use case right now, and it'd require some PITA
+																	# logic to tease apart specifications for regions in overlapping groups
+
 
 
 class Crop(models.Model):
@@ -43,3 +60,4 @@ class CalibratedParameter(models.Model):
 		calibration routines here - if you have questions about the routines that generate these parameters, get in
 		touch with Josué Medellin-Azuara.
 	"""
+	pass

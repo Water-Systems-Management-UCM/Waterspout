@@ -17,9 +17,7 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
+        'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
-GDAL_LIBRARY_PATH = r""  # put the path to GDAL here to help geodjango load
