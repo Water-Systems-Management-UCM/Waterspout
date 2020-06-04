@@ -30,8 +30,13 @@ class ModelArea(models.Model):
 		but just in case we want to be able to deploy multiple models for an organization in the future, we'll store it
 		this way.
 	"""
-	organization = models.ForeignKey(Organization, on_delete=models.DO_NOTHING)
+	organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.DO_NOTHING)
+	name = models.CharField(max_length=255, unique=True)
+	description = models.TextField(null=True, blank=True)
 
+	def __str__(self):
+		return self.name
+	
 
 class RegionGroup(models.Model):
 	name = models.CharField(max_length=255, null=False, blank=False)
@@ -44,13 +49,28 @@ class RegionGroup(models.Model):
 class Region(models.Model):
 	name = models.CharField(max_length=255, null=False, blank=False)
 	internal_id = models.CharField(max_length=100, null=False, blank=False)  # typically we have some kind of known ID to feed to a model that means something to people
+	external_id = models.CharField(max_length=100, null=False, blank=False)  # a common external identifier of some kind
+	# .extra_attributes reverse lookup
 
 	geometry = models.TextField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
 
 	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE)
-	group = models.ForeignKey(RegionGroup, on_delete=models.CASCADE)  # there could be a reason to make it a many to many instead, but
+	group = models.ForeignKey(RegionGroup, null=True, blank=True, on_delete=models.CASCADE)  # there could be a reason to make it a many to many instead, but
 																	# I can't think of a use case right now, and it'd require some PITA
 																	# logic to tease apart specifications for regions in overlapping groups
+
+	def __str__(self):
+		return "Area {}: Region {}".format(self.model_area.name, self.name)
+
+class RegionExtra(models.Model):
+	"""
+		Extra custom attributes that can be set per region instance, available by filtering
+		`region.extra_attributes.filter(name == "{attribute_name}")`, for example.
+	"""
+	region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="extra_attributes")
+	name = models.CharField(max_length=255, null=False, blank=False)
+	value = models.TextField(null=True, blank=True)
+	data_type = models.CharField(max_length=5)  # indicates the Python data type to cast it to if it's not a string
 
 
 class Crop(models.Model):
