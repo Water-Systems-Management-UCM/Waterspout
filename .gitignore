@@ -1,5 +1,9 @@
 # Created by .ignore support plugin (hsz.mobi)
 
+### Specific Items
+waterspout_api/data/dap/DLISRegions.*
+
+
 ### Vagrant
 .vagrant*
 
