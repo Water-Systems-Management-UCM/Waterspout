@@ -107,9 +107,51 @@ class CalibrationSet(models.Model):
 
 	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE)
 
+	def as_data_frame(self):
+		"""
+			Returns the data frame that needs to be run through the model itself
+		:return:
+		"""
+		pass
+
 
 class CalibratedParameter(models.Model):
 	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.CASCADE)
+	g = models.ForeignKey(Crop, on_delete=models.DO_NOTHING)
+	year = models.CharField(max_length=10)  # one might think this should be an integer, but they sometimes do this thing of assigning a year like 2015.5. It's still categorical in this case though, so making it a char field to not have precision issues
+	omegaland = models.DecimalField(max_digits=10, decimal_places=1)
+	omegasupply = models.DecimalField(max_digits=10, decimal_places=1)
+	omegalabor = models.DecimalField(max_digits=10, decimal_places=1)
+	omegaestablish = models.DecimalField(max_digits=10, decimal_places=1)
+	omegacash = models.DecimalField(max_digits=10, decimal_places=1)
+	omeganoncash = models.DecimalField(max_digits=10, decimal_places=1)
+	omeganontotal = models.DecimalField(max_digits=10, decimal_places=1)
+	xwater = models.DecimalField(max_digits=18, decimal_places=10)
+	p = models.DecimalField(max_digits=18, decimal_places=10)
+	y = models.DecimalField(max_digits=13, decimal_places=5)
+	xland = models.DecimalField(max_digits=18, decimal_places=10)
+	omegawater = models.DecimalField(max_digits=10, decimal_places=2)
+	sigma = models.DecimalField(max_digits=5, decimal_places=4)
+	theta = models.DecimalField(max_digits=5, decimal_places=4)
+	pimarginal = models.DecimalField(max_digits=18, decimal_places=10)
+	alphaland = models.DecimalField(max_digits=11, decimal_places=10)
+	alphawater = models.DecimalField(max_digits=11, decimal_places=10)
+	alphasupply = models.DecimalField(max_digits=11, decimal_places=10)
+	alphalabor = models.DecimalField(max_digits=11, decimal_places=10)
+	rho = models.DecimalField(max_digits=15, decimal_places=10)
+	lambdaland = models.DecimalField(max_digits=15, decimal_places=10)
+	lambdacrop = models.DecimalField(max_digits=15, decimal_places=10)
+	betaland = models.DecimalField(max_digits=18, decimal_places=10)
+	betawater = models.DecimalField(max_digits=18, decimal_places=10)
+	betasupply = models.DecimalField(max_digits=18, decimal_places=10)
+	betalabor = models.DecimalField(max_digits=18, decimal_places=10)
+	tau = models.DecimalField(max_digits=18, decimal_places=10)
+	gamma = models.DecimalField(max_digits=18, decimal_places=10)
+	delta = models.DecimalField(max_digits=18, decimal_places=10)
+	xlandcalib = models.DecimalField(max_digits=18, decimal_places=10)
+	xwatercalib = models.DecimalField(max_digits=18, decimal_places=10)
+	difflandpct = models.DecimalField(max_digits=12, decimal_places=10)
+	diffwaterpct = models.DecimalField(max_digits=12, decimal_places=10)
 
 
 class ModelRun(models.Model):
