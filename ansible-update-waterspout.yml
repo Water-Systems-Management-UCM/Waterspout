@@ -45,15 +45,24 @@
       lineinfile:
         path: "{{ application_folder }}/manage.py"
         regexp: '#!/usr/bin/env python'
-        line: "#!{{ virtualenv_folder }} python"
+        line: "#!{{ virtualenv_folder }}bin/python"
 
-    - name: Make manage.py executable  # seems like I shouldn't need to, but OK
+    - name: Make manage.py executable to all (required according to docs)  # seems like I shouldn't need to, but OK
       file:
         path: "{{ application_folder }}/manage.py"
-        mode: 0740  # user rwx, group r, everyone nothing
+        mode: 0775 # 0740  # user rwx, group r, everyone nothing
+
+    - name: Application Folder
+      debug:
+        msg: "{{ application_folder }}"
 
     - name: Migrate DB
       django_manage:
         command: migrate
         app_path: "{{ application_folder }}"
         virtualenv: "{{ virtualenv_folder }}"
+
+    - name: Reset manage.py permissions to 740  # seems like I shouldn't need to, but OK
+      file:
+        path: "{{ application_folder }}/manage.py"
+        mode: 0774  # user rwx, group r, everyone read

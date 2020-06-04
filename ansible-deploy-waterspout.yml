@@ -37,6 +37,65 @@
       ufw:
         state: enabled
 
+    - name: Create Waterspout Group
+      become: true
+      become_method: sudo
+      group:
+        name: "{{ group_name }}"
+        state: present
+
+    - name: Create Waterspout user account
+      become: true
+      become_method: sudo
+      user:
+        name: "{{ account_name }}"
+        group: "{{ group_name }}"
+
+    - name: Add Vagrant to Waterspout Group (will create a vagrant user if it doesn't exist)
+      become: true
+      become_method: sudo
+      user:
+        name: "vagrant"
+        groups: ["{{ group_name }}",]
+
+    #- name: Recursively remove application directory if it exists
+    #  become: true
+    #  become_method: sudo
+    #  file:
+    #    path: "{{ install_path }}"
+    #    state: absent
+
+    - name: Create application directory and set permissions
+      become: true
+      become_method: sudo
+      file:
+        path: "{{ install_path }}"
+        state: directory
+        owner: "{{ account_name }}"
+        group: "{{ group_name }}"
+        mode: '2775'  # read/write/execute for user and group + leading 2 for set GID bit to enable ACL in next step
+        recurse: yes
+
+    - name: Set group ACL for default permissions
+      become: true
+      become_method: sudo
+      acl:
+        default: yes
+        path: "{{ install_path }}"
+        etype: group
+        permissions: rwx
+        state: present
+
+    - name: Set User ACL for default permissions
+      become: true
+      become_method: sudo
+      acl:
+        default: yes
+        path: "{{ install_path }}"
+        etype: user
+        permissions: rwx
+        state: present
+
     # we don't update afterward because we still need to add the key before we can
     - name: Add Ubuntu GIS PPA so we can get GDAL in next step
       become: true
