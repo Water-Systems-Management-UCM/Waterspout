@@ -48,8 +48,8 @@ class RegionGroup(models.Model):
 
 class Region(models.Model):
 	name = models.CharField(max_length=255, null=False, blank=False)
-	internal_id = models.CharField(max_length=100, null=False, blank=False)  # typically we have some kind of known ID to feed to a model that means something to people
-	external_id = models.CharField(max_length=100, null=False, blank=False)  # a common external identifier of some kind
+	internal_id = models.CharField(max_length=100, null=False, blank=False, unique=True)  # typically we have some kind of known ID to feed to a model that means something to people
+	external_id = models.CharField(max_length=100, null=True, blank=True)  # a common external identifier of some kind
 	# .extra_attributes reverse lookup
 
 	geometry = models.TextField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
@@ -61,6 +61,7 @@ class Region(models.Model):
 
 	def __str__(self):
 		return "Area {}: Region {}".format(self.model_area.name, self.name)
+
 
 class RegionExtra(models.Model):
 	"""

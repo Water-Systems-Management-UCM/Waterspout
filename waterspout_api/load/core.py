@@ -5,6 +5,19 @@ from waterspout_api import models
 
 from Waterspout.settings import BASE_DIR
 
+
+def reset_model_area(model_area_name):
+	# this could return more than one object, but if it does, we want the error to
+	# make sure we aren't clearing a bunch of things we don't want to clear
+	try:
+		model_area = models.ModelArea.objects.get(name=model_area_name)
+		model_area.delete()
+	except models.ModelArea.DoesNotExist:
+		pass
+
+	# do any other cleanup here - regions will cascade delete
+
+
 def get_data_file_path(project, filename):
 	"""
 		Gets the path of data files we've stored for each project
@@ -47,9 +60,9 @@ def load_regions(json_file, field_map, area_name):
 
 		for fm in field_map:  # apply all the attributes to the region based on the field map
 			value = python_data["properties"][fm[0]]
-			try:
-				setattr(region, fm[1], value)
-			except AttributeError:  # if it doesn't have that attribute, then we'll create an extra
+			if hasattr(region, fm[1]):  # we need to check if that attribute exists first
+				setattr(region, fm[1], value)  # if it does, set it on the region object
+			else:  # if it doesn't have that attribute, then we'll create an Extra and relate it
 				extra = models.RegionExtra(region=region, name=fm[1], value=value)
 				extra.save()
 
