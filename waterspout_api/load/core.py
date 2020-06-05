@@ -1,21 +1,47 @@
 import json
 import os
+import csv
+import logging
 
 from waterspout_api import models
 
 from Waterspout.settings import BASE_DIR
 
+log = logging.getLogger("waterspout.load")
 
-def reset_model_area(model_area_name):
+
+def reset_model_area(model_area_name, organization):
 	# this could return more than one object, but if it does, we want the error to
 	# make sure we aren't clearing a bunch of things we don't want to clear
 	try:
-		model_area = models.ModelArea.objects.get(name=model_area_name)
+		model_area = models.ModelArea.objects.get(name=model_area_name, organization=organization)
 		model_area.delete()
 	except models.ModelArea.DoesNotExist:
 		pass
 
+	model_area = models.ModelArea(name=model_area_name, organization=organization)
+	model_area.save()
+
 	# do any other cleanup here - regions will cascade delete
+
+	return model_area
+
+
+def reset_organization(org_name):
+	# this could return more than one object, but if it does, we want the error to
+	# make sure we aren't clearing a bunch of things we don't want to clear
+	try:
+		org = models.Organization.objects.get(name=org_name)
+		org.delete()
+	except models.Organization.DoesNotExist:
+		pass
+
+	organization = models.Organization(name=org_name)
+	organization.save()
+
+	# do any other cleanup here - regions will cascade delete
+
+	return organization
 
 
 def get_data_file_path(project, filename):
@@ -27,7 +53,7 @@ def get_data_file_path(project, filename):
 	return os.path.join(BASE_DIR, "waterspout_api", "data", project, filename)
 
 
-def load_regions(json_file, field_map, area_name):
+def load_regions(json_file, field_map, model_area):
 	"""
 		Given a geojson file, loads each record as a region instance, assigning data
 		to fields by the field map. Fields in the field map that aren't available on
@@ -40,12 +66,9 @@ def load_regions(json_file, field_map, area_name):
 	:param json_file: newline delimited GeoJSON file (QGIS can export this) of the regions
 	:param field_map: iterable of two-tuples. First value is the field in the datasets,
 					and the second is the field here in waterspout (think "from", "to")
-	:param area_name: The name of the ModelArea object to create and attach these to
+	:param model_area: The model area instance to attach these regions to
 	:return:
 	"""
-
-	model_area = models.ModelArea(name=area_name)
-	model_area.save()
 
 	with open(json_file, 'r') as input_data:
 		geojson = input_data.readlines()
@@ -67,3 +90,23 @@ def load_regions(json_file, field_map, area_name):
 				extra.save()
 
 		region.save()  # save it with the new attributes
+
+
+def load_calibration_set(csv_file, model_area, years, organization):
+	calibration_set = models.CalibrationSet(model_area=model_area, years=",".join([str(year) for year in years]))
+	calibration_set.save()
+
+	with open(csv_file, 'r') as csv_data:
+		reader = csv.DictReader(csv_data)
+		for row in reader:
+			param = models.CalibratedParameter(calibration_set=calibration_set)
+			for key in row:
+				# need to do lookups for foreign keys
+				if key == "g":
+					param.g = models.Region.objects.get(internal_id=row["g"], model_area__organization=organization)
+				elif key == "i":
+					param.i = models.Crop.objects.get(crop_code=row["i"], organization=organization)
+				else:
+					setattr(param, key, row[key])
+
+			param.save()

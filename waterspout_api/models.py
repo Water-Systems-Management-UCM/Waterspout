@@ -5,6 +5,7 @@ import django
 from django.db import models  # we're going to geodjango this one - might not need it, but could make some things nicer
 from django.contrib.auth.models import User, Group
 
+import pandas
 import arrow
 
 log = logging.getLogger("waterspout.models")
@@ -21,7 +22,8 @@ class Organization(models.Model):
 	"""
 	name = models.CharField(max_length=255, null=False, blank=False)
 
-	group = models.OneToOneField(Group, on_delete=models.DO_NOTHING)
+	# TODO: This shouldn't allow nulls or blanks
+	group = models.OneToOneField(Group, on_delete=models.DO_NOTHING, null=True, blank=True)
 
 
 class ModelArea(models.Model):
@@ -82,6 +84,9 @@ class Crop(models.Model):
 		etc. Let's keep it a known, manageable level of complex and assign crops to organizations even if it means
 		duplicating crops between organizations.
 	"""
+	class Meta:
+		unique_together = ['crop_code', 'organization']
+
 	name = models.CharField(max_length=255, null=False, blank=False)  # human readable crop name
 	crop_code = models.CharField(max_length=30, null=False, blank=False)  # code used in the models (like ALFAL for Alfalfa)
 	organization = models.ForeignKey(Organization, on_delete=models.CASCADE)  # clear any crops for an org when deleted
@@ -112,12 +117,38 @@ class CalibrationSet(models.Model):
 			Returns the data frame that needs to be run through the model itself
 		:return:
 		"""
-		pass
+		# .values() makes a queryset into an iterable of dicts. Coerce that to a list of dicts
+		# and pass it to the pandas constructor.
+		# Django has a handy method to transform a queryset into a list of dicts,
+		# but we can't really use it because we need to retrieve foreign keys, and it
+		# can only retrieve either bare attributes or the ones we specify, so we'd
+		# need to either hardcode everything or run it twice and merge it. Easier
+		# to write our own, unfortunately. It's quite a bit slower than the Django though
+		# so maybe we can speed it up somehow. Maybe doing it as a raw SQL query and then
+		# dropping any excess fields would be better. Going to leave that for another
+		# day right now.
+
+		foreign_keys = ["g", "i"]
+		fields = [f.name for f in CalibratedParameter._meta.get_fields()]  # get all the fields for calibrated paramters
+		basic_fields = list(set(fields) - set(foreign_keys))  # remove the foreign keys - we'll process those separately
+
+		data = self.calibrated_parameters.all()  # get all the records for this set
+		output = []
+		for record in data:
+			output_dict = {}
+			for field in basic_fields:  # apply the basic fields directly into a dictionary
+				output_dict[field] = getattr(record, field)
+			output_dict["i"] = record.i.crop_code  # but then grab the specific attributes of the foreign keys we wawnt
+			output_dict["g"] = record.g.internal_id
+			output.append(output_dict)  # put the dict into the list so we can make a DF of it
+
+		return pandas.DataFrame(output)  # construct a data frame and send it back
 
 
 class CalibratedParameter(models.Model):
-	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.CASCADE)
-	g = models.ForeignKey(Crop, on_delete=models.DO_NOTHING)
+	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.CASCADE, related_name="calibrated_parameters")
+	i = models.ForeignKey(Crop, on_delete=models.DO_NOTHING)
+	g = models.ForeignKey(Region, on_delete=models.DO_NOTHING)
 	year = models.CharField(max_length=10)  # one might think this should be an integer, but they sometimes do this thing of assigning a year like 2015.5. It's still categorical in this case though, so making it a char field to not have precision issues
 	omegaland = models.DecimalField(max_digits=10, decimal_places=1)
 	omegasupply = models.DecimalField(max_digits=10, decimal_places=1)
@@ -125,7 +156,7 @@ class CalibratedParameter(models.Model):
 	omegaestablish = models.DecimalField(max_digits=10, decimal_places=1)
 	omegacash = models.DecimalField(max_digits=10, decimal_places=1)
 	omeganoncash = models.DecimalField(max_digits=10, decimal_places=1)
-	omeganontotal = models.DecimalField(max_digits=10, decimal_places=1)
+	omegatotal = models.DecimalField(max_digits=10, decimal_places=1)
 	xwater = models.DecimalField(max_digits=18, decimal_places=10)
 	p = models.DecimalField(max_digits=18, decimal_places=10)
 	y = models.DecimalField(max_digits=13, decimal_places=5)
