@@ -14,8 +14,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+
+from rest_framework import routers
+
+from waterspout_api import views as ws_views
+
+router = routers.DefaultRouter()
+router.register(r'regions', ws_views.RegionViewSet)
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('stormchaser/', ws_views.stormchaser),
+    path('api/', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]

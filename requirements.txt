@@ -1,4 +1,8 @@
 Django>=3.0.6
-uvicorn
-fastapi
 arrow
+coreapi
+Markdown
+Pygments
+djangorestframework
+django-filter
+django-guardian

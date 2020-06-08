@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'waterspout_api.apps.WaterspoutApiConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
