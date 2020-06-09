@@ -6,22 +6,42 @@
 </head>
 <body>
 
-<div id="app-2">
-  <span v-bind:title="message">
-    Hover your mouse over me for a few seconds
-    to see my dynamically bound title!
-  </span>
+<div id="stormchaser">
+    <ul>
+        <Region
+            v-for="r in regions"
+            v-bind:region="r"
+            v-bind:key="r.id"
+            ></Region>
+    </ul>
 </div>
-
+{% verbatim %}
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
-    var app2 = new Vue({
-      el: '#app-2',
+    Vue.component('Region', {
+       props: ['region'],
+       template: '<li>{{ region.internal_id }}: {{ region.name }}</li>'
+    });
+
+    var stormchaser = new Vue({
+      el: '#stormchaser',
       data: {
-        message: 'You loaded this page on ' + new Date().toLocaleString()
+        regions: []
       }
     })
+
+    function set_regions(data){
+        stormchaser.regions = data;
+    }
+
+    function fetch_regions(){
+        fetch("/api/regions")
+            .then(response => response.json())
+            .then(data => set_regions(data));
+    }
 </script>
+
+{% endverbatim %}
 
 </body>
 </html>

@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'waterspout_api.apps.WaterspoutApiConfig',
     'rest_framework',
+    'guardian',  # gives us object-level permissions
 ]
 
 MIDDLEWARE = [
@@ -41,6 +42,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # default
+    'guardian.backends.ObjectPermissionBackend',
+)
 
 ROOT_URLCONF = 'Waterspout.urls'
 
