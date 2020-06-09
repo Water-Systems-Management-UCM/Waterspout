@@ -7,12 +7,22 @@
 <body>
 
 <div id="stormchaser">
+    <button v-on:click="load">Load</button>
+    <h2>Active Regions</h2>
     <ul>
         <Region
-            v-for="r in regions"
+            v-for="r in activeRegions"
             v-bind:region="r"
             v-bind:key="r.id"
             ></Region>
+    </ul>
+    <h2>Inactive Regions</h2>
+    <ul>
+        <Region
+            v-for="r in inactiveRegions"
+            v-bind:region="r"
+            v-bind:key="r.id"
+            ></Region> 
     </ul>
 </div>
 {% verbatim %}
@@ -20,25 +30,48 @@
 <script>
     Vue.component('Region', {
        props: ['region'],
-       template: '<li>{{ region.internal_id }}: {{ region.name }}</li>'
+       template: `<li><h4>{{ region.internal_id }}: {{ region.name }}</h4>
+           <button v-if="!region.active" @click="activate_region">Add</button></li>`,
+        methods: {
+           activate_region: function (){
+              this.region.active = true;
+          }
+        }
     });
 
     var stormchaser = new Vue({
       el: '#stormchaser',
       data: {
         regions: []
-      }
+      },
+        methods: {
+          load: function(){
+              fetch_regions()
+          }
+        },
+        computed: {
+          activeRegions: function() {
+              return this.regions.filter(region => region.active === true);
+          },
+          inactiveRegions: function() {
+              return this.regions.filter(region => region.active === false);
+          }
+
+        }
+
     })
 
     function set_regions(data){
+        data.forEach(function(region, index, array){ data[index].active = false;})
         stormchaser.regions = data;
     }
 
     function fetch_regions(){
-        fetch("/api/regions")
+        fetch("/api/regions/")
             .then(response => response.json())
             .then(data => set_regions(data));
     }
+
 </script>
 
 {% endverbatim %}
