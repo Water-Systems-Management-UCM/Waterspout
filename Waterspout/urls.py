@@ -19,9 +19,10 @@ from django.urls import path, include
 from rest_framework import routers
 
 from waterspout_api import views as ws_views
+from Waterspout.settings import API_URLS
 
 router = routers.DefaultRouter()
-router.register(r'regions', ws_views.RegionViewSet)
+router.register(API_URLS["regions"]["partial"], ws_views.RegionViewSet)
 
 
 urlpatterns = [

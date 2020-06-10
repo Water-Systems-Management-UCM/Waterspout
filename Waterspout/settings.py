@@ -14,10 +14,27 @@ import os
 
 from Waterspout.local_settings import *
 
+# With DRF, I don't see a way to use the Django `url` include in templates. So, I'd like to
+# have a single place to define API URLs that we can include in templates. That's here.
+API_BASE_URL = "/api/"
+API_URLS = {  # partial is used in URLconf, full is used in templates
+    "regions": {"partial": "regions", "full": f"{API_BASE_URL}regions/"},
+}
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+	'DEFAULT_AUTHENTICATION_CLASSES': (
+		'rest_framework.authentication.BasicAuthentication',
+		'rest_framework.authentication.SessionAuthentication',
+		'rest_framework.authentication.TokenAuthentication',
+	),
+}
 
 # Application definition
 
@@ -30,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'waterspout_api.apps.WaterspoutApiConfig',
     'rest_framework',
+    'rest_framework.authtoken',
     'guardian',  # gives us object-level permissions
 ]
 
@@ -62,6 +80,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'waterspout_api.context_processors.api_urls',
             ],
         },
     },

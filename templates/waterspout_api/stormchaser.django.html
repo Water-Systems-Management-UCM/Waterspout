@@ -5,7 +5,6 @@
     <title>Test Vue frontend for Waterspout</title>
 </head>
 <body>
-
 <div id="stormchaser">
     <button v-on:click="load">Load</button>
     <h2>Active Regions</h2>
@@ -22,9 +21,16 @@
             v-for="r in inactiveRegions"
             v-bind:region="r"
             v-bind:key="r.id"
-            ></Region> 
+            ></Region>
     </ul>
 </div>
+{% block jsvars %}
+    <script type="application/javascript">
+        // API endpoints - dumped here by back end for use later
+        const user_api_token = "{{ USER_API_TOKEN }}";
+        const api_url_regions = "{{ API_URLS_regions }}";
+    </script>
+{% endblock %}
 {% verbatim %}
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
@@ -67,7 +73,7 @@
     }
 
     function fetch_regions(){
-        fetch("/api/regions/")
+        fetch(api_url_regions)
             .then(response => response.json())
             .then(data => set_regions(data));
     }
