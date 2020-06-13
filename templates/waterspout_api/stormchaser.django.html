@@ -3,27 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <title>Test Vue frontend for Waterspout</title>
+
+    <!-- begin Vuetify CDN Code -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <!-- end Vuetify CDN Code -->
+
+    <link href="/static/waterspout_api/css/stormchaser.css" rel="stylesheet">
+
 </head>
 <body>
 <div id="stormchaser">
     <button v-on:click="load">Load</button>
     <h2>Active Regions</h2>
-    <ul>
+    <div>
         <Region
             v-for="r in activeRegions"
             v-bind:region="r"
             v-bind:key="r.id"
             ></Region>
-    </ul>
+    </div>
     <h2>Inactive Regions</h2>
-    <ul>
+    <div>
         <Region
             v-for="r in inactiveRegions"
             v-bind:region="r"
             v-bind:key="r.id"
             ></Region>
-    </ul>
+    </div>
 </div>
+
 {% block jsvars %}
     <script type="application/javascript">
         // API endpoints - dumped here by back end for use later
@@ -32,12 +43,18 @@
     </script>
 {% endblock %}
 {% verbatim %}
+
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
 <script>
     Vue.component('Region', {
        props: ['region'],
-       template: `<li><h4>{{ region.internal_id }}: {{ region.name }}</h4>
-           <button v-if="!region.active" @click="activate_region">Add</button></li>`,
+       template: `<v-card class="region"
+                        elevation="20"
+                        min-width=100
+                        max-width=500
+                        :title="region.name"><h4>{{ region.internal_id }}: {{ region.name }}</h4>
+           <button v-if="!region.active" @click="activate_region">Add</button></v-card>`,
         methods: {
            activate_region: function (){
               this.region.active = true;
@@ -46,22 +63,23 @@
     });
 
     var stormchaser = new Vue({
-      el: '#stormchaser',
-      data: {
-        regions: []
-      },
+        el: '#stormchaser',
+        vuetify: new Vuetify(),
+        data: {
+            regions: []
+        },
         methods: {
-          load: function(){
-              fetch_regions()
-          }
+            load: function(){
+                fetch_regions()
+            }
         },
         computed: {
-          activeRegions: function() {
-              return this.regions.filter(region => region.active === true);
-          },
-          inactiveRegions: function() {
-              return this.regions.filter(region => region.active === false);
-          }
+            activeRegions: function() {
+                return this.regions.filter(region => region.active === true);
+            },
+            inactiveRegions: function() {
+                return this.regions.filter(region => region.active === false);
+            }
 
         }
 

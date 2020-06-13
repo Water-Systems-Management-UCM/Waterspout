@@ -22,7 +22,7 @@ class Organization(models.Model):
 	"""
 	name = models.CharField(max_length=255, null=False, blank=False)
 
-	# TODO: This shouldn't allow nulls or blanks
+	# TODO: This shouldn't allow nulls or blanks in the future
 	group = models.OneToOneField(Group, on_delete=models.DO_NOTHING, null=True, blank=True)
 
 

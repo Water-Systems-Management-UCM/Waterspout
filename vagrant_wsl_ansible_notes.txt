@@ -1,0 +1,14 @@
+Vagrant in WSL for Ansible deployment testing on Windows using Hyper-V:
+
+0. Basic Vagrant/Ansible combinations - make sure to name the machine so can set it as a member of an ansible
+	group for deployment testing
+1. Must run WSL under admin user to use because Vagrant needs to send commands to Hyper-V as an admin - log in as admin if it's a different account, install Ubuntu from Windows Store - can then switch back to your normal account and elevate a command prompt to admin account to access that copy of WSL
+2. WSL Vagrant version must match Windows Vagrant version - install vagrant in WSL first to check the version,
+then download that version of Vagrant for Windows
+3. Need to set a few environment variables to use it in WSL: https://www.vagrantup.com/docs/other/wsl.html
+	Set the one for enabling windows access, but I also think I needed to set VAGRANT_WSL_WINDOWS_ACCESS_USER_HOME_PATH to the project root to avoid a separate permissions issue.
+3. install vagrant and ansible in WSL
+4. WSL permissions will make things a bit weird when ansible tries to deploy - it'll see that the private key
+	is technically writable by anyone (it's not - Windows will block it, but WSL reports rwx for everyone).
+	This blog post describes part of the fix https://www.turek.dev/post/fix-wsl-file-permissions/- create the file at the top, but the fmask value should be 0077 so that all file permissions end up as 600 by default.
+	Reboot WSL (which might require rebooting Windows) to apply.
