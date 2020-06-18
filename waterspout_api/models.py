@@ -111,6 +111,7 @@ class CalibrationSet(models.Model):
 	# prices = model
 
 	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE)
+	# calibrated_parameters - backward relationship from CalibratedParameter
 
 	def as_data_frame(self):
 		"""
@@ -198,13 +199,17 @@ class ModelRun(models.Model):
 	log_data = models.TextField(null=True, blank=True)  # we'll store log outputs from the model run here.
 	date_submitted = models.DateTimeField(default=django.utils.timezone.now, null=True, blank=True)
 	date_completed = models.DateTimeField(null=True, blank=True)
-	calibrated_parameters = models.TextField()  # we'll put a snapshot of the calibration parameters in here, probably
+
+	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.DO_NOTHING)
+	calibrated_parameters_text = models.TextField()  # we'll put a snapshot of the calibration parameters in here, probably
 												# as a CSV. This way, if people eidt the calibration data for future runs,
 												# we still know what inputs ran this version of the model.
+
 	user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="model_runs")
 	organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="model_runs")
 
-	# modifications - backward relationship
+	# region_modifications - back-reference from related content
+	# crop_modifications - back-reference from related content
 
 	def get_area_to_run(self):
 		"""
@@ -255,7 +260,41 @@ class RegionModification(models.Model):
 	class Meta:
 		unique_together = ['model_run', 'region']
 
-	region = models.ForeignKey(Region, on_delete=models.DO_NOTHING, related_name="modifications")
-	water_proportion = models.FloatField()  # the amount, relative to base values, to provide
+	# we have two nullable foreign keys here. If both are new, then the rule applies to the whole model area as the default.
+	# if only one is active, then it applies to either the region, or the group (and then we need something that applies
+	# it to the individual regions). It's possible that the group->individual application will occur in the JS because
+	# we'll want to display it all in a map, but we might want to do it here so that API calls can use the groups too
+	region = models.ForeignKey(Region,
+	                           on_delete=models.DO_NOTHING,
+	                           related_name="modifications",
+	                           null=True, blank=True)
+	region_group = models.ForeignKey(RegionGroup,
+	                                 on_delete=models.DO_NOTHING,
+	                                 related_name="modifications",
+	                                 null=True, blank=True)
 
-	model_run = models.ForeignKey(ModelRun, null=True, blank=True, on_delete=models.CASCADE, related_name="modifications")
+	water_proportion = models.FloatField()  # the amount, relative to base values, to provide
+	land_proportion = models.FloatField()
+
+	model_run = models.ForeignKey(ModelRun, null=True, blank=True, on_delete=models.CASCADE, related_name="region_modifications")
+
+
+class CropModification(models.Model):
+	"""
+		A modification on a crop to use in a model run. We'll need to have the model run build a new pandas data frame
+		from these based on the code inputs and the model adjustments
+	"""
+	class Meta:
+		unique_together = ['model_run', 'region']
+
+	crop = models.ForeignKey(Crop, on_delete=models.DO_NOTHING, related_name="modifications")
+	crop_group = models.ForeignKey(CropGroup, on_delete=models.DO_NOTHING, related_name="modifications")
+
+	price_proportion = models.FloatField()  # the amount, relative to base values, to provide
+	yield_proportion = models.FloatField()  # the amount, relative to base values, to provide
+	min_land_area_proportion = models.FloatField()  # the amount, relative to base values, to provide
+	max_land_area_proportion = models.FloatField()  # the amount, relative to base values, to provide
+
+	model_run = models.ForeignKey(ModelRun, null=True, blank=True, on_delete=models.CASCADE, related_name="crop_modifications")
+
+

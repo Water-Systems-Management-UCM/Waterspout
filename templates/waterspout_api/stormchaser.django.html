@@ -16,6 +16,7 @@
 </head>
 <body>
 <div id="stormchaser">
+    <v-app>
     <button v-on:click="load">Load</button>
     <h2>Active Regions</h2>
     <div>
@@ -33,6 +34,7 @@
             v-bind:key="r.id"
             ></Region>
     </div>
+    </v-app>
 </div>
 
 {% block jsvars %}
@@ -47,18 +49,79 @@
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
 <script>
-    Vue.component('Region', {
-       props: ['region'],
-       template: `<v-card class="region"
-                        elevation="20"
+    // First component will be a general card we can use both for regions and crops
+    Vue.component('StormCard', {
+       props: {'title': String,
+           'class_name': String,
+            'card_item': Object
+        },
+       template: `<v-card
+                        class="storm_card"
+                        :class="class_name"
+                        elevation="5"
                         min-width=100
                         max-width=500
-                        :title="region.name"><h4>{{ region.internal_id }}: {{ region.name }}</h4>
-           <button v-if="!region.active" @click="activate_region">Add</button></v-card>`,
+                        :title="title">
+                            <slot></slot>
+                            <button class="add_card" v-if="!this.card_item.active" @click="$emit('card-activate')">Add</button>
+                            <button class="remove_card" v-if="this.card_item.active" @click="$emit('card-deactivate')">X</button>
+                  </v-card>`,
+        methods: { }
+    });
+
+    Vue.component('Region', {
+        props: {
+           region: Object,
+        },
+        template: `<StormCard class_name="region"
+                                :title="region.name"
+                                @card-activate="activate"
+                                @card-deactivate="deactivate"
+                                :card_item="region"
+                        ><h4>{{ region.internal_id }}: {{ region.name }}</h4>
+                        <div class="region_params" v-if="region.active">
+                            <span v-text="region.water_pct"></span>
+                            <v-slider
+                                v-model="region.water_pct"
+                                label="Water"
+                                min=0
+                                max=100
+                                value=100
+                                color="blue"
+                                track-color="grey"
+                            >
+                                <!-- prepend and append templates taken from the v-slider doc examples -->
+                                <template v-slot:prepend>
+                                  <v-icon
+                                    @click="decrement_water"
+                                  >
+                                    mdi-minus
+                                  </v-icon>
+                                </template>
+
+                                <template v-slot:append>
+                                  <v-icon
+                                    @click="increment_water"
+                                  >
+                                    mdi-plus
+                                  </v-icon>
+                                </template>
+                            </v-slider>
+                        </div>
+           </StormCard>`,
         methods: {
-           activate_region: function (){
-              this.region.active = true;
-          }
+            activate: function (){
+                this.region.active = true;
+            },
+            deactivate: function(){
+                this.region.active = false;
+            },
+            increment_water: function(){
+                this.region.water_pct++;
+            },
+            decrement_water: function(){
+                this.region.water_pct--;
+            },
         }
     });
 
@@ -86,7 +149,11 @@
     })
 
     function set_regions(data){
-        data.forEach(function(region, index, array){ data[index].active = false;})
+        // sets defaults for the application for each region
+        data.forEach(function(region, index, array){
+            data[index].active = false;
+            data[index].water_pct = 100;
+        })
         stormchaser.regions = data;
     }
 

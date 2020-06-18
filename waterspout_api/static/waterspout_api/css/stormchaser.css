@@ -1,4 +1,12 @@
-.region {
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+.storm_card {
   margin: 0.5em 1em;
   padding: 1em;
+}
+.storm_card .remove_card {
+  position: absolute;
+  top: 1em;
+  right: 1em;
 }
