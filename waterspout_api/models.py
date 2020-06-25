@@ -10,7 +10,6 @@ import arrow
 
 log = logging.getLogger("waterspout.models")
 
-
 class Organization(models.Model):
 	"""
 		Since this application is designed to support multiple models, possibly in the same instance, make most things
@@ -146,8 +145,10 @@ class CalibrationSet(models.Model):
 		return pandas.DataFrame(output)  # construct a data frame and send it back
 
 
-class CalibratedParameter(models.Model):
-	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.CASCADE, related_name="calibrated_parameters")
+class ModelItem(models.Model):
+	class Meta:
+		abstract = True
+
 	i = models.ForeignKey(Crop, on_delete=models.DO_NOTHING)
 	g = models.ForeignKey(Region, on_delete=models.DO_NOTHING)
 	year = models.CharField(max_length=10)  # one might think this should be an integer, but they sometimes do this thing of assigning a year like 2015.5. It's still categorical in this case though, so making it a char field to not have precision issues
@@ -186,6 +187,15 @@ class CalibratedParameter(models.Model):
 	diffwaterpct = models.DecimalField(max_digits=12, decimal_places=10)
 
 
+class CalibratedParameter(ModelItem):
+	"""
+		Note that it's of class ModelItem - ModelItems define the various input
+		parameters and results that we use for calibration inputs, calibrated
+		parameters, and model results
+	"""
+	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.CASCADE, related_name="calibrated_parameters")
+
+
 class ModelRun(models.Model):
 	"""
 		The central object for configuring an individual run of the model - is related to modification objects from the
@@ -211,45 +221,32 @@ class ModelRun(models.Model):
 	# region_modifications - back-reference from related content
 	# crop_modifications - back-reference from related content
 
-	def get_area_to_run(self):
-		"""
-			Returns a two-tuple of items to area id, subarea_id to pass to the mantis server
-		"""
-		area = None
-		possible_areas = ("county", "b118_basin", "cvhm_farm", "subbasin")
-		for area_value in possible_areas:
-			possible_area = getattr(self, area_value)
-			if possible_area is not None:
-				area = possible_area
-				break
-		else:
-			return 1, 0  # 1 is central valley, 0 is because there's no subitem
-
-		area_type_id = mantis_area_map_id[type(area).__name__]  # we key the ids based on the class being used - this is clunky, but efficient
-
-		return area_type_id, area.mantis_id
-
 	def load_result(self, values):
-		self.result_values = ",".join([str(item) for item in values])
-		self.date_run = arrow.utcnow().datetime
+		pass
 
-	def run(self):
+	@property
+	def scenario_df(self):
 		"""
-			Runs Mantis and sets the status codes. Saves automatically at the end
+			Given the currently attached modifications, etc, returns a complete calibration DF
 		:return:
 		"""
-		try:
-			# TODO: Fix below
-			results = None
-			self.load_result(values=results)
-			self.complete = True
-			self.status_message = "Successfully run"
-		except:
-			log.error("Failed to run Model. Error was: {}".format(traceback.format_exc()))
-			self.complete = True
-			self.status_message = "Model run failed. This error has been reported."
 
-		self.save()
+		# pull initial calibration dataset as it is
+
+		# do any overrides or changes from the modifications
+
+		#
+
+		# TODO: Need to do much more than this, but for now, just return the existing calib set
+		return self.calibrated_parameters_text
+
+
+class Result(ModelItem):
+	"""
+		Holds the results for a single region/crop
+	"""
+	model_run = models.ForeignKey(ModelRun, on_delete=models.CASCADE)
+
 
 
 class RegionModification(models.Model):
@@ -285,7 +282,7 @@ class CropModification(models.Model):
 		from these based on the code inputs and the model adjustments
 	"""
 	class Meta:
-		unique_together = ['model_run', 'region']
+		unique_together = ['model_run', 'crop']
 
 	crop = models.ForeignKey(Crop, on_delete=models.DO_NOTHING, related_name="modifications")
 	crop_group = models.ForeignKey(CropGroup, on_delete=models.DO_NOTHING, related_name="modifications")

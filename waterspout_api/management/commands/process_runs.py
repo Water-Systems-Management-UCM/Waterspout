@@ -3,21 +3,19 @@ import time
 
 from django.core.management.base import BaseCommand, CommandError
 
-from npsat_manager import mantis_manager, models
+from waterspout_api import models
+from Waterspout import settings
 
-log = logging.getLogger("npsat_manager.commands.process_runs")
+from Dapper import calibration, scenarios
+
+log = logging.getLogger("waterspout.commands.process_runs")
 
 
 class Command(BaseCommand):
 	help = 'Starts the event loop that processes model runs and sends the commands to Mantis'
 
 	def handle(self, *args, **options):
-		mantis_servers = mantis_manager.initialize()
-		# asyncio.run(mantis_manager.main_model_run_loop(mantis_servers))  # see note on main_model_run_loop for why we're not using it
-
 		self._waiting_runs = []
-		self.mantis_server = mantis_servers[0]  # leaving in place the infra for multiple servers in the future, but we'll use one for now
-
 		self.process_runs()
 
 	def process_runs(self):
@@ -25,14 +23,50 @@ class Command(BaseCommand):
 			self._get_runs()
 
 			if len(self._waiting_runs) == 0:  # if we don't have any runs, go to sleep for a few seconds, then check again
-				time.sleep(2)
+				time.sleep(settings.MODEL_RUN_CHECK_INTERVAL)  # defaults to 4
 				continue
 
 			for run in self._waiting_runs:
-				self.mantis_server.send_command(model_run=run)
+				log.info(f"Running model run {run.id}")
+				# initially, we won't support calibrating the data here - we'll
+				# just use an initial calibration set and then make our modifications
+				# before running the scenarios
+
+				#calib = calibration.ModelCalibration(run.calbration_df)
+				#calib.calibrate()
+
+				run.running = True
+				run.save()  # mark it as running and save it so the API updates the status
+
+				scenario_runner = scenarios.Scenario(df=run.scenario_df)
+				results = scenario_runner.run()
+
+				# now we need to load the resulting df back into the DB
+				self.load_records(results_df=results, model_run=run)
+
+				log.info("Model run complete")
+
+	def load_records(self, results_df, model_run):
+		"""
+			Given a set of model results, loads the results to the database
+		:param results_df:
+		:param model_run:
+		:return:
+		"""
+		log.info(f"Loading results for model run {model_run.id}")
+		for record in results_df.iterrows():
+			result = models.Result()
+			for column in record:
+				if column == "g":
+					result.g = models.Region.objects.get(internal_id=column["g"], model_area__organization=model_run.organization)
+				elif column == "i":
+					result.i = models.Crop.objects.get(crop_code=column["i"], organization=model_run.organization)
+				else:
+					setattr(result, column, record[column])
+			result.save()
 
 	def _get_runs(self):
+		log.debug("Checking for new model runs")
 		new_runs = models.ModelRun.objects.filter(ready=True, running=False, complete=False)\
-											.order_by('date_submitted')\
-											.prefetch_related('modifications')  # get runs that aren't complete
+											.order_by('date_submitted')
 		self._waiting_runs = new_runs

@@ -127,3 +127,66 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+if DEBUG:  # if DEBUG is on, don't email admins when problems happen
+    log_handlers = ['console', 'file_debug']
+else:
+    log_handlers = ['console', 'file_debug', 'email_error', 'email_warn']
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s : %(asctime)s : %(module)s : %(process)d : %(thread)d : %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s:%(name)s: %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+            'level': 'INFO',
+        },
+        'file_debug': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'debug.log'),
+            'formatter': 'verbose'
+        },
+        'email_warn': {
+            'level': "WARNING",
+            'class': "django.utils.log.AdminEmailHandler",
+        },
+        'email_error': {
+            'level': "ERROR",
+            'class': "django.utils.log.AdminEmailHandler"
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': log_handlers,
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+        },
+        'Dapper': {
+            'handlers': log_handlers,
+            'level': 'DEBUG'
+        },
+
+        'waterspout': {
+            'handlers': log_handlers,
+            'level': 'DEBUG'
+        },
+
+        'waterspout_api': {
+            'handlers': log_handlers,
+            'level': 'DEBUG'
+        },
+
+        'Waterspout': {
+            'handlers': log_handlers,
+            'level': 'DEBUG'
+        },
+    },
+}
