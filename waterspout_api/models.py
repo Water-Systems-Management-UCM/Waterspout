@@ -100,7 +100,9 @@ class CropGroup(models.Model):
 	crops = models.ManyToManyField(Crop)  # Each crop can be in many groups
 
 
-class CalibrationSet(models.Model):
+class RecordSet(models.Model):
+	class Meta:
+		abstract = True
 	"""
 		For storing the results of calibration parameters that come out of phase 1 of the model - we'll load a few sets
 		of calibrated parameters initially, but then provide a black box version of the calibration parameters. We can
@@ -109,10 +111,7 @@ class CalibrationSet(models.Model):
 	years = models.TextField()  # yes, text. We'll concatenate text as a year lookup
 	# prices = model
 
-	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE)
-	# calibrated_parameters - backward relationship from CalibratedParameter
-
-	def as_data_frame(self):
+	def as_data_frame(self,):
 		"""
 			Returns the data frame that needs to be run through the model itself
 		:return:
@@ -129,20 +128,30 @@ class CalibrationSet(models.Model):
 		# day right now.
 
 		foreign_keys = ["g", "i"]
-		fields = [f.name for f in CalibratedParameter._meta.get_fields()]  # get all the fields for calibrated paramters
+		fields = [f.name for f in ModelItem._meta.get_fields()]  # get all the fields for calibrated paramters
 		basic_fields = list(set(fields) - set(foreign_keys))  # remove the foreign keys - we'll process those separately
 
-		data = self.calibrated_parameters.all()  # get all the records for this set
+		# reverse_name will exist for subclasses
+		data = getattr(self, self.reverse_name).all()  # get all the records for this set
 		output = []
 		for record in data:
 			output_dict = {}
-			for field in basic_fields:  # apply the basic fields directly into a dictionary
-				output_dict[field] = getattr(record, field)
+			for field in basic_fields:  # apply the basic fields directly into a dictionary and coerce to floats
+				output_dict[field] = float(getattr(record, field))
 			output_dict["i"] = record.i.crop_code  # but then grab the specific attributes of the foreign keys we wawnt
 			output_dict["g"] = record.g.internal_id
 			output.append(output_dict)  # put the dict into the list so we can make a DF of it
 
 		return pandas.DataFrame(output)  # construct a data frame and send it back
+
+
+class CalibrationSet(RecordSet):
+	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE)
+	reverse_name = "calibration_set"
+
+
+class ResultSet(RecordSet):
+	reverse_name = "result_set"
 
 
 class ModelItem(models.Model):
@@ -193,7 +202,7 @@ class CalibratedParameter(ModelItem):
 		parameters and results that we use for calibration inputs, calibrated
 		parameters, and model results
 	"""
-	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.CASCADE, related_name="calibrated_parameters")
+	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.CASCADE, related_name="calibration_set")
 
 
 class ModelRun(models.Model):
@@ -214,6 +223,9 @@ class ModelRun(models.Model):
 	calibrated_parameters_text = models.TextField()  # we'll put a snapshot of the calibration parameters in here, probably
 												# as a CSV. This way, if people eidt the calibration data for future runs,
 												# we still know what inputs ran this version of the model.
+
+	results = models.OneToOneField(ResultSet, null=True, blank=True,
+	                               on_delete=models.DO_NOTHING, related_name="model_run")
 
 	user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="model_runs")
 	organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="model_runs")
@@ -238,15 +250,15 @@ class ModelRun(models.Model):
 		#
 
 		# TODO: Need to do much more than this, but for now, just return the existing calib set
-		return self.calibrated_parameters_text
+		return self.calibration_set.as_data_frame()
 
 
 class Result(ModelItem):
 	"""
 		Holds the results for a single region/crop
 	"""
-	model_run = models.ForeignKey(ModelRun, on_delete=models.CASCADE)
 
+	result_set = models.ForeignKey(ResultSet, on_delete=models.CASCADE, related_name="result_set")
 
 
 class RegionModification(models.Model):

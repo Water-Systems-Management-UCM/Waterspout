@@ -37,14 +37,18 @@ class Command(BaseCommand):
 
 				run.running = True
 				run.save()  # mark it as running and save it so the API updates the status
+				try:
+					scenario_runner = scenarios.Scenario(df=run.scenario_df)
+					results = scenario_runner.run()
 
-				scenario_runner = scenarios.Scenario(df=run.scenario_df)
-				results = scenario_runner.run()
+					# now we need to load the resulting df back into the DB
+					self.load_records(results_df=results, model_run=run)
 
-				# now we need to load the resulting df back into the DB
-				self.load_records(results_df=results, model_run=run)
-
-				log.info("Model run complete")
+					run.complete = True
+					log.info("Model run complete")
+				finally:  # make sure to mark it as not running regardless of its status or if it crashes
+					run.running = False
+					run.save()
 
 	def load_records(self, results_df, model_run):
 		"""
@@ -54,15 +58,16 @@ class Command(BaseCommand):
 		:return:
 		"""
 		log.info(f"Loading results for model run {model_run.id}")
-		for record in results_df.iterrows():
-			result = models.Result()
-			for column in record:
-				if column == "g":
-					result.g = models.Region.objects.get(internal_id=column["g"], model_area__organization=model_run.organization)
-				elif column == "i":
-					result.i = models.Crop.objects.get(crop_code=column["i"], organization=model_run.organization)
-				else:
-					setattr(result, column, record[column])
+		result_set = models.ResultSet(model_run=model_run)
+		result_set.save()
+		for record in results_df.itertuples():  # returns named tuples
+			result = models.Result(result_set=result_set)
+			result.i = models.Crop.objects.get(crop_code=record.i, organization=model_run.organization)
+			result.g = models.Region.objects.get(internal_id=record.g, model_area__organization=model_run.organization)
+			for column in record._fields:  # _fields isn't private - it's just preventing conflicts - see namedtuple docs
+				if column in ("g", "i", "calibration_set"):
+					continue
+				setattr(result, column, getattr(record, column))
 			result.save()
 
 	def _get_runs(self):
