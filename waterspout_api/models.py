@@ -6,7 +6,7 @@ from django.db import models  # we're going to geodjango this one - might not ne
 from django.contrib.auth.models import User, Group
 
 import pandas
-import arrow
+from Dapper import scenarios
 
 log = logging.getLogger("waterspout.models")
 
@@ -247,10 +247,51 @@ class ModelRun(models.Model):
 
 		# do any overrides or changes from the modifications
 
-		#
-
 		# TODO: Need to do much more than this, but for now, just return the existing calib set
 		return self.calibration_set.as_data_frame()
+
+	def run(self):
+		# initially, we won't support calibrating the data here - we'll
+		# just use an initial calibration set and then make our modifications
+		# before running the scenarios
+
+		#calib = calibration.ModelCalibration(run.calbration_df)
+		#calib.calibrate()
+
+		self.running = True
+		self.save()  # mark it as running and save it so the API updates the status
+		try:
+			scenario_runner = scenarios.Scenario(df=self.scenario_df)
+			results = scenario_runner.run()
+
+			# now we need to load the resulting df back into the DB
+			self.load_records(results_df=results)
+
+			self.complete = True
+			log.info("Model run complete")
+		finally:  # make sure to mark it as not running regardless of its status or if it crashes
+			self.running = False
+			self.save()
+
+	def load_records(self, results_df):
+		"""
+			Given a set of model results, loads the results to the database
+		:param results_df:
+		:param model_run:
+		:return:
+		"""
+		log.info(f"Loading results for model run {self.id}")
+		result_set = ResultSet(model_run=self)
+		result_set.save()
+		for record in results_df.itertuples():  # returns named tuples
+			result = Result(result_set=result_set)
+			result.i = Crop.objects.get(crop_code=record.i, organization=self.organization)
+			result.g = Region.objects.get(internal_id=record.g, model_area__organization=self.organization)
+			for column in record._fields:  # _fields isn't private - it's just preventing conflicts - see namedtuple docs
+				if column in ("g", "i", "calibration_set"):
+					continue
+				setattr(result, column, getattr(record, column))
+			result.save()
 
 
 class Result(ModelItem):
