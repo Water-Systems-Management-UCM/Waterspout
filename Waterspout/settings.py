@@ -19,6 +19,7 @@ from Waterspout.local_settings import *
 API_BASE_URL = "/api/"
 API_URLS = {  # partial is used in URLconf, full is used in templates
     "regions": {"partial": "regions", "full": f"{API_BASE_URL}regions/"},
+    "model_runs": {"partial": "model_runs", "full": f"{API_BASE_URL}model_runs/"},
 }
 
 

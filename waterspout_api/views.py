@@ -2,19 +2,60 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
 from rest_framework import viewsets
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from rest_framework.permissions import BasePermission, IsAuthenticated, IsAdminUser, SAFE_METHODS
 # Create your views here.
 
-from waterspout_api.models import Region
-from waterspout_api.serializers import RegionSerializer
+from waterspout_api import models
+from waterspout_api import serializers
 from waterspout_api import support
+
+
+class CustomAuthToken(ObtainAuthToken):
+	"""
+	Via https://www.django-rest-framework.org/api-guide/authentication/
+	Creates a custom object that returns more than just the auth token when users hit the API endpoint.
+	"""
+	def post(self, request, *args, **kwargs):
+		serializer = self.serializer_class(data=request.data,
+		                                   context={'request': request})
+		serializer.is_valid(raise_exception=True)
+		user = serializer.validated_data['user']
+		token, created = Token.objects.get_or_create(user=user)
+		return Response({
+			'token': token.key,
+			'user_id': user.pk,
+			'username': user.username,
+			'is_staff': user.is_staff,
+			'is_superuser': user.is_superuser,
+			'email': user.email,
+		})
 
 
 class RegionViewSet(viewsets.ModelViewSet):
 	"""
 	API endpoint that allows users to be viewed or edited.
 	"""
-	queryset = Region.objects.all().order_by("internal_id")
-	serializer_class = RegionSerializer
+	queryset = models.Region.objects.all().order_by("internal_id")
+	serializer_class = serializers.RegionSerializer
+
+
+class ModelRunViewSet(viewsets.ModelViewSet):
+	"""
+	Create, List, and Modify Model Runs
+
+	Test
+
+	Permissions: Must be authenticated
+	"""
+	permission_classes = [IsAuthenticated]
+	serializer_class = serializers.ModelRunSerializer
+
+	def get_queryset(self):
+		return models.ModelRun.objects.filter(user=self.request.user).order_by('id')
+
 
 @login_required
 def stormchaser(request):

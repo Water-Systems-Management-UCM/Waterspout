@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls import url
 
 from rest_framework import routers
 
@@ -23,11 +24,13 @@ from Waterspout.settings import API_URLS
 
 router = routers.DefaultRouter()
 router.register(API_URLS["regions"]["partial"], ws_views.RegionViewSet)
+router.register(API_URLS["model_runs"]["partial"], ws_views.ModelRunViewSet, basename="model_runs")
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('stormchaser/', ws_views.stormchaser),
     path('api/', include(router.urls)),
+    url(r'^api-token-auth/', ws_views.CustomAuthToken.as_view()),  # POST a username and password here, get a token back
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
