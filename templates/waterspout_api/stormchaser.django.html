@@ -18,6 +18,7 @@
 <div id="stormchaser">
     <v-app>
     <button v-on:click="load">Load</button>
+    <button v-on:click="run">Run</button>
     <h2>Active Regions</h2>
     <div>
         <Region
@@ -39,9 +40,13 @@
 
 {% block jsvars %}
     <script type="application/javascript">
+        // TEMPORARY VALUES
+        const model_area_id = 1; // we'll have another mechanism to set the model area - for now, it's just 1
+
         // API endpoints - dumped here by back end for use later
         const user_api_token = "{{ USER_API_TOKEN }}";
         const api_url_regions = "{{ API_URLS_regions }}";
+        const api_url_model_runs = "{{ API_URLS_model_runs }}";
     </script>
 {% endblock %}
 {% verbatim %}
@@ -134,6 +139,21 @@
         methods: {
             load: function(){
                 fetch_regions()
+            },
+            run: function(){
+                fetch(api_url_model_runs, {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Token ${user_api_token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: `{
+                            "ready": true,
+                            "calibrated_parameters_text": "NA"
+                        }`
+                })
+                    //.then(response => response.json())
+                    //.then(data => set_regions(data));
             }
         },
         computed: {

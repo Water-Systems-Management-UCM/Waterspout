@@ -12,5 +12,4 @@ class RegionSerializer(serializers.HyperlinkedModelSerializer):
 class ModelRunSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = models.ModelRun
-		fields = ['id', 'ready', 'running', 'complete', 'status_message',
-		          'date_submitted', 'date_completed', "calibrated_parameters_text",]
+		fields = models.ModelRun.serializer_fields

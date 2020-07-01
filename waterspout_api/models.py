@@ -1,5 +1,6 @@
 import logging
 import traceback
+import json
 
 import django
 from django.db import models  # we're going to geodjango this one - might not need it, but could make some things nicer
@@ -9,6 +10,7 @@ import pandas
 from Dapper import scenarios
 
 log = logging.getLogger("waterspout.models")
+
 
 class Organization(models.Model):
 	"""
@@ -23,6 +25,9 @@ class Organization(models.Model):
 
 	# TODO: This shouldn't allow nulls or blanks in the future
 	group = models.OneToOneField(Group, on_delete=models.DO_NOTHING, null=True, blank=True)
+
+	def has_member(self, user):
+		return self.group in user.groups.all()  # True if this group is in that set, otherwise, False
 
 
 class ModelArea(models.Model):
@@ -233,8 +238,15 @@ class ModelRun(models.Model):
 	# region_modifications - back-reference from related content
 	# crop_modifications - back-reference from related content
 
-	def load_result(self, values):
-		pass
+	serializer_fields = ['id', 'ready', 'running', 'complete', 'status_message',
+		          'date_submitted', 'date_completed', "calibrated_parameters_text",]
+
+	def as_dict(self):
+		return {field: getattr(self, field) for field in self.serializer_fields}
+
+	def as_json(self):
+		# using the Django serializer class handles datetimes, etc properly
+		return json.dumps(self.as_dict(), cls=django.core.serializers.json.DjangoJSONEncoder)
 
 	@property
 	def scenario_df(self):
