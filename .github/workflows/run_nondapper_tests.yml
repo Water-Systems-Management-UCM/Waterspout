@@ -31,4 +31,4 @@ jobs:
         python utils/get_dapper.py
     - name: Test with pytest
       run: |
-        pytest
+        python manage.py test
