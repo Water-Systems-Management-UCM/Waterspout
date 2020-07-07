@@ -8,7 +8,7 @@ BASE_URL = "https://wsm-ucm-dapper.s3-us-west-1.amazonaws.com/"
 EXTENSION = "-linux_x86_64.whl.txt"
 
 version_string = f"{sys.version_info.major}{sys.version_info.minor}"
-full_url = f"latest_{BASE_URL}cp{version_string}-cp{version_string}m{EXTENSION}"
+full_url = f"{BASE_URL}latest_cp{version_string}-cp{version_string}m{EXTENSION}"
 
 
 def download_file(url):
