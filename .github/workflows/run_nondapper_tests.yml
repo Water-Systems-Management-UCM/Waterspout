@@ -1,6 +1,6 @@
 # This file is for running tests that don't actually execute Dapper (so we don't need to install Dapper dependencies)
 
-name: Python package
+name: Run Non-Dapper Tests
 
 on:
   push:
