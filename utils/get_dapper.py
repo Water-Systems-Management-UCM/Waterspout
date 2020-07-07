@@ -28,7 +28,7 @@ def download_file(url):
 
 print("Retrieving info on latest version from {}".format(full_url))
 r = requests.get(url=full_url)
-wheel_url = f"{BASE_URL}{str(r.content)}"
+wheel_url = f"{BASE_URL}{r.content.decode('utf-8')}"
 print("Downloading wheel at {}".format(wheel_url))
 wheel_filename = download_file(url=wheel_url)
 print("Installing wheel")
