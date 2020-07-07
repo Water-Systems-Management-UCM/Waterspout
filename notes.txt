@@ -1,0 +1,54 @@
+# DAP and Waterspout Notes
+
+## Model Notes
+Steps 1-3 are the calibration phase - step 5 is the 
+
+anything omega is some kind of cost, usually in dollars/acre
+
+xwater = applied water requirements - amount of water in applied water/acre that each crop needs after precip happen
+p = price in dollars/ton
+y = yield in tons/acre
+xland = observed land use for each crop/region/year 
+omega water is cost in dollars/acre-foot
+theta = supply elasticity - how much a change in price changes decisions of farmers to produce crops
+sigma = elasticity of substitution - how much can we substitute non-water inputs (fertilizer, etc) to keep yields where we need them as we drop water
+
+PMP is meant to cature factors that can't be explained economically.
+
+objective function decreases the marginal value of each additional unit of land allocated to the same crop so that it doesn't all become the same thing that has the best value (like almonds)
+
+then add constraints so that no crops disappear (which would mess up the model)
+then a stress reduction constraint - they can't reduce the water below the expected amount needed for each unit of crop
+then a huge block to get results
+
+Can simplify the error handling code heavily
+	Currently it sets an error status on the output, but then uses the results from the previous year - if not previous year, it sets valuees to 0.
+	
+Resource flag checks tom make sure it uses either all of water or all of land or both (since one should be limiting)
+
+Potential parameter for max amount of deficit irrigation.
+
+
+## Interface Notes
+Step 1. Linear Program
+Step 2. Calibration
+Step 3. Calibrated Model
+
+Additional knob of climate change adjustment to productivity?
+Cost of water
+Price of crops
+Water available
+Land available
+Stress on crops
+
+
+Start with three knobs - we need to have a way to specify if knob adjustment is for all regions or specific regions
+Water and Land specified per region
+Prices and yields per crop (may still want to specify these per region for Washington?)
+2. Land
+
+Instead of providing amount of water, do a percentage, which would be based on the actual water requirements of the crops that are panted
+
+The per-region water cutback is the number one most important thing - then yields and prices of crops
+
+In order of importance: water cutback, land cutback (thesea are by region). Then yield and price controls (per-crop, not specifying per region right now). The model regions also will be aggregated into a cluster (such as our Delta "megaregions") - they may want to do controls per-megaregion and have the info applied to regions.
