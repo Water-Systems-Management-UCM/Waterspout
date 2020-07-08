@@ -46,9 +46,9 @@ class ModelResultsTest(TransactionTestCase):  # Need to have a TransactionTestCa
 		actual_results = pandas.read_csv(os.path.join(TEST_DATA_FOLDER, "DAP_v2_results.csv"))
 		calculated_results = self.model_run.results.as_data_frame()
 
-		os.makedirs(os.path.join(os.path.join(TEST_DATA_FOLDER, "results")))  # make sure the results folder exists
-		calculated_results.to_csv(os.path.join(TEST_DATA_FOLDER, "results", "calculated_results.csv"))
-		# assert_frame_equal returns None if two DFs are effectively equal
+		# commented out for CD use where it was failing - useful for debug when run manually though
+		#os.makedirs(os.path.join(os.path.join(TEST_DATA_FOLDER, "results")))  # make sure the results folder exists
+		#calculated_results.to_csv(os.path.join(TEST_DATA_FOLDER, "results", "calculated_results.csv"))
 
 		# sort them by their effective year/island/crop index so that the rows are in the same order
 		sorted_actual = actual_results.sort_values(axis=0, by=["year", "g", "i"])
@@ -62,6 +62,7 @@ class ModelResultsTest(TransactionTestCase):  # Need to have a TransactionTestCa
 			del sorted_actual[field]
 			del sorted_calculated[field]
 
+		# assert_frame_equal returns None if two DFs are effectively equal
 		# compare them to 5 decimal places - ignore data type differences since some is inferred from CSV
 		self.assertIsNone(pandas.testing.assert_frame_equal(sorted_actual, sorted_calculated		                                                    ,
 		                                                    check_like=True, check_column_type=False,
