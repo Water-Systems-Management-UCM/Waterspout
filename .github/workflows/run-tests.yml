@@ -32,11 +32,7 @@ jobs:
         echo "$PATH"
         echo "$LD_LIBRARY_PATH"
         echo "$PKG_CONFIG_PATH"
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
+
     - name: Install ipopt system requirements
       run: |
         # install the requirements for ipopt
