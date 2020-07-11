@@ -288,7 +288,7 @@ class ModelRun(models.Model):
 		self.running = True
 		self.save()  # mark it as running and save it so the API updates the status
 		try:
-			scenario_runner = scenarios.Scenario(df=self.scenario_df)
+			scenario_runner = scenarios.Scenario(calibration_df=self.scenario_df)
 			results = scenario_runner.run()
 
 			# now we need to load the resulting df back into the DB
