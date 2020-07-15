@@ -63,12 +63,14 @@ class ModelRunViewSet(viewsets.ModelViewSet):
 
 	Test
 
-	Permissions: Must be authenticated
+	Permissions: Must be in same organization to specifically request an item
 	"""
 	permission_classes = [permissions.IsInSameOrganization]
 	serializer_class = serializers.ModelRunSerializer
 
 	def get_queryset(self):
+		# right now, this will only show the user's model runs, not the organization's,
+		# but permissions should be saying "
 		return models.ModelRun.objects.filter(user=self.request.user).order_by('id')
 
 	#def create(self, request, *args, **kwargs):

@@ -22,7 +22,6 @@ class RegionModificationSerializer(serializers.ModelSerializer):
 	class Meta:
 		fields = models.RegionModification.serializer_fields
 		model = models.RegionModification
-		depth = 2
 
 
 class ModelRunSerializer(serializers.ModelSerializer):

@@ -75,7 +75,9 @@ class APIModelRunTestCase(APITransactionTestCase):
 		new_user2.save()
 
 		response = self.client.get(f"{self.url}/{json.loads(response.body).id}")
-		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+		# it'll be forbidden if our queryset shows the item at all, but 404 if the queryset
+		# excludes it.
+		self.assertIn(response.status_code, (status.HTTP_403_FORBIDDEN, status.HTTP_404_NOT_FOUND))
 
 	# test that user that's not a member of the group gets PermissionDenied
 	# test that use of calibration set that's not in org gets PermissionDenied
