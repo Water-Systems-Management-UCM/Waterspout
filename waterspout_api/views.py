@@ -9,15 +9,14 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.permissions import BasePermission, IsAuthenticated, IsAdminUser, SAFE_METHODS
-from rest_framework.exceptions import ValidationError, PermissionDenied
-from rest_framework import status
 
 from waterspout_api import models
 from waterspout_api import serializers
 from waterspout_api import support
-from Waterspout import settings
+from waterspout_api import permissions
 
 log = logging.getLogger("waterspout.views")
+
 
 class CustomAuthToken(ObtainAuthToken):
 	"""
@@ -49,6 +48,15 @@ class RegionViewSet(viewsets.ModelViewSet):
 	serializer_class = serializers.RegionSerializer
 
 
+class RegionModificationViewSet(viewsets.ModelViewSet):
+	"""
+	API endpoint that allows users to be viewed or edited.
+	"""
+	permission_classes = [IsAuthenticated]
+	queryset = models.RegionModification.objects.all().order_by("internal_id")
+	serializer_class = serializers.RegionModificationSerializer
+
+
 class ModelRunViewSet(viewsets.ModelViewSet):
 	"""
 	Create, List, and Modify Model Runs
@@ -57,56 +65,17 @@ class ModelRunViewSet(viewsets.ModelViewSet):
 
 	Permissions: Must be authenticated
 	"""
-	permission_classes = [IsAuthenticated]
+	permission_classes = [permissions.IsInSameOrganization]
 	serializer_class = serializers.ModelRunSerializer
 
 	def get_queryset(self):
 		return models.ModelRun.objects.filter(user=self.request.user).order_by('id')
 
-	def _check_permissions(self, request):
-		request_data = json.loads(request.data)
+	#def create(self, request, *args, **kwargs):
+	#	# check the permissions using the request before sending it off to the serializer
+	#	request.data = self._check_permissions(request)
 
-		log.debug(f"Make Model Run Request: ${request_data}")
-
-		# Check Permissions
-		organization = models.Organization.objects.get(id=int(request_data["organization"]))
-		if not organization.has_member(request.user):
-			raise PermissionDenied("User is not a member of the specified organization and cannot create model runs within it")
-		request_data["organization"] = organization  # replace it with the object so we can assign it later
-
-		calibration_set = models.CalibrationSet.objects.get(id=int(request_data["calibration_set"]))
-		log.debug(f"Calibration Set: {calibration_set}")
-		if not calibration_set.model_area.organization == organization:
-			raise PermissionDenied(detail="CalibrationSet is not part of this organization. You can only use calibration sets that"
-			                              "are attached to the organization you're working within")
-		request_data["calibration_set"] = calibration_set  # replace it with the object so we can assign it later
-
-		return request_data
-
-	def create(self, request, *args, **kwargs):
-		request_data = self._check_permissions(request)
-
-		# we could override perform_create instead of create, but we don't get the full
-		# request data in perform_create, so we'd probably need to override create *and*
-		# perform_create, then call the superclass's create when we're done with our
-		# permissions checks.
-
-		try:
-			mr = models.ModelRun(
-				user=request.user,  # user will be authenticated by permission classes,
-				**request_data
-			)
-			mr.full_clean()
-		except:
-			if settings.DEBUG:
-				raise
-			raise ValidationError(detail="Invalid parameters to create model run")
-
-		mr.save()
-
-		# The following code comes from DRF directly and is how it returns the model
-		# after creation
-		return Response(mr.as_json(), status=status.HTTP_201_CREATED)
+	#	super().create(request, *args, **kwargs)
 
 
 @login_required

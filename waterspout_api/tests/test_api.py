@@ -70,6 +70,13 @@ class APIModelRunTestCase(APITransactionTestCase):
 		response = self.client.post(self.url, json.dumps(self.test_request_data), format="json")
 		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+		# now make sure that a new user that's not in the organization can't access it either
+		new_user2 = User()
+		new_user2.save()
+
+		response = self.client.get(f"{self.url}/{json.loads(response.body).id}")
+		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
 	# test that user that's not a member of the group gets PermissionDenied
 	# test that use of calibration set that's not in org gets PermissionDenied
 	# test that use of calibration set and user in org succeeds and returns HTTP 200 and a status message

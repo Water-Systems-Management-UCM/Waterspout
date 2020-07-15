@@ -25,6 +25,7 @@ from Waterspout.settings import API_URLS
 router = routers.DefaultRouter()
 router.register(API_URLS["regions"]["partial"], ws_views.RegionViewSet)
 router.register(API_URLS["model_runs"]["partial"], ws_views.ModelRunViewSet, basename="model_runs")
+router.register(API_URLS["region_modifications"]["partial"], ws_views.RegionModificationViewSet, basename="region_modifications")
 
 
 urlpatterns = [
