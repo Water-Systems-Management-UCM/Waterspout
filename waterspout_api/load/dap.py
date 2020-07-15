@@ -10,7 +10,7 @@ data_name = "dap"  # used to find files relative to the data folder
 area_name = "DAP"
 
 
-def load_dap(regions="delta_islands_wDAP.geojson",
+def load_dap(regions="delta_islands_wDAP_simplified_0005.geojson",
              calibration_file="DAP_calibrated.csv"):
 	organization = core.reset_organization(org_name=area_name)
 	model_area = core.reset_model_area(model_area_name=area_name, organization=organization)

@@ -43,6 +43,10 @@ class Organization(models.Model):
 	def has_member(self, user):
 		return self.group in user.groups.all()  # True if this group is in that set, otherwise, False
 
+	def add_member(self, user):
+		self.group.user_set.add(user)
+		self.group.save()
+
 
 class ModelArea(models.Model):
 	"""

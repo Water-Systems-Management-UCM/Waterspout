@@ -1,5 +1,10 @@
+import logging
+
+from . import models
+
 from rest_framework.authtoken.models import Token
 
+log = logging.getLogger(__name__)
 
 def refresh_token_for_user(user):
 	"""
@@ -30,3 +35,11 @@ def get_or_create_token(user):
 		return refresh_token_for_user(user)
 	else:
 		return tokens.first()
+
+
+def add_user_to_organization_by_name(username, organization_name):
+	log.info(f"Adding {username} to organization {organization_name}")
+	user = models.User.objects.get(username=username)
+	organization = models.Organization.objects.get(name=organization_name)
+
+	organization.add_member(user)
