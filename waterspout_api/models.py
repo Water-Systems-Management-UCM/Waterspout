@@ -257,7 +257,7 @@ class ModelRun(models.Model):
 	date_completed = models.DateTimeField(null=True, blank=True)
 
 	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.DO_NOTHING)
-	calibrated_parameters_text = models.TextField()  # we'll put a snapshot of the calibration parameters in here, probably
+	calibrated_parameters_text = models.TextField(null=True, blank=True)  # we'll put a snapshot of the calibration parameters in here, probably
 												# as a CSV. This way, if people eidt the calibration data for future runs,
 												# we still know what inputs ran this version of the model.
 
@@ -271,7 +271,8 @@ class ModelRun(models.Model):
 	# crop_modifications - back-reference from related content
 
 	serializer_fields = ['id', 'ready', 'running', 'complete', 'status_message',
-		          'date_submitted', 'date_completed', "calibrated_parameters_text",]
+		          'date_submitted', 'date_completed', "calibration_set",
+		                 "calibrated_parameters_text", "organization"]
 
 	def as_dict(self):
 		return {field: getattr(self, field) for field in self.serializer_fields}
@@ -288,11 +289,17 @@ class ModelRun(models.Model):
 		"""
 
 		# pull initial calibration dataset as it is
+		df = self.calibration_set.as_data_frame()
 
 		# do any overrides or changes from the modifications
 
 		# TODO: Need to do much more than this, but for now, just return the existing calib set
-		return self.calibration_set.as_data_frame()
+
+		# save the calibration data with any modifications as a text string to the DB - will exclude scenario
+		# level constraints though!
+		self.calibrated_parameters_text = df.to_csv()  # if we don't provide a path to to_csv, it returns a string
+		self.save()
+		return df
 
 	def run(self):
 		# initially, we won't support calibrating the data here - we'll

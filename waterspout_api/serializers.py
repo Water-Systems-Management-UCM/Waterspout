@@ -25,15 +25,20 @@ class RegionModificationSerializer(serializers.ModelSerializer):
 
 
 class ModelRunSerializer(serializers.ModelSerializer):
-	region_modifications = RegionModificationSerializer(allow_null=True, many=True)
+	region_modifications = RegionModificationSerializer(allow_null=True, many=True, read_only=True)
 
 	class Meta:
 		model = models.ModelRun
 		fields = models.ModelRun.serializer_fields + ['region_modifications']
-		depth = 2
+		depth = 0  # will still show objects that are explicitly declared as nested objects (like region_modifications)
+					# this lets us say "I don't want region geometries here" while still getting the modifications in one request
 
 	def create(self, validated_data):
-		region_modification_data = validated_data.pop('region_modifications')
+		if self.fields["region_modifications"].read_only is False:  # we can remove this when we remove the read_only setting, but this should make it not fail at least
+			region_modification_data = validated_data.pop('region_modifications')
+		else:
+			region_modification_data = []
+
 		model_run = models.ModelRun.objects.create(**validated_data)
 		for modification in region_modification_data:
 			models.RegionModification.objects.create(model_run=model_run, **modification)

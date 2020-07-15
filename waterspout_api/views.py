@@ -73,6 +73,9 @@ class ModelRunViewSet(viewsets.ModelViewSet):
 		# but permissions should be saying "
 		return models.ModelRun.objects.filter(user=self.request.user).order_by('id')
 
+	def perform_create(self, serializer):
+		serializer.save(user=self.request.user)
+
 	#def create(self, request, *args, **kwargs):
 	#	# check the permissions using the request before sending it off to the serializer
 	#	request.data = self._check_permissions(request)
