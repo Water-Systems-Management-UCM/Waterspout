@@ -8,7 +8,9 @@ BASE_URL = "https://wsm-ucm-dapper.s3-us-west-1.amazonaws.com/"
 EXTENSION = "-linux_x86_64.whl.txt"
 
 version_string = f"{sys.version_info.major}{sys.version_info.minor}"
-full_url = f"latest_{BASE_URL}cp{version_string}-cp{version_string}m{EXTENSION}"
+full_url = f"{BASE_URL}latest_cp{version_string}-cp{version_string}m{EXTENSION}"
+# sometimes we don't have an "m" after the second version string, so we might try a version without it.
+alternate_full_url = f"{BASE_URL}latest_cp{version_string}-cp{version_string}{EXTENSION}"
 
 
 def download_file(url):
@@ -28,7 +30,15 @@ def download_file(url):
 
 print("Retrieving info on latest version from {}".format(full_url))
 r = requests.get(url=full_url)
-wheel_url = f"{BASE_URL}{str(r.content)}"
+
+# not my best code, but simple, clear, and works
+if r.status_code not in (200, 201):  # if we don't get an "OK" response, try the alternate URL
+	print("First attempt failed, trying alternate URL")
+	r = requests.get(url=alternate_full_url)
+	if r.status_code not in (200, 201):
+		raise RuntimeError("Can't find latest version of Dapper via {} or {}".format(full_url, alternate_full_url))
+
+wheel_url = f"{BASE_URL}{r.content.decode('utf-8')}"
 print("Downloading wheel at {}".format(wheel_url))
 wheel_filename = download_file(url=wheel_url)
 print("Installing wheel")

@@ -1,5 +1,6 @@
 import logging
 import traceback
+import decimal
 import json
 
 import django
@@ -146,7 +147,7 @@ class RecordSet(models.Model):
 		# day right now.
 
 		foreign_keys = ["g", "i"]
-		fields = [f.name for f in ModelItem._meta.get_fields()]  # get all the fields for calibrated paramters
+		fields = [f.name for f in ModelItem._meta.get_fields()]  # get all the fields for calibrated parameters
 		basic_fields = list(set(fields) - set(foreign_keys))  # remove the foreign keys - we'll process those separately
 
 		# reverse_name will exist for subclasses
@@ -155,7 +156,8 @@ class RecordSet(models.Model):
 		for record in data:
 			output_dict = {}
 			for field in basic_fields:  # apply the basic fields directly into a dictionary and coerce to floats
-				output_dict[field] = float(getattr(record, field))
+				field_value = getattr(record, field)
+				output_dict[field] = float(field_value) if type(field_value) is decimal.Decimal else field_value
 			output_dict["i"] = record.i.crop_code  # but then grab the specific attributes of the foreign keys we wawnt
 			output_dict["g"] = record.g.internal_id
 			output.append(output_dict)  # put the dict into the list so we can make a DF of it
@@ -173,12 +175,17 @@ class ResultSet(RecordSet):
 
 
 class ModelItem(models.Model):
+	"""
+
+		Fields that are allowed to be null are ones that aren't part of calibration, but instead may be set for final
+		results
+	"""
 	class Meta:
 		abstract = True
 
 	i = models.ForeignKey(Crop, on_delete=models.DO_NOTHING)
 	g = models.ForeignKey(Region, on_delete=models.DO_NOTHING)
-	year = models.CharField(max_length=10)  # one might think this should be an integer, but they sometimes do this thing of assigning a year like 2015.5. It's still categorical in this case though, so making it a char field to not have precision issues
+	year = models.IntegerField()
 	omegaland = models.DecimalField(max_digits=10, decimal_places=1)
 	omegasupply = models.DecimalField(max_digits=10, decimal_places=1)
 	omegalabor = models.DecimalField(max_digits=10, decimal_places=1)
@@ -194,13 +201,13 @@ class ModelItem(models.Model):
 	sigma = models.DecimalField(max_digits=5, decimal_places=4)
 	theta = models.DecimalField(max_digits=5, decimal_places=4)
 	pimarginal = models.DecimalField(max_digits=18, decimal_places=10)
-	alphaland = models.DecimalField(max_digits=11, decimal_places=10)
-	alphawater = models.DecimalField(max_digits=11, decimal_places=10)
-	alphasupply = models.DecimalField(max_digits=11, decimal_places=10)
-	alphalabor = models.DecimalField(max_digits=11, decimal_places=10)
+	#alphaland = models.DecimalField(max_digits=11, decimal_places=10, null=True, blank=True)
+	# alphawater = models.DecimalField(max_digits=11, decimal_places=10, null=True, blank=True)
+	# alphasupply = models.DecimalField(max_digits=11, decimal_places=10, null=True, blank=True)
+	# alphalabor = models.DecimalField(max_digits=11, decimal_places=10, null=True, blank=True)
 	rho = models.DecimalField(max_digits=15, decimal_places=10)
-	lambdaland = models.DecimalField(max_digits=15, decimal_places=10)
-	lambdacrop = models.DecimalField(max_digits=15, decimal_places=10)
+	# lambdaland = models.DecimalField(max_digits=15, decimal_places=10, null=True, blank=True)
+	#lambdacrop = models.DecimalField(max_digits=15, decimal_places=10, null=True, blank=True)
 	betaland = models.DecimalField(max_digits=18, decimal_places=10)
 	betawater = models.DecimalField(max_digits=18, decimal_places=10)
 	betasupply = models.DecimalField(max_digits=18, decimal_places=10)
@@ -208,10 +215,18 @@ class ModelItem(models.Model):
 	tau = models.DecimalField(max_digits=18, decimal_places=10)
 	gamma = models.DecimalField(max_digits=18, decimal_places=10)
 	delta = models.DecimalField(max_digits=18, decimal_places=10)
-	xlandcalib = models.DecimalField(max_digits=18, decimal_places=10)
-	xwatercalib = models.DecimalField(max_digits=18, decimal_places=10)
-	difflandpct = models.DecimalField(max_digits=12, decimal_places=10)
-	diffwaterpct = models.DecimalField(max_digits=12, decimal_places=10)
+	#xlandcalib = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+	#xwatercalib = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+	#difflandpct = models.DecimalField(max_digits=12, decimal_places=10, null=True, blank=True)
+	#diffwaterpct = models.DecimalField(max_digits=12, decimal_places=10, null=True, blank=True)
+	resource_flag = models.CharField(max_length=5, null=True, blank=True)
+
+	# we may be able to drop these fields later, but they help us while we're comparing to the original DAP and our validation
+	xlandsc = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+	xwatersc = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+	xdiffland = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+	xdifftotalland = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+	xdiffwater = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
 
 
 class CalibratedParameter(ModelItem):
@@ -286,7 +301,7 @@ class ModelRun(models.Model):
 		self.running = True
 		self.save()  # mark it as running and save it so the API updates the status
 		try:
-			scenario_runner = scenarios.Scenario(df=self.scenario_df)
+			scenario_runner = scenarios.Scenario(calibration_df=self.scenario_df)
 			results = scenario_runner.run()
 
 			# now we need to load the resulting df back into the DB
@@ -308,13 +323,18 @@ class ModelRun(models.Model):
 		log.info(f"Loading results for model run {self.id}")
 		result_set = ResultSet(model_run=self)
 		result_set.save()
+
+		for record in results_df.itertuples():
+			# get the first tuple's fields, then exit the loop
+			# this should be faster than retrieving it every time in the next loop, but we need to do it once
+			fields = list(set(record._fields) - set(["g", "i", "calibration_set"]))
+			break
+
 		for record in results_df.itertuples():  # returns named tuples
 			result = Result(result_set=result_set)
 			result.i = Crop.objects.get(crop_code=record.i, organization=self.organization)
 			result.g = Region.objects.get(internal_id=record.g, model_area__organization=self.organization)
-			for column in record._fields:  # _fields isn't private - it's just preventing conflicts - see namedtuple docs
-				if column in ("g", "i", "calibration_set"):
-					continue
+			for column in fields:  # _fields isn't private - it's just preventing conflicts - see namedtuple docs
 				setattr(result, column, getattr(record, column))
 			result.save()
 

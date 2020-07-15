@@ -1,6 +1,6 @@
 # This file is for running tests that don't actually execute Dapper (so we don't need to install Dapper dependencies)
 
-name: Run Non-Dapper Tests
+name: Run Tests
 
 on:
   push:
@@ -20,15 +20,60 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+
+    # Dapper/ipopt Setup!!
+    - name: Set Up Environment
+      run: |
+        echo "::set-env name=LD_LIBRARY_PATH::/home/runner/work/Dapper/Dapper/ipopt_dist:/home/runner/work/Dapper/Dapper/ipopt_dist/lib:/usr/lib/coinbrew/ipopt:/usr/lib/coinbrew/ipopt/lib:/usr/lib/x86_64-linux-gnu/"
+        echo "::set-env name=PATH::$PATH:/home/runner/work/Dapper/Dapper/ipopt_dist:/home/runner/work/Dapper/Dapper/ipopt_dist/bin:/usr/lib/coinbrew/ipopt:/usr/lib/coinbrew/ipopt/bin:/usr/lib/x86_64-linux-gnu/"
+        echo "::set-env name=PKG_CONFIG_PATH::$PKG_CONFIG_PATH:/home/runner/work/Dapper/Dapper/ipopt_dist:/home/runner/work/Dapper/Dapper/ipopt_dist/lib:/usr/lib/coinbrew/ipopt:/usr/lib/x86_64-linux-gnu/"
+    - name: Check Environment
+      run: |
+        echo "$PATH"
+        echo "$LD_LIBRARY_PATH"
+        echo "$PKG_CONFIG_PATH"
+
+    - name: Install ipopt system requirements
+      run: |
+        # install the requirements for ipopt
+        sudo apt-get install gcc g++ gfortran git patch wget pkg-config liblapack-dev libmetis-dev build-essential python3-dev
+        # apparently ipopt wants glpk header files for compilation, but I think we'll also want this for solving anyway
+        sudo apt-get install glpk-utils libglpk-dev
+
+    - name: Cache Coinbrew paths
+      uses: actions/cache@v2
+      id: coinbrewcache
+      with:
+        path: |
+          ~/coinbrew
+        key: ${{ runner.os }}-${{ matrix.python-version }}-coinbrew
+
+    - name: Get CoinBrew  # we need it to install ipopt - the prebuilt packages wouldn't get recognized by pyomo
+      if: steps.coinbrewcache.outputs.cache-hit != 'true'
+      run: |
+        wget -O ~/coinbrew https://raw.githubusercontent.com/coin-or/coinbrew/master/coinbrew
+        chmod u+x ~/coinbrew
+    - name: CoinBrew install ipopt (by compiling)
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: |
+        sudo ~/coinbrew fetch Ipopt --no-prompt
+        sudo ~/coinbrew build Ipopt --prefix=/usr/lib/coinbrew/ipopt --test --no-prompt --verbosity=3
+        sudo ~/coinbrew install Ipopt --no-prompt
+        sudo rm -fr ./build
+        sudo mv ./dist ./ipopt_dist
+
+    # Back to Waterspout
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Get Dapper from S3
       run: |
         python -m pip install requests
         python utils/get_dapper.py
-    - name: Test with pytest
+    - name: Django Setup  # make sure local_settings.py exists
+      run: |
+        cp Waterspout/local_settings_template.py Waterspout/local_settings.py
+    - name: Run Django Tests
       run: |
         python manage.py test
