@@ -31,7 +31,9 @@ class APIModelRunTestCase(APITransactionTestCase):
 		self.test_request_data = {
 			"ready": False,
 			"calibration_set": self.calibration_set.id,
-			"organization": self.organization.id
+			"organization": self.organization.id,
+			"region_modifications": [],
+			"name": "test",
 		}
 
 		log.info(f"Request is {str(self.test_request_data)}")
@@ -71,6 +73,7 @@ class APIModelRunTestCase(APITransactionTestCase):
 		self.model_area.organization = self.organization
 		self.model_area.save()
 
+		self.client.force_authenticate(user=new_user)  # set the authentication - no tokens needed
 		response = self.client.post(self.url, self.test_request_data, format="json")
 		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 

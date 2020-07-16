@@ -64,8 +64,9 @@ def compare_runs(run1, run2, compare_digits=3):
 		support.compare_runs(14,pandas.read_csv("C:/Users/dsx/CodeLocal/Waterspout/waterspout_api/tests/data/results/calculated_results.csv"))
 
 		is a valid command that compares ModelRun ID 14's results with the data in the provided CSV.
-	:param run1:
-	:param run2:
+	:param run1: See main description
+	:param run2: See main description
+	:param compare_digits: How many decimal places should they be compared to? Defaults to 3.
 	:return:
 	"""
 	if type(run1) is int:

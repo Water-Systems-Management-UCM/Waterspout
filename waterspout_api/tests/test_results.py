@@ -51,5 +51,5 @@ class ModelResultsTest(TransactionTestCase):  # Need to have a TransactionTestCa
 		#calculated_results.to_csv(os.path.join(TEST_DATA_FOLDER, "results", "calculated_results.csv"))
 
 		# assert_frame_equal returns None if two DFs are effectively equal
-		# compare them to 5 decimal places - ignore data type differences since some is inferred from CSV
-		self.assertIsNone(support.compare_runs_by_df(actual_results, calculated_results), None)
+		# compare them to 2 decimal places - ignore data type differences since some is inferred from CSV
+		self.assertIsNone(support.compare_runs(actual_results, calculated_results, compare_digits=2), None)
