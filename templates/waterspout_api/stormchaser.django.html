@@ -27,14 +27,31 @@
             v-bind:key="r.id"
             ></Region>
     </div>
-    <h2>Inactive Regions</h2>
-    <div>
-        <Region
-            v-for="r in inactiveRegions"
-            v-bind:region="r"
-            v-bind:key="r.id"
-            ></Region>
-    </div>
+
+        <v-dialog
+          v-model="dialog"
+          width="500"
+        >
+            <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="red lighten-2"
+              dark
+              v-bind="attrs"
+              v-on="on"
+            >
+              Add Region
+            </v-btn>
+          </template>
+
+            <h2>Add Region to Make Changes</h2>
+            <div>
+                <Region
+                    v-for="r in inactiveRegions"
+                    v-bind:region="r"
+                    v-bind:key="r.id"
+                    ></Region>
+            </div>
+        </v-dialog>
     </v-app>
 </div>
 
