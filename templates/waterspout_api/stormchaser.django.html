@@ -154,12 +154,11 @@
                 let regions = this.activeRegions;
                 let scaled_down_regions = [];
                 regions.forEach(function(region){
-                    region = JSON.parse(JSON.stringify(region));  // make a deep copy - we're about to modify it
-                    delete region.geometry;  // don't send the geometry back to the server
-                    region.region = region.id;  // make the ID the region ID, not the modification ID
-                    delete region.id;
-                    region.water_proportion = region.water_proportion / 100;  // API deals in proportions, not percents
-                    scaled_down_regions.push(region);
+                    new_region = {
+                        "region": region.id,
+                        "water_proportion": region.water_proportion / 100 // API deals in proportions, not percents
+                    };
+                    scaled_down_regions.push(new_region);
                 });
 
                 let body = `{
