@@ -36,9 +36,10 @@ def reset_organization(org_name):
 	except models.Organization.DoesNotExist:
 		pass
 
-	organization = models.Organization(name=org_name)
+	org_group = models.Group(name=org_name)
+	org_group.save()
+	organization = models.Organization(name=org_name, group=org_group)
 	organization.save()
-
 	# do any other cleanup here - regions will cascade delete
 
 	return organization

@@ -71,7 +71,7 @@ class ModelRunViewSet(viewsets.ModelViewSet):
 	def get_queryset(self):
 		# right now, this will only show the user's model runs, not the organization's,
 		# but permissions should be saying "
-		return models.ModelRun.objects.filter(user=self.request.user).order_by('id')
+		return models.ModelRun.objects.filter(organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
 
 	def perform_create(self, serializer):
 		serializer.save(user=self.request.user)

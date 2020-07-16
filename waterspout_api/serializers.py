@@ -2,8 +2,6 @@ import json
 import logging
 
 from rest_framework import serializers
-from drf_writable_nested.serializers import WritableNestedModelSerializer
-
 
 from waterspout_api import models
 
@@ -25,7 +23,7 @@ class RegionModificationSerializer(serializers.ModelSerializer):
 
 
 class ModelRunSerializer(serializers.ModelSerializer):
-	region_modifications = RegionModificationSerializer(allow_null=True, many=True, read_only=True)
+	region_modifications = RegionModificationSerializer(allow_null=True, many=True)
 
 	class Meta:
 		model = models.ModelRun

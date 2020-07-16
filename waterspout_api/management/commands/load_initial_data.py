@@ -10,4 +10,5 @@ class Command(BaseCommand):
 	help = 'Loads default data into the database. Currently loads data for the DAP model'
 
 	def handle(self, *args, **options):
+		log.info("Loading data to database")
 		dap.load_dap()

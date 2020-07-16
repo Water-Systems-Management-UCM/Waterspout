@@ -6,4 +6,3 @@ Pygments
 djangorestframework
 django-filter
 django-guardian
-drf-writable-nested

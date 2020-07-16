@@ -140,21 +140,42 @@
             load: function(){
                 fetch_regions()
             },
+            get_header: function(){
+                let headers = new Headers();
+                headers.append("Authorization", `Token ${user_api_token}`);
+                headers.append('Content-Type', 'application/json');
+                return headers;
+            },
             run_model: function(){
                 console.log("Creating Model Run");
-                fetch(api_url_model_runs, {
-                    method: 'POST',
-                    headers: {
-                        Authorization: `Token ${user_api_token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: `{
+                let headers = this.get_header();
+                console.log(headers.values());
+
+                let regions = this.activeRegions;
+                let scaled_down_regions = [];
+                regions.forEach(function(region){
+                    region = JSON.parse(JSON.stringify(region));  // make a deep copy - we're about to modify it
+                    delete region.geometry;  // don't send the geometry back to the server
+                    region.region = region.id;  // make the ID the region ID, not the modification ID
+                    delete region.id;
+                    region.water_proportion = region.water_proportion / 100;  // API deals in proportions, not percents
+                    scaled_down_regions.push(region);
+                });
+
+                let body = `{
+                            "name": "test",
                             "ready": true,
                             "organization": 1,
-                            "calibrated_parameters_text": "NA",
-                            "region_modififications": ${JSON.stringify(this.activeRegions)}
-                        }`
-                }).then(response => console.log(response.body))
+                            "calibration_set": 1,
+                            "region_modifications": ${JSON.stringify(scaled_down_regions)}
+                        }`;
+
+                console.log(body);
+                fetch(api_url_model_runs, {
+                    method: 'POST',
+                    headers: headers,
+                    body: body
+                }).then((response) => { console.log(response); response.text().then(function(text){console.log(text)}) })
                     //.then(response => response.json())
                     //.then(data => set_regions(data));
             }

@@ -1,5 +1,7 @@
 import logging
 
+import pandas
+
 from . import models
 
 from rest_framework.authtoken.models import Token
@@ -43,3 +45,13 @@ def add_user_to_organization_by_name(username, organization_name):
 	organization = models.Organization.objects.get(name=organization_name)
 
 	organization.add_member(user)
+
+
+def get_organizations_for_user(user):
+	return [group.organization for group in user.groups.all()]
+
+
+def compare_runs(model_run_id1, model_run_id2):
+	model_run_1 = models.ModelRun.objects.get(id=model_run_id1)
+	model_run_2 = models.ModelRun.objects.get(id=model_run_id2)
+	assert pandas.testing.assert_frame_equal(model_run_1.results.as_data_frame(), model_run_2.results.as_data_frame(), check_like=True, check_column_type=False, check_dtype=False, check_less_precise=True) is None

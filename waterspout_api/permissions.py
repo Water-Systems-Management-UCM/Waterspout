@@ -16,7 +16,19 @@ class IsInSameOrganization(permissions.BasePermission):
 	"""
 
 	def has_permission(self, request, view):
-		if request.method not in permissions.SAFE_METHODS:
+		if request.method in permissions.SAFE_METHODS:
+			return True  # in this case, we can't really check permissions here - need to make sure the queryset filters properly
+		else:
+			return self._check_org_info(request, view)
+
+	def has_object_permission(self, request, view, obj):
+		if request.method in permissions.SAFE_METHODS:  # org members can read
+			return obj.organization.has_member(request.user)
+		else:
+			return self._check_org_info(request, view)
+
+	def _check_org_info(self, request, view):
+		if request.method not in permissions.SAFE_METHODS:  # object creation - verges on validation, but is related to permissions
 			request_data = request.data
 			if type(request_data) is not dict:
 				request_data = json.loads(request_data)
@@ -42,8 +54,3 @@ class IsInSameOrganization(permissions.BasePermission):
 			# request_data["calibration_set"] = calibration_set  # replace it with the object so we can assign it later
 
 			return True
-
-	def has_object_permission(self, request, view, obj):
-		return obj.organization.has_member(request.user)
-
-		# otherwise, if we're creating, we need to check more of the specifics of the request

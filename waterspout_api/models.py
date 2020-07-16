@@ -247,6 +247,9 @@ class ModelRun(models.Model):
 		The central object for configuring an individual run of the model - is related to modification objects from the
 		modification side.
 	"""
+	name = models.CharField(max_length=255)
+	description = models.TextField(null=True, blank=True)
+
 	ready = models.BooleanField(default=False, null=False)  # marked after the web interface adds all modifications
 	running = models.BooleanField(default=False, null=False)  # marked while in processing
 	complete = models.BooleanField(default=False, null=False)  # tracks if the model has actually been run for this result yet
@@ -270,7 +273,7 @@ class ModelRun(models.Model):
 	# region_modifications - back-reference from related content
 	# crop_modifications - back-reference from related content
 
-	serializer_fields = ['id', 'ready', 'running', 'complete', 'status_message',
+	serializer_fields = ['id', 'name', 'description', 'ready', 'running', 'complete', 'status_message',
 		          'date_submitted', 'date_completed', "calibration_set",
 		                 "calibrated_parameters_text", "organization"]
 
@@ -301,6 +304,20 @@ class ModelRun(models.Model):
 		self.save()
 		return df
 
+	def attach_modifications(self, scenario):
+		land_modifications = {}
+		water_modifications = {}
+		for modification in self.region_modifications.all():
+			land_modifications[modification.region.external_id] = float(modification.land_proportion)
+			water_modifications[modification.region.external_id] = float(modification.water_proportion)
+
+		if len(land_modifications.keys()) > 0:
+			scenario.perform_adjustment("land", land_modifications)
+		if len(water_modifications.keys()) > 0:
+			scenario.perform_adjustment("water", water_modifications)
+
+		return scenario
+
 	def run(self):
 		# initially, we won't support calibrating the data here - we'll
 		# just use an initial calibration set and then make our modifications
@@ -313,6 +330,7 @@ class ModelRun(models.Model):
 		self.save()  # mark it as running and save it so the API updates the status
 		try:
 			scenario_runner = scenarios.Scenario(calibration_df=self.scenario_df)
+			scenario_runner = self.attach_modifications(scenario=scenario_runner)
 			results = scenario_runner.run()
 
 			# now we need to load the resulting df back into the DB
