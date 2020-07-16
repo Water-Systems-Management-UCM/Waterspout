@@ -42,6 +42,8 @@
     <script type="application/javascript">
         // TEMPORARY VALUES
         const model_area_id = 1; // we'll have another mechanism to set the model area - for now, it's just 1
+        const organization_id = 1; // we'll have another mechanism to set this - for now, it's just 1
+        const calibration_set_id = 1; // we'll have another mechanism to set this - for now, it's just 1
 
         // API endpoints - dumped here by back end for use later
         const user_api_token = "{{ USER_API_TOKEN }}";
@@ -164,8 +166,8 @@
                 let body = `{
                             "name": "test",
                             "ready": true,
-                            "organization": 1,
-                            "calibration_set": 1,
+                            "organization": ${organization_id},
+                            "calibration_set": ${calibration_set_id},
                             "region_modifications": ${JSON.stringify(scaled_down_regions)}
                         }`;
 

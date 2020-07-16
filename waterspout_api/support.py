@@ -51,17 +51,39 @@ def get_organizations_for_user(user):
 	return [group.organization for group in user.groups.all()]
 
 
-def compare_runs_by_id(model_run_id1, model_run_id2):
-	model_run_1 = models.ModelRun.objects.get(id=model_run_id1)
-	model_run_2 = models.ModelRun.objects.get(id=model_run_id2)
+def compare_runs(run1, run2, compare_digits=3):
+	"""
+		Compares two model runs using pandas comparison tools - excludes difference fields (they
+		may have compounding errors. Returns None if they're the same and raises an error if they're
+		different.
 
-	return compare_runs_by_df(model_run_1.results.as_data_frame(), model_run_2.results.as_data_frame())
+		This is a loose wrapper around pandas' built-in comparison tool that makes it apply to our
+		situation. First, each run parameter can be 1) a ModelRun ID, 2) a ModelRun object instance,
+		or 3) a Pandas DataFrame - they don't need to be the same type, so
 
+		support.compare_runs(14,pandas.read_csv("C:/Users/dsx/CodeLocal/Waterspout/waterspout_api/tests/data/results/calculated_results.csv"))
 
-def compare_runs_by_df(df1, df2):
+		is a valid command that compares ModelRun ID 14's results with the data in the provided CSV.
+	:param run1:
+	:param run2:
+	:return:
+	"""
+	if type(run1) is int:
+		run1 = models.ModelRun.objects.get(id=run1)
+	if type(run2) is int:
+		run2 = models.ModelRun.objects.get(id=run2)
+
+	if isinstance(run1, models.ModelRun):
+		run1 = run1.results.as_data_frame()
+	if isinstance(run2, models.ModelRun):
+		run2 = run2.results.as_data_frame()
+
+	if not isinstance(run1, pandas.DataFrame) or not isinstance(run2, pandas.DataFrame):
+		raise TypeError("Runs provided for comparison must be integer model run IDs, ModelRun instances, or Pandas DataFrames.")
+
 	# sort them by their effective year/island/crop index so that the rows are in the same order
-	sorted_df1 = df1.sort_values(axis=0, by=["year", "g", "i"])
-	sorted_df2 = df2.sort_values(axis=0, by=["year", "g", "i"])
+	sorted_df1 = run1.sort_values(axis=0, by=["year", "g", "i"])
+	sorted_df2 = run2.sort_values(axis=0, by=["year", "g", "i"])
 
 	# we'll exclude these fields from comparison - since they're differences between values, ther
 	# errors seem to compound, so we get differences even with less precise checking. I'm satisfied
@@ -71,4 +93,4 @@ def compare_runs_by_df(df1, df2):
 		del sorted_df1[field]
 		del sorted_df2[field]
 
-	return pandas.testing.assert_frame_equal(sorted_df1, sorted_df2, check_like=True, check_column_type=False, check_dtype=False, check_less_precise=True)
+	return pandas.testing.assert_frame_equal(sorted_df1, sorted_df2, check_like=True, check_column_type=False, check_dtype=False, check_less_precise=compare_digits)

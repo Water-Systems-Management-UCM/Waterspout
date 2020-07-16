@@ -168,6 +168,22 @@ class RecordSet(models.Model):
 
 		return pandas.DataFrame(output)  # construct a data frame and send it back
 
+	def to_csv(self, *args, **kwargs):
+		"""
+			Saves the set to a CSV file - all args are passed through to Pandas.to_csv
+		:param args:
+		:param kwargs:
+		:return:
+		"""
+		df = self.as_data_frame().sort_values(axis=0, by=["year", "g", "i"])
+
+		if kwargs.pop("waterspout_sort_columns", True) is True:
+			# match the column output to how Spencer has it so we can compare
+			column_order = ("g","i","year","omegaland","omegasupply","omegalabor","omegaestablish","omegacash","omeganoncash","omegatotal","xwater","p","y","xland","omegawater","sigma","theta","pimarginal","rho","betaland","betawater","betasupply","betalabor","tau","gamma","delta","xlandsc","xwatersc","xdiffland","xdifftotalland","xdiffwater","resource_flag")
+			df = df.reindex(columns=column_order)
+
+		return df.to_csv(*args, **kwargs)
+
 
 class CalibrationSet(RecordSet):
 	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE)
@@ -308,17 +324,15 @@ class ModelRun(models.Model):
 		land_modifications = {}
 		water_modifications = {}
 		for modification in self.region_modifications.all():
-			land_modifications[modification.region.external_id] = float(modification.land_proportion)
-			water_modifications[modification.region.external_id] = float(modification.water_proportion)
+			land_modifications[modification.region.internal_id] = float(modification.land_proportion)
+			water_modifications[modification.region.internal_id] = float(modification.water_proportion)
 
 		if len(land_modifications.keys()) > 0:
 			scenario.perform_adjustment("land", land_modifications)
 		if len(water_modifications.keys()) > 0:
 			scenario.perform_adjustment("water", water_modifications)
 
-		return scenario
-
-	def run(self):
+	def run(self, csv_output=None):
 		# initially, we won't support calibrating the data here - we'll
 		# just use an initial calibration set and then make our modifications
 		# before running the scenarios
@@ -330,8 +344,11 @@ class ModelRun(models.Model):
 		self.save()  # mark it as running and save it so the API updates the status
 		try:
 			scenario_runner = scenarios.Scenario(calibration_df=self.scenario_df)
-			scenario_runner = self.attach_modifications(scenario=scenario_runner)
+			self.attach_modifications(scenario=scenario_runner)
 			results = scenario_runner.run()
+
+			if csv_output is not None:
+				results.to_csv(csv_output)
 
 			# now we need to load the resulting df back into the DB
 			self.load_records(results_df=results)
