@@ -3,10 +3,13 @@ import logging
 
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+from django.http import JsonResponse, HttpResponse
 
 from rest_framework import viewsets
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import BasePermission, IsAuthenticated, IsAdminUser, SAFE_METHODS
 
@@ -73,6 +76,27 @@ class ModelRunViewSet(viewsets.ModelViewSet):
 		# but permissions should be saying "
 		return models.ModelRun.objects.filter(organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
 
+	@action(detail=True)
+	def csv(self, request, pk):
+		"""
+			A temporary proof of concept - allows downloading a csv of model results. Realistically,
+			we may want to save these as static files somewhere, but then we'd still want to read
+			them in through Django on request to manage permissions. Still would be faster and more
+			reliable than making the data frame a CSV on the fly though
+		:param request:
+		:param pk:
+		:return:
+		"""
+		model_run = self.get_object()  # should check DRF's permissions here
+		if model_run.complete is False:  # if it's not complete, just return the current serialized response - this needs to be moved to the API
+			return Response(json.dumps(model_run))
+
+		output_name = f"waterspout_model_run_{model_run.id}_{model_run.name}.csv"
+		response = Response(model_run.results.to_csv(),
+		                    headers={'Content-Disposition': f'attachment; filename="{output_name}"'},
+		                    content_type='text/csv')
+		return response
+
 	def perform_create(self, serializer):
 		serializer.save(user=self.request.user)
 
@@ -89,4 +113,19 @@ def stormchaser(request):
 	token = support.get_or_create_token(user).key  # will be the logged in user's token - send it to the template so the app can use it
 	return render(request, "waterspout_api/stormchaser.django.html", {"USER_API_TOKEN": token})
 
+
+@login_required()
+def stormchaser_variable_only(request):
+	"""
+		Returns Stormchaser JSON values and a token - there's a simpler
+		way to do it, but we already have some of these variables defined in
+		a way that makes them available in a template - this works during
+		development, but we'll want to move to something better in the long
+		run, I think.
+	:param request:
+	:return:
+	"""
+	user = request.user
+	token = support.get_or_create_token(user).key  # will be the logged in user's token - send it to the template so the app can use it
+	return render(request, "waterspout_api/stormchaser_json.django.html", {"USER_API_TOKEN": token}, content_type="application/json")
 

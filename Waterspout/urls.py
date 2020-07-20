@@ -31,6 +31,7 @@ router.register(API_URLS["region_modifications"]["partial"], ws_views.RegionModi
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('stormchaser/', ws_views.stormchaser),
+    path('application-variables/', ws_views.stormchaser_variable_only),
     path('api/', include(router.urls)),
     url(r'^api-token-auth/', ws_views.CustomAuthToken.as_view()),  # POST a username and password here, get a token back
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))

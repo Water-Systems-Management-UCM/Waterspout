@@ -57,15 +57,7 @@
 
 {% block jsvars %}
     <script type="application/javascript">
-        // TEMPORARY VALUES
-        const model_area_id = 1; // we'll have another mechanism to set the model area - for now, it's just 1
-        const organization_id = 1; // we'll have another mechanism to set this - for now, it's just 1
-        const calibration_set_id = 1; // we'll have another mechanism to set this - for now, it's just 1
-
-        // API endpoints - dumped here by back end for use later
-        const user_api_token = "{{ USER_API_TOKEN }}";
-        const api_url_regions = "{{ API_URLS_regions }}";
-        const api_url_model_runs = "{{ API_URLS_model_runs }}";
+        {% include "waterspout_api/stormchaser_js_includes.django.html" %}
     </script>
 {% endblock %}
 {% verbatim %}

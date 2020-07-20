@@ -170,7 +170,8 @@ class RecordSet(models.Model):
 
 	def to_csv(self, *args, **kwargs):
 		"""
-			Saves the set to a CSV file - all args are passed through to Pandas.to_csv
+			Saves the set to a CSV file - all args are passed through to Pandas.to_csv, so it's
+			possible to have it return a CSV as a string by just calling to_csv()
 		:param args:
 		:param kwargs:
 		:return:
