@@ -13,6 +13,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import BasePermission, IsAuthenticated, IsAdminUser, SAFE_METHODS
 
+from Waterspout import local_settings
 from waterspout_api import models
 from waterspout_api import serializers
 from waterspout_api import support
@@ -96,6 +97,22 @@ class ModelRunViewSet(viewsets.ModelViewSet):
 		                    headers={'Content-Disposition': f'attachment; filename="{output_name}"'},
 		                    content_type='text/csv')
 		return response
+
+	@action(detail=True)
+	def status_longpoll(self, request, pk):
+		"""
+			Trying to make something that keeps a longpoll connection
+			open, but it's not complete yet.
+		:param request:
+		:param pk:
+		:return:
+		"""
+
+		model_run = self.get_object()
+
+		total_time = 0
+		while model_run.complete is False or total_time < local_settings.LONG_POLL_DURATION:
+			pass
 
 	def perform_create(self, serializer):
 		serializer.save(user=self.request.user)

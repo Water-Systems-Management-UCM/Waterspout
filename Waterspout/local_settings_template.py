@@ -21,6 +21,9 @@ DATABASES = {
     }
 }
 
+LONG_POLL_DURATION = 30  # when using HTTP long polls, how long should we leave the connection open for before returning?
+POLL_CHECK_INTERVAL = 1  # how often should we poll the actual database for complete results during a long poll?
+
 # EMAIL AND ALERTS
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587  # the port email should be sent through
