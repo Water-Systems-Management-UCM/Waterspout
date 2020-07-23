@@ -32,10 +32,7 @@ class ModelRunSerializer(serializers.ModelSerializer):
 					# this lets us say "I don't want region geometries here" while still getting the modifications in one request
 
 	def create(self, validated_data):
-		if self.fields["region_modifications"].read_only is False:  # we can remove this when we remove the read_only setting, but this should make it not fail at least
-			region_modification_data = validated_data.pop('region_modifications')
-		else:
-			region_modification_data = []
+		region_modification_data = validated_data.pop('region_modifications')
 
 		model_run = models.ModelRun.objects.create(**validated_data)
 		for modification in region_modification_data:
