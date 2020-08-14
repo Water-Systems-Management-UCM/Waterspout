@@ -180,8 +180,20 @@ class RecordSet(models.Model):
 
 		if kwargs.pop("waterspout_sort_columns", True) is True:
 			# match the column output to how Spencer has it so we can compare
-			column_order = ("g","i","year","omegaland","omegasupply","omegalabor","omegaestablish","omegacash","omeganoncash","omegatotal","xwater","p","y","xland","omegawater","sigma","theta","pimarginal","rho","betaland","betawater","betasupply","betalabor","tau","gamma","delta","xlandsc","xwatersc","xdiffland","xdifftotalland","xdiffwater","resource_flag")
+			column_order = ("g","i","year","omegaland","omegasupply","omegalabor",
+			                "omegaestablish","omegacash","omeganoncash","omegatotal",
+			                "xwater","p","y","xland","omegawater","sigma","theta",
+			                "pimarginal","rho","betaland","betawater","betasupply",
+			                "betalabor","tau","gamma","delta","xlandsc","xwatersc",
+			                "xdiffland","xdifftotalland","xdiffwater","resource_flag")
 			df = df.reindex(columns=column_order)
+
+		if kwargs.pop("waterspout_limited", False) is True:
+			columns = ["g", "i", "year", "xlandsc", "xwatersc"]
+			df = df[columns]
+
+		if "index" not in kwargs:  # if the caller doesn't specify an option for pandas' index, set it to False explicitly so it doesn't export the index
+			kwargs["index"] = False
 
 		return df.to_csv(*args, **kwargs)
 

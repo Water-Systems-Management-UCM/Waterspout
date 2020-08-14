@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse, HttpResponse
 
-from rest_framework import viewsets
+from rest_framework import viewsets, renderers
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
@@ -61,6 +61,16 @@ class RegionModificationViewSet(viewsets.ModelViewSet):
 	serializer_class = serializers.RegionModificationSerializer
 
 
+class PassthroughRenderer(renderers.BaseRenderer):  # we need this so it won't mess with our CSV output and make it HTML
+	"""
+		Return data as-is. View should supply a Response.
+	"""
+	media_type = ''
+	format = ''
+	def render(self, data, accepted_media_type=None, renderer_context=None):
+		return data
+
+
 class ModelRunViewSet(viewsets.ModelViewSet):
 	"""
 	Create, List, and Modify Model Runs
@@ -77,7 +87,7 @@ class ModelRunViewSet(viewsets.ModelViewSet):
 		# but permissions should be saying "
 		return models.ModelRun.objects.filter(organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
 
-	@action(detail=True)
+	@action(detail=True, url_name="model_run_csv", renderer_classes=(PassthroughRenderer,))
 	def csv(self, request, pk):
 		"""
 			A temporary proof of concept - allows downloading a csv of model results. Realistically,
@@ -88,12 +98,12 @@ class ModelRunViewSet(viewsets.ModelViewSet):
 		:param pk:
 		:return:
 		"""
-		model_run = self.get_object()  # should check DRF's permissions here
-		if model_run.complete is False:  # if it's not complete, just return the current serialized response - this needs to be moved to the API
+		model_run = self.get_object()  # this checks DRF's permissions here
+		if model_run.complete is False:  # if it's not complete, just return the current serialized response - should use the API view instead!
 			return Response(json.dumps(model_run))
 
 		output_name = f"waterspout_model_run_{model_run.id}_{model_run.name}.csv"
-		response = Response(model_run.results.to_csv(),
+		response = Response(model_run.results.to_csv(waterspout_limited=True),
 		                    headers={'Content-Disposition': f'attachment; filename="{output_name}"'},
 		                    content_type='text/csv')
 		return response
