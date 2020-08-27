@@ -48,17 +48,20 @@ class RegionViewSet(viewsets.ModelViewSet):
 	API endpoint that allows users to be viewed or edited.
 	"""
 	permission_classes = [IsAuthenticated]
-	queryset = models.Region.objects.all().order_by("internal_id")
 	serializer_class = serializers.RegionSerializer
 
+	def get_queryset(self):
+		return models.Region.objects.filter(model_area__organization__in=support.get_organizations_for_user(self.request.user)).order_by("internal_id")
 
 class RegionModificationViewSet(viewsets.ModelViewSet):
 	"""
-	API endpoint that allows users to be viewed or edited.
+	API endpoint that allows modifications to regions to be read and saved
 	"""
 	permission_classes = [IsAuthenticated]
-	queryset = models.RegionModification.objects.all().order_by("internal_id")
 	serializer_class = serializers.RegionModificationSerializer
+
+	def get_queryset(self):
+		return models.RegionModification.objects.filter(model_run__organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
 
 
 class PassthroughRenderer(renderers.BaseRenderer):  # we need this so it won't mess with our CSV output and make it HTML
@@ -132,13 +135,6 @@ class ModelRunViewSet(viewsets.ModelViewSet):
 	#	request.data = self._check_permissions(request)
 
 	#	super().create(request, *args, **kwargs)
-
-
-@login_required
-def stormchaser(request):
-	user = request.user
-	token = support.get_or_create_token(user).key  # will be the logged in user's token - send it to the template so the app can use it
-	return render(request, "waterspout_api/stormchaser.django.html", {"USER_API_TOKEN": token})
 
 
 @login_required()

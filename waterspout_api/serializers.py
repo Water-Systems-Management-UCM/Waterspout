@@ -3,6 +3,7 @@ import logging
 
 from rest_framework import serializers
 
+from Waterspout import settings
 from waterspout_api import models
 
 log = logging.getLogger("waterspout.serializers")
@@ -20,6 +21,30 @@ class RegionModificationSerializer(serializers.ModelSerializer):
 	class Meta:
 		fields = models.RegionModification.serializer_fields
 		model = models.RegionModification
+
+
+class ResultSerializer(serializers.ModelSerializer):
+	"""
+		For a single result - we'll basically never access this endpoint, but we'll use it to define the fields for the
+		full RunResultSerializer
+	"""
+
+	class Meta:
+		fields = settings.LIMITED_RESULTS_FIELDS
+		model = models.Result
+
+
+class ResultSetSerializer(serializers.ModelSerializer):
+	"""
+		For a single result - we'll basically never access this endpoint, but we'll use it to define the fields for the
+		full RunResultSerializer
+	"""
+
+	results = ResultSerializer(allow_null=True, many=True)
+
+	class Meta:
+		fields = ["results"]
+		model = models.ResultSet
 
 
 class ModelRunSerializer(serializers.ModelSerializer):

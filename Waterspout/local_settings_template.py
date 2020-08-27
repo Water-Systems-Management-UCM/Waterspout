@@ -14,6 +14,8 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+LIMITED_RESULTS_FIELDS = ["g", "i", "year", "xlandsc", "xwatersc"]  # which fields should be available to access as results for download and via the API?
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

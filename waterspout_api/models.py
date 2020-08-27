@@ -7,6 +7,8 @@ import django
 from django.db import models  # we're going to geodjango this one - might not need it, but could make some things nicer
 from django.contrib.auth.models import User, Group
 
+from Waterspout import settings
+
 import pandas
 from Dapper import scenarios
 
@@ -189,7 +191,7 @@ class RecordSet(models.Model):
 			df = df.reindex(columns=column_order)
 
 		if kwargs.pop("waterspout_limited", False) is True:
-			columns = ["g", "i", "year", "xlandsc", "xwatersc"]
+			columns = settings.LIMITED_RESULTS_FIELDS
 			df = df[columns]
 
 		if "index" not in kwargs:  # if the caller doesn't specify an option for pandas' index, set it to False explicitly so it doesn't export the index
@@ -305,6 +307,9 @@ class ModelRun(models.Model):
 	serializer_fields = ['id', 'name', 'description', 'ready', 'running', 'complete', 'status_message',
 		          'date_submitted', 'date_completed', "calibration_set",
 		                 "calibrated_parameters_text", "organization"]
+
+	def __str__(self):
+		return self.name
 
 	def as_dict(self):
 		return {field: getattr(self, field) for field in self.serializer_fields}
@@ -433,6 +438,7 @@ class RegionModification(models.Model):
 	model_run = models.ForeignKey(ModelRun, blank=True, on_delete=models.CASCADE, related_name="region_modifications")
 
 	serializer_fields = ["id", "region", "region_group", "water_proportion", "land_proportion"]
+
 
 class CropModification(models.Model):
 	"""
