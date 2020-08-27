@@ -53,6 +53,7 @@ class RegionViewSet(viewsets.ModelViewSet):
 	def get_queryset(self):
 		return models.Region.objects.filter(model_area__organization__in=support.get_organizations_for_user(self.request.user)).order_by("internal_id")
 
+
 class RegionModificationViewSet(viewsets.ModelViewSet):
 	"""
 	API endpoint that allows modifications to regions to be read and saved

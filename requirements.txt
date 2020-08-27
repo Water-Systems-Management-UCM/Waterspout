@@ -6,3 +6,4 @@ Pygments
 djangorestframework
 django-filter
 django-guardian
+drf-action-serializer

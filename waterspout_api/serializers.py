@@ -2,11 +2,13 @@ import json
 import logging
 
 from rest_framework import serializers
+from action_serializer import ModelActionSerializer
 
 from Waterspout import settings
 from waterspout_api import models
 
 log = logging.getLogger("waterspout.serializers")
+
 
 class RegionSerializer(serializers.ModelSerializer):
 	geometry = serializers.JSONField(read_only=True, binary=False)
@@ -40,19 +42,26 @@ class ResultSetSerializer(serializers.ModelSerializer):
 		full RunResultSerializer
 	"""
 
-	results = ResultSerializer(allow_null=True, many=True)
+	result_set = ResultSerializer(allow_null=True, many=True)
 
 	class Meta:
-		fields = ["results"]
+		fields = ["result_set"]
 		model = models.ResultSet
 
 
-class ModelRunSerializer(serializers.ModelSerializer):
+class ModelRunSerializer(ModelActionSerializer):
 	region_modifications = RegionModificationSerializer(allow_null=True, many=True)
+	results = ResultSetSerializer(allow_null=True)
 
 	class Meta:
 		model = models.ModelRun
-		fields = models.ModelRun.serializer_fields + ['region_modifications']
+		_base_fields = models.ModelRun.serializer_fields + ['region_modifications']
+		fields = _base_fields
+		action_fields = {  # only send model results in detail view - that way the listing doesn't send massive amount
+			"retrieve": {     # of data, but we only need to load the specific model run again to get the results
+				"fields": _base_fields + ['results']
+			}
+		}
 		depth = 0  # will still show objects that are explicitly declared as nested objects (like region_modifications)
 					# this lets us say "I don't want region geometries here" while still getting the modifications in one request
 

@@ -305,8 +305,7 @@ class ModelRun(models.Model):
 	# crop_modifications - back-reference from related content
 
 	serializer_fields = ['id', 'name', 'description', 'ready', 'running', 'complete', 'status_message',
-		          'date_submitted', 'date_completed', "calibration_set",
-		                 "calibrated_parameters_text", "organization"]
+		          'date_submitted', 'date_completed', "calibration_set", "organization"]
 
 	def __str__(self):
 		return self.name
