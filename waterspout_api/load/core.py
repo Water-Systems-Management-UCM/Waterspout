@@ -104,9 +104,9 @@ def load_calibration_set(csv_file, model_area, years, organization):
 			for key in row:
 				# need to do lookups for foreign keys
 				if key == "g":
-					param.g = models.Region.objects.get(internal_id=row["g"], model_area__organization=organization)
+					param.region = models.Region.objects.get(internal_id=row["g"], model_area__organization=organization)
 				elif key == "i":
-					param.i = models.Crop.objects.get(crop_code=row["i"], organization=organization)
+					param.crop = models.Crop.objects.get(crop_code=row["i"], organization=organization)
 				else:
 					setattr(param, key, row[key])
 

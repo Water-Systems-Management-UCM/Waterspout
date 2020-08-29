@@ -152,7 +152,7 @@ class RecordSet(models.Model):
 		# dropping any excess fields would be better. Going to leave that for another
 		# day right now.
 
-		foreign_keys = ["g", "i"]
+		foreign_keys = ["region", "crop"]
 		fields = [f.name for f in ModelItem._meta.get_fields()]  # get all the fields for calibrated parameters
 		basic_fields = list(set(fields) - set(foreign_keys))  # remove the foreign keys - we'll process those separately
 
@@ -164,8 +164,8 @@ class RecordSet(models.Model):
 			for field in basic_fields:  # apply the basic fields directly into a dictionary and coerce to floats
 				field_value = getattr(record, field)
 				output_dict[field] = float(field_value) if type(field_value) is decimal.Decimal else field_value
-			output_dict["i"] = record.i.crop_code  # but then grab the specific attributes of the foreign keys we wawnt
-			output_dict["g"] = record.g.internal_id
+			output_dict["i"] = record.crop.crop_code  # but then grab the specific attributes of the foreign keys we wawnt
+			output_dict["g"] = record.region.internal_id
 			output.append(output_dict)  # put the dict into the list so we can make a DF of it
 
 		return pandas.DataFrame(output)  # construct a data frame and send it back
@@ -182,7 +182,7 @@ class RecordSet(models.Model):
 
 		if kwargs.pop("waterspout_sort_columns", True) is True:
 			# match the column output to how Spencer has it so we can compare
-			column_order = ("g","i","year","omegaland","omegasupply","omegalabor",
+			column_order = ("region","crop","year","omegaland","omegasupply","omegalabor",
 			                "omegaestablish","omegacash","omeganoncash","omegatotal",
 			                "xwater","p","y","xland","omegawater","sigma","theta",
 			                "pimarginal","rho","betaland","betawater","betasupply",
@@ -218,8 +218,8 @@ class ModelItem(models.Model):
 	class Meta:
 		abstract = True
 
-	i = models.ForeignKey(Crop, on_delete=models.DO_NOTHING)
-	g = models.ForeignKey(Region, on_delete=models.DO_NOTHING)
+	crop = models.ForeignKey(Crop, on_delete=models.DO_NOTHING)
+	region = models.ForeignKey(Region, on_delete=models.DO_NOTHING)
 	year = models.IntegerField()
 	omegaland = models.DecimalField(max_digits=10, decimal_places=1)
 	omegasupply = models.DecimalField(max_digits=10, decimal_places=1)
@@ -395,8 +395,8 @@ class ModelRun(models.Model):
 
 		for record in results_df.itertuples():  # returns named tuples
 			result = Result(result_set=result_set)
-			result.i = Crop.objects.get(crop_code=record.i, organization=self.organization)
-			result.g = Region.objects.get(internal_id=record.g, model_area__organization=self.organization)
+			result.crop = Crop.objects.get(crop_code=record.i, organization=self.organization)
+			result.region = Region.objects.get(internal_id=record.g, model_area__organization=self.organization)
 			for column in fields:  # _fields isn't private - it's just preventing conflicts - see namedtuple docs
 				setattr(result, column, getattr(record, column))
 			result.save()
