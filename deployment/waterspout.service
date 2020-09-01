@@ -1,0 +1,14 @@
+[Unit]
+Description=
+After=network.target
+StartLimitBurst=100
+StartLimitIntervalSec=3600
+StartLimitAction=reboot
+[Service]
+Type=simple
+Restart=always
+RestartSec=10
+User=
+ExecStart=
+[Install]
+WantedBy=multi-user.target

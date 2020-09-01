@@ -3,21 +3,24 @@ import logging
 
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+from django.http import JsonResponse, HttpResponse
 
-from rest_framework import viewsets
+from rest_framework import viewsets, renderers
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import BasePermission, IsAuthenticated, IsAdminUser, SAFE_METHODS
-from rest_framework.exceptions import ValidationError, PermissionDenied
-from rest_framework import status
 
+from Waterspout import local_settings
 from waterspout_api import models
 from waterspout_api import serializers
 from waterspout_api import support
-from Waterspout import settings
+from waterspout_api import permissions
 
 log = logging.getLogger("waterspout.views")
+
 
 class CustomAuthToken(ObtainAuthToken):
 	"""
@@ -45,8 +48,31 @@ class RegionViewSet(viewsets.ModelViewSet):
 	API endpoint that allows users to be viewed or edited.
 	"""
 	permission_classes = [IsAuthenticated]
-	queryset = models.Region.objects.all().order_by("internal_id")
 	serializer_class = serializers.RegionSerializer
+
+	def get_queryset(self):
+		return models.Region.objects.filter(model_area__organization__in=support.get_organizations_for_user(self.request.user)).order_by("internal_id")
+
+
+class RegionModificationViewSet(viewsets.ModelViewSet):
+	"""
+	API endpoint that allows modifications to regions to be read and saved
+	"""
+	permission_classes = [IsAuthenticated]
+	serializer_class = serializers.RegionModificationSerializer
+
+	def get_queryset(self):
+		return models.RegionModification.objects.filter(model_run__organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
+
+
+class PassthroughRenderer(renderers.BaseRenderer):  # we need this so it won't mess with our CSV output and make it HTML
+	"""
+		Return data as-is. View should supply a Response.
+	"""
+	media_type = ''
+	format = ''
+	def render(self, data, accepted_media_type=None, renderer_context=None):
+		return data
 
 
 class ModelRunViewSet(viewsets.ModelViewSet):
@@ -55,64 +81,75 @@ class ModelRunViewSet(viewsets.ModelViewSet):
 
 	Test
 
-	Permissions: Must be authenticated
+	Permissions: Must be in same organization to specifically request an item
 	"""
-	permission_classes = [IsAuthenticated]
+	permission_classes = [permissions.IsInSameOrganization]
 	serializer_class = serializers.ModelRunSerializer
 
 	def get_queryset(self):
-		return models.ModelRun.objects.filter(user=self.request.user).order_by('id')
+		# right now, this will only show the user's model runs, not the organization's,
+		# but permissions should be saying "
+		return models.ModelRun.objects.filter(organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
 
-	def _check_permissions(self, request):
-		request_data = json.loads(request.data)
+	@action(detail=True, url_name="model_run_csv", renderer_classes=(PassthroughRenderer,))
+	def csv(self, request, pk):
+		"""
+			A temporary proof of concept - allows downloading a csv of model results. Realistically,
+			we may want to save these as static files somewhere, but then we'd still want to read
+			them in through Django on request to manage permissions. Still would be faster and more
+			reliable than making the data frame a CSV on the fly though
+		:param request:
+		:param pk:
+		:return:
+		"""
+		model_run = self.get_object()  # this checks DRF's permissions here
+		if model_run.complete is False:  # if it's not complete, just return the current serialized response - should use the API view instead!
+			return Response(json.dumps(model_run))
 
-		log.debug(f"Make Model Run Request: ${request_data}")
+		output_name = f"waterspout_model_run_{model_run.id}_{model_run.name}.csv"
+		response = Response(model_run.results.to_csv(waterspout_limited=True),
+		                    headers={'Content-Disposition': f'attachment; filename="{output_name}"'},
+		                    content_type='text/csv')
+		return response
 
-		# Check Permissions
-		organization = models.Organization.objects.get(id=int(request_data["organization"]))
-		if not organization.has_member(request.user):
-			raise PermissionDenied("User is not a member of the specified organization and cannot create model runs within it")
-		request_data["organization"] = organization  # replace it with the object so we can assign it later
+	@action(detail=True)
+	def status_longpoll(self, request, pk):
+		"""
+			Trying to make something that keeps a longpoll connection
+			open, but it's not complete yet.
+		:param request:
+		:param pk:
+		:return:
+		"""
 
-		calibration_set = models.CalibrationSet.objects.get(id=int(request_data["calibration_set"]))
-		log.debug(f"Calibration Set: {calibration_set}")
-		if not calibration_set.model_area.organization == organization:
-			raise PermissionDenied(detail="CalibrationSet is not part of this organization. You can only use calibration sets that"
-			                              "are attached to the organization you're working within")
-		request_data["calibration_set"] = calibration_set  # replace it with the object so we can assign it later
+		model_run = self.get_object()
 
-		return request_data
+		total_time = 0
+		while model_run.complete is False or total_time < local_settings.LONG_POLL_DURATION:
+			pass
 
-	def create(self, request, *args, **kwargs):
-		request_data = self._check_permissions(request)
+	def perform_create(self, serializer):
+		serializer.save(user=self.request.user)
 
-		# we could override perform_create instead of create, but we don't get the full
-		# request data in perform_create, so we'd probably need to override create *and*
-		# perform_create, then call the superclass's create when we're done with our
-		# permissions checks.
+	#def create(self, request, *args, **kwargs):
+	#	# check the permissions using the request before sending it off to the serializer
+	#	request.data = self._check_permissions(request)
 
-		try:
-			mr = models.ModelRun(
-				user=request.user,  # user will be authenticated by permission classes,
-				**request_data
-			)
-			mr.full_clean()
-		except:
-			if settings.DEBUG:
-				raise
-			raise ValidationError(detail="Invalid parameters to create model run")
-
-		mr.save()
-
-		# The following code comes from DRF directly and is how it returns the model
-		# after creation
-		return Response(mr.as_json(), status=status.HTTP_201_CREATED)
+	#	super().create(request, *args, **kwargs)
 
 
-@login_required
-def stormchaser(request):
+@login_required()
+def stormchaser_variable_only(request):
+	"""
+		Returns Stormchaser JSON values and a token - there's a simpler
+		way to do it, but we already have some of these variables defined in
+		a way that makes them available in a template - this works during
+		development, but we'll want to move to something better in the long
+		run, I think.
+	:param request:
+	:return:
+	"""
 	user = request.user
 	token = support.get_or_create_token(user).key  # will be the logged in user's token - send it to the template so the app can use it
-	return render(request, "waterspout_api/stormchaser.django.html", {"USER_API_TOKEN": token})
-
+	return render(request, "waterspout_api/stormchaser_json.django.html", {"USER_API_TOKEN": token}, content_type="application/json")
 

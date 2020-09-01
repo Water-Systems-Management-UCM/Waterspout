@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Test Vue frontend for Waterspout</title>
+    <title>Waterspout: Run Model</title>
 
     <!-- begin Vuetify CDN Code -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
@@ -18,7 +18,7 @@
 <div id="stormchaser">
     <v-app>
     <button v-on:click="load">Load</button>
-    <button v-on:click="run">Run</button>
+    <button v-on:click="run_model">Run</button>
     <h2>Active Regions</h2>
     <div>
         <Region
@@ -27,26 +27,37 @@
             v-bind:key="r.id"
             ></Region>
     </div>
-    <h2>Inactive Regions</h2>
-    <div>
-        <Region
-            v-for="r in inactiveRegions"
-            v-bind:region="r"
-            v-bind:key="r.id"
-            ></Region>
-    </div>
+
+        <v-dialog
+          v-model="dialog"
+          width="500"
+        >
+            <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="red lighten-2"
+              dark
+              v-bind="attrs"
+              v-on="on"
+            >
+              Add Region
+            </v-btn>
+          </template>
+
+            <h2>Add Region to Make Changes</h2>
+            <div>
+                <Region
+                    v-for="r in inactiveRegions"
+                    v-bind:region="r"
+                    v-bind:key="r.id"
+                    ></Region>
+            </div>
+        </v-dialog>
     </v-app>
 </div>
 
 {% block jsvars %}
     <script type="application/javascript">
-        // TEMPORARY VALUES
-        const model_area_id = 1; // we'll have another mechanism to set the model area - for now, it's just 1
-
-        // API endpoints - dumped here by back end for use later
-        const user_api_token = "{{ USER_API_TOKEN }}";
-        const api_url_regions = "{{ API_URLS_regions }}";
-        const api_url_model_runs = "{{ API_URLS_model_runs }}";
+        {% include "waterspout_api/stormchaser_js_includes.django.html" %}
     </script>
 {% endblock %}
 {% verbatim %}
@@ -85,9 +96,9 @@
                                 :card_item="region"
                         ><h4>{{ region.internal_id }}: {{ region.name }}</h4>
                         <div class="region_params" v-if="region.active">
-                            <span v-text="region.water_pct"></span>
+                            <span v-text="region.water_proportion"></span>
                             <v-slider
-                                v-model="region.water_pct"
+                                v-model="region.water_proportion"
                                 label="Water"
                                 min=0
                                 max=100
@@ -122,10 +133,10 @@
                 this.region.active = false;
             },
             increment_water: function(){
-                this.region.water_pct++;
+                this.region.water_proportion++;
             },
             decrement_water: function(){
-                this.region.water_pct--;
+                this.region.water_proportion--;
             },
         }
     });
@@ -140,18 +151,41 @@
             load: function(){
                 fetch_regions()
             },
-            run: function(){
+            get_header: function(){
+                let headers = new Headers();
+                headers.append("Authorization", `Token ${user_api_token}`);
+                headers.append('Content-Type', 'application/json');
+                return headers;
+            },
+            run_model: function(){
+                console.log("Creating Model Run");
+                let headers = this.get_header();
+                console.log(headers.values());
+
+                let regions = this.activeRegions;
+                let scaled_down_regions = [];
+                regions.forEach(function(region){
+                    new_region = {
+                        "region": region.id,
+                        "water_proportion": region.water_proportion / 100 // API deals in proportions, not percents
+                    };
+                    scaled_down_regions.push(new_region);
+                });
+
+                let body = `{
+                            "name": "test",
+                            "ready": true,
+                            "organization": ${organization_id},
+                            "calibration_set": ${calibration_set_id},
+                            "region_modifications": ${JSON.stringify(scaled_down_regions)}
+                        }`;
+
+                console.log(body);
                 fetch(api_url_model_runs, {
                     method: 'POST',
-                    headers: {
-                        Authorization: `Token ${user_api_token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: `{
-                            "ready": true,
-                            "calibrated_parameters_text": "NA"
-                        }`
-                })
+                    headers: headers,
+                    body: body
+                }).then((response) => { console.log(response); response.text().then(function(text){console.log(text)}) })
                     //.then(response => response.json())
                     //.then(data => set_regions(data));
             }
@@ -170,11 +204,11 @@
 
     function set_regions(data){
         // sets defaults for the application for each region
-        data.forEach(function(region, index, array){
-            data[index].active = false;
-            data[index].water_pct = 100;
+        data.results.forEach(function(region, index, array){
+            data.results[index].active = false;
+            data.results[index].water_proportion = 100;
         })
-        stormchaser.regions = data;
+        stormchaser.regions = data.results;
     }
 
     function fetch_regions(){

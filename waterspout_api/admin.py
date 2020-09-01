@@ -11,5 +11,16 @@ admin.site.register(models.CropGroup)
 admin.site.register(models.Crop)
 admin.site.register(models.CalibrationSet)
 admin.site.register(models.CalibratedParameter)
-admin.site.register(models.ModelRun)
+
+
+class ModelRunRegionModificationInline(admin.TabularInline):
+    model = models.RegionModification
+
+
+class ModelRunAdmin(admin.ModelAdmin):
+    inlines = [ModelRunRegionModificationInline]
+
+
+admin.site.register(models.ModelRun, ModelRunAdmin)
 admin.site.register(models.RegionModification)
+admin.site.register(models.ResultSet)

@@ -7,7 +7,7 @@ import pandas
 
 # Create your tests here.
 from waterspout_api.load import dap
-from waterspout_api import models
+from waterspout_api import models, support
 from . import TEST_DATA_FOLDER
 
 
@@ -50,21 +50,6 @@ class ModelResultsTest(TransactionTestCase):  # Need to have a TransactionTestCa
 		#os.makedirs(os.path.join(os.path.join(TEST_DATA_FOLDER, "results")))  # make sure the results folder exists
 		#calculated_results.to_csv(os.path.join(TEST_DATA_FOLDER, "results", "calculated_results.csv"))
 
-		# sort them by their effective year/island/crop index so that the rows are in the same order
-		sorted_actual = actual_results.sort_values(axis=0, by=["year", "g", "i"])
-		sorted_calculated = calculated_results.sort_values(axis=0, by=["year", "g", "i"])
-
-		# we'll exclude these fields from comparison - since they're differences between values, ther
-		# errors seem to compound, so we get differences even with less precise checking. I'm satisfied
-		# if the other values come out equivalent.
-		ignore_fields = ("delta", "xlandsc","xwatersc","xdiffland","xdifftotalland","xdiffwater")
-		for field in ignore_fields:
-			del sorted_actual[field]
-			del sorted_calculated[field]
-
 		# assert_frame_equal returns None if two DFs are effectively equal
-		# compare them to 5 decimal places - ignore data type differences since some is inferred from CSV
-		self.assertIsNone(pandas.testing.assert_frame_equal(sorted_actual, sorted_calculated		                                                    ,
-		                                                    check_like=True, check_column_type=False,
-		                                                    check_dtype=False,
-		                                                    check_less_precise=True), None)
+		# compare them to 2 decimal places - ignore data type differences since some is inferred from CSV
+		self.assertIsNone(support.compare_runs(actual_results, calculated_results, compare_digits=2), None)

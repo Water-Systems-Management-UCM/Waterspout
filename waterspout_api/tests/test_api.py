@@ -30,9 +30,10 @@ class APIModelRunTestCase(APITransactionTestCase):
 
 		self.test_request_data = {
 			"ready": False,
-		    "calibrated_parameters_text": "NA",
 			"calibration_set": self.calibration_set.id,
-			"organization": self.organization.id
+			"organization": self.organization.id,
+			"region_modifications": [],
+			"name": "test",
 		}
 
 		log.info(f"Request is {str(self.test_request_data)}")
@@ -41,25 +42,30 @@ class APIModelRunTestCase(APITransactionTestCase):
 		self.url = '/api/model_runs/'
 
 	def test_nonmember_user_fails(self):
+
+		# first, just double check that running it without authentication fails
+		response = self.client.post(self.url, self.test_request_data, format="json")
+		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
 		# new user has no permissions, but is authenticated
 		new_user = User()
 		new_user.save()
 		self.client.force_authenticate(user=new_user)  # set the authentication - no tokens needed
 
-		response = self.client.post(self.url, json.dumps(self.test_request_data), format="json")
+		response = self.client.post(self.url, self.test_request_data, format="json")
 		# should be getting a PermissionError because user isn't in the right group
 		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 	def test_member_calibration_set_fails(self):
 		# new user is now a group member
-		new_user = User()
+		new_user = User(username="test1")
 		new_user.save()
 		new_user.groups.add(self.organization.group)
 		new_user.save()
 
 		self.client.force_authenticate(user=new_user)  # set the authentication - no tokens needed
 
-		response = self.client.post(self.url, json.dumps(self.test_request_data), format="json")
+		response = self.client.post(self.url, self.test_request_data, format="json")
 		# should be getting a PermissionError because calibration set isn't in an organization the user is a part of
 		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -67,8 +73,18 @@ class APIModelRunTestCase(APITransactionTestCase):
 		self.model_area.organization = self.organization
 		self.model_area.save()
 
-		response = self.client.post(self.url, json.dumps(self.test_request_data), format="json")
+		self.client.force_authenticate(user=new_user)  # set the authentication - no tokens needed
+		response = self.client.post(self.url, self.test_request_data, format="json")
 		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+		# now make sure that a new user that's not in the organization can't access the new resource
+		new_user2 = User(username="test2")
+		new_user2.save()
+		self.client.force_authenticate(user=new_user2)  # set the authentication - no tokens needed
+		response = self.client.get(f"{self.url}/{response.data['id']}")
+		# it'll be forbidden if our queryset shows the item at all, but 404 if the queryset
+		# excludes it.
+		self.assertIn(response.status_code, (status.HTTP_403_FORBIDDEN, status.HTTP_404_NOT_FOUND))
 
 	# test that user that's not a member of the group gets PermissionDenied
 	# test that use of calibration set that's not in org gets PermissionDenied

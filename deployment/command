@@ -1,0 +1,1 @@
+ansible-playbook -l webservers -i ansible-server-inventory.ini -u nsantos5 --ask-pass -K ansible-deploy-waterspout.yml

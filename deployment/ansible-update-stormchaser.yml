@@ -1,0 +1,11 @@
+---
+- hosts: webservers
+  tasks:
+    - name: Loading variables
+      include_vars: ansible-waterspout-variables.yml
+
+    - name: Git Pull and Update
+      git:
+        clone: no
+        force: yes
+        repo: "{{ front_end_application_folder }}"

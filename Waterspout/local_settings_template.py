@@ -9,10 +9,13 @@ SECRET_KEY = 'change_me_to_something_real_please'  # this isn't a real key - mak
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+SERVE_ADDRESS = "*:8010"
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
+
+LIMITED_RESULTS_FIELDS = ["g", "i", "year", "xlandsc", "xwatersc"]  # which fields should be available to access as results for download and via the API?
 
 DATABASES = {
     'default': {
@@ -20,6 +23,9 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+LONG_POLL_DURATION = 30  # when using HTTP long polls, how long should we leave the connection open for before returning?
+POLL_CHECK_INTERVAL = 1  # how often should we poll the actual database for complete results during a long poll?
 
 # EMAIL AND ALERTS
 EMAIL_HOST = 'smtp.gmail.com'

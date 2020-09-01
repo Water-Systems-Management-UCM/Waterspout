@@ -7,10 +7,25 @@ import django
 from django.db import models  # we're going to geodjango this one - might not need it, but could make some things nicer
 from django.contrib.auth.models import User, Group
 
+from Waterspout import settings
+
 import pandas
 from Dapper import scenarios
 
 log = logging.getLogger("waterspout.models")
+
+
+class SimpleJSONField(models.TextField):
+	"""
+		converts dicts to JSON strings on save and converts JSON to dicts
+		on load
+	"""
+
+	def get_prep_value(self, value):
+		return json.dumps(value)
+
+	def from_db_value(self, value, expression, connection):
+		return json.loads(value)
 
 
 class Organization(models.Model):
@@ -29,6 +44,10 @@ class Organization(models.Model):
 
 	def has_member(self, user):
 		return self.group in user.groups.all()  # True if this group is in that set, otherwise, False
+
+	def add_member(self, user):
+		self.group.user_set.add(user)
+		self.group.save()
 
 
 class ModelArea(models.Model):
@@ -50,7 +69,7 @@ class RegionGroup(models.Model):
 	internal_id = models.CharField(max_length=100, null=False, blank=False)  # typically we have some kind of known ID to feed to a model that means something to people
 	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE)
 
-	geometry = models.TextField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
+	geometry = SimpleJSONField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
 
 
 class Region(models.Model):
@@ -59,7 +78,7 @@ class Region(models.Model):
 	external_id = models.CharField(max_length=100, null=True, blank=True)  # a common external identifier of some kind
 	# .extra_attributes reverse lookup
 
-	geometry = models.TextField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
+	geometry = SimpleJSONField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
 
 	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE)
 	group = models.ForeignKey(RegionGroup, null=True, blank=True, on_delete=models.CASCADE)  # there could be a reason to make it a many to many instead, but
@@ -133,7 +152,7 @@ class RecordSet(models.Model):
 		# dropping any excess fields would be better. Going to leave that for another
 		# day right now.
 
-		foreign_keys = ["g", "i"]
+		foreign_keys = ["region", "crop"]
 		fields = [f.name for f in ModelItem._meta.get_fields()]  # get all the fields for calibrated parameters
 		basic_fields = list(set(fields) - set(foreign_keys))  # remove the foreign keys - we'll process those separately
 
@@ -145,11 +164,40 @@ class RecordSet(models.Model):
 			for field in basic_fields:  # apply the basic fields directly into a dictionary and coerce to floats
 				field_value = getattr(record, field)
 				output_dict[field] = float(field_value) if type(field_value) is decimal.Decimal else field_value
-			output_dict["i"] = record.i.crop_code  # but then grab the specific attributes of the foreign keys we wawnt
-			output_dict["g"] = record.g.internal_id
+			output_dict["i"] = record.crop.crop_code  # but then grab the specific attributes of the foreign keys we wawnt
+			output_dict["g"] = record.region.internal_id
 			output.append(output_dict)  # put the dict into the list so we can make a DF of it
 
 		return pandas.DataFrame(output)  # construct a data frame and send it back
+
+	def to_csv(self, *args, **kwargs):
+		"""
+			Saves the set to a CSV file - all args are passed through to Pandas.to_csv, so it's
+			possible to have it return a CSV as a string by just calling to_csv()
+		:param args:
+		:param kwargs:
+		:return:
+		"""
+		df = self.as_data_frame().sort_values(axis=0, by=["year", "g", "i"])
+
+		if kwargs.pop("waterspout_sort_columns", True) is True:
+			# match the column output to how Spencer has it so we can compare
+			column_order = ("region","crop","year","omegaland","omegasupply","omegalabor",
+			                "omegaestablish","omegacash","omeganoncash","omegatotal",
+			                "xwater","p","y","xland","omegawater","sigma","theta",
+			                "pimarginal","rho","betaland","betawater","betasupply",
+			                "betalabor","tau","gamma","delta","xlandsc","xwatersc",
+			                "xdiffland","xdifftotalland","xdiffwater","resource_flag")
+			df = df.reindex(columns=column_order)
+
+		if kwargs.pop("waterspout_limited", False) is True:
+			columns = settings.LIMITED_RESULTS_FIELDS
+			df = df[columns]
+
+		if "index" not in kwargs:  # if the caller doesn't specify an option for pandas' index, set it to False explicitly so it doesn't export the index
+			kwargs["index"] = False
+
+		return df.to_csv(*args, **kwargs)
 
 
 class CalibrationSet(RecordSet):
@@ -170,8 +218,8 @@ class ModelItem(models.Model):
 	class Meta:
 		abstract = True
 
-	i = models.ForeignKey(Crop, on_delete=models.DO_NOTHING)
-	g = models.ForeignKey(Region, on_delete=models.DO_NOTHING)
+	crop = models.ForeignKey(Crop, on_delete=models.DO_NOTHING)
+	region = models.ForeignKey(Region, on_delete=models.DO_NOTHING)
 	year = models.IntegerField()
 	omegaland = models.DecimalField(max_digits=10, decimal_places=1)
 	omegasupply = models.DecimalField(max_digits=10, decimal_places=1)
@@ -230,6 +278,9 @@ class ModelRun(models.Model):
 		The central object for configuring an individual run of the model - is related to modification objects from the
 		modification side.
 	"""
+	name = models.CharField(max_length=255)
+	description = models.TextField(null=True, blank=True)
+
 	ready = models.BooleanField(default=False, null=False)  # marked after the web interface adds all modifications
 	running = models.BooleanField(default=False, null=False)  # marked while in processing
 	complete = models.BooleanField(default=False, null=False)  # tracks if the model has actually been run for this result yet
@@ -240,7 +291,7 @@ class ModelRun(models.Model):
 	date_completed = models.DateTimeField(null=True, blank=True)
 
 	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.DO_NOTHING)
-	calibrated_parameters_text = models.TextField()  # we'll put a snapshot of the calibration parameters in here, probably
+	calibrated_parameters_text = models.TextField(null=True, blank=True)  # we'll put a snapshot of the calibration parameters in here, probably
 												# as a CSV. This way, if people eidt the calibration data for future runs,
 												# we still know what inputs ran this version of the model.
 
@@ -253,8 +304,11 @@ class ModelRun(models.Model):
 	# region_modifications - back-reference from related content
 	# crop_modifications - back-reference from related content
 
-	serializer_fields = ['id', 'ready', 'running', 'complete', 'status_message',
-		          'date_submitted', 'date_completed', "calibrated_parameters_text",]
+	serializer_fields = ['id', 'name', 'description', 'ready', 'running', 'complete', 'status_message',
+		          'date_submitted', 'date_completed', "calibration_set", "organization"]
+
+	def __str__(self):
+		return self.name
 
 	def as_dict(self):
 		return {field: getattr(self, field) for field in self.serializer_fields}
@@ -271,13 +325,31 @@ class ModelRun(models.Model):
 		"""
 
 		# pull initial calibration dataset as it is
+		df = self.calibration_set.as_data_frame()
 
 		# do any overrides or changes from the modifications
 
 		# TODO: Need to do much more than this, but for now, just return the existing calib set
-		return self.calibration_set.as_data_frame()
 
-	def run(self):
+		# save the calibration data with any modifications as a text string to the DB - will exclude scenario
+		# level constraints though!
+		self.calibrated_parameters_text = df.to_csv()  # if we don't provide a path to to_csv, it returns a string
+		self.save()
+		return df
+
+	def attach_modifications(self, scenario):
+		land_modifications = {}
+		water_modifications = {}
+		for modification in self.region_modifications.all():
+			land_modifications[modification.region.internal_id] = float(modification.land_proportion)
+			water_modifications[modification.region.internal_id] = float(modification.water_proportion)
+
+		if len(land_modifications.keys()) > 0:
+			scenario.perform_adjustment("land", land_modifications)
+		if len(water_modifications.keys()) > 0:
+			scenario.perform_adjustment("water", water_modifications)
+
+	def run(self, csv_output=None):
 		# initially, we won't support calibrating the data here - we'll
 		# just use an initial calibration set and then make our modifications
 		# before running the scenarios
@@ -289,7 +361,11 @@ class ModelRun(models.Model):
 		self.save()  # mark it as running and save it so the API updates the status
 		try:
 			scenario_runner = scenarios.Scenario(calibration_df=self.scenario_df)
+			self.attach_modifications(scenario=scenario_runner)
 			results = scenario_runner.run()
+
+			if csv_output is not None:
+				results.to_csv(csv_output)
 
 			# now we need to load the resulting df back into the DB
 			self.load_records(results_df=results)
@@ -319,8 +395,8 @@ class ModelRun(models.Model):
 
 		for record in results_df.itertuples():  # returns named tuples
 			result = Result(result_set=result_set)
-			result.i = Crop.objects.get(crop_code=record.i, organization=self.organization)
-			result.g = Region.objects.get(internal_id=record.g, model_area__organization=self.organization)
+			result.crop = Crop.objects.get(crop_code=record.i, organization=self.organization)
+			result.region = Region.objects.get(internal_id=record.g, model_area__organization=self.organization)
 			for column in fields:  # _fields isn't private - it's just preventing conflicts - see namedtuple docs
 				setattr(result, column, getattr(record, column))
 			result.save()
@@ -355,10 +431,12 @@ class RegionModification(models.Model):
 	                                 related_name="modifications",
 	                                 null=True, blank=True)
 
-	water_proportion = models.FloatField()  # the amount, relative to base values, to provide
-	land_proportion = models.FloatField()
+	water_proportion = models.FloatField(default=1.0, blank=True)  # the amount, relative to base values, to provide
+	land_proportion = models.FloatField(default=1.0, blank=True)
 
-	model_run = models.ForeignKey(ModelRun, null=True, blank=True, on_delete=models.CASCADE, related_name="region_modifications")
+	model_run = models.ForeignKey(ModelRun, blank=True, on_delete=models.CASCADE, related_name="region_modifications")
+
+	serializer_fields = ["id", "region", "region_group", "water_proportion", "land_proportion"]
 
 
 class CropModification(models.Model):
