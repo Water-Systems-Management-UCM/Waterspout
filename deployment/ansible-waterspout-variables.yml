@@ -1,0 +1,18 @@
+install_as_user: nsantos5
+region_to_deploy: dap
+
+install_path: "/var/waterspout" # we'll move it to /srv once we set up a new user and group in this script
+account_name: "waterspout"
+group_name: "waterspout_group"
+folder_name: Waterspout
+front_end_folder_name: stormchaser
+virtualenv_folder_name: venv_waterspout
+python_version: 3.8
+python_executable: "python{{ python_version }}"
+pip_executable: "pip{{ python_version }}"
+back_end_application_folder: "{{ install_path }}/{{ folder_name }}"
+front_end_application_folder: "{{ install_path }}/{{ front_end_folder_name }}"
+virtualenv_folder: "{{ install_path }}/{{ virtualenv_folder_name }}/"
+virtualenv_python_executable: "{{ virtualenv_folder }}/bin/python"
+logs_folder: "{{ install_path }}/logs"
+local_settings_file: "{{ back_end_application_folder}}/Waterspout/local_settings.py"

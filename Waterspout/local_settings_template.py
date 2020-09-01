@@ -9,6 +9,7 @@ SECRET_KEY = 'change_me_to_something_real_please'  # this isn't a real key - mak
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+SERVE_ADDRESS = "*:8010"
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 # Database
