@@ -151,9 +151,9 @@
     - name: Clone Stormchaser to machine
       git:
         clone: yes
-        force: yes  # we'll need to discard modified manage.py because we need to modify it to run it here
-        repo: https://github.com/Water-Systems-Management-UCM/Waterspout
-        dest: "{{ back_end_application_folder }}"
+        force: yes
+        repo: https://github.com/Water-Systems-Management-UCM/stormchaser
+        dest: "{{ front_end_application_folder }}"
 
     - name: Make virtualenv and install Python GDAL before rest of requirements (so it's present and matches correct version)
       pip:
@@ -292,21 +292,18 @@
         name: waterspoutmodels
         state: restarted
 
-    - name: Load starting data into application
-      command: "{{ virtualenv_python_executable }} {{ back_end_application_folder }}/manage.py load_data {{ region_to_load }}"
-
-
 # now we're done with the standard setup, run the code that runs both the first time and for every update
 - import_playbook: ansible-install-dapper.yml
 - import_playbook: ansible-update-waterspout.yml
 - import_playbook: ansible-update-stormchaser.yml
+
+- import_playbook: ansible-postdeploy-waterspout.yml
 
     #     Can we generate and configure postgres user accounts and store them in variables
     #     to plug into local settings files? Do I need a separate script that dumps local_settings files?
     #     or can I do a replacement of a template string with ansible?
     # TODO: Create user account for application to run as
     # TODO: Set permissions on application srv directory
-    # TODO: Configure service for application
     # TODO: Process static files
     # TODO: Fail2ban and other services
     # TODO: Move SSH port?

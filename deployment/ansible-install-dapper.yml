@@ -21,10 +21,19 @@
         name: ['glpk-utils','libglpk-dev']
         state: present
 
+    # install ipopt, but don't do it if ipopt_dist already exists
     - name: Compile and set up ipopt
       become: true
       become_method: sudo
-      script: ipopt-build.sh
+      script:
+        cmd: ipopt-build.sh
+        creates: "{{ install_path }}/ipopt_dist"
+
+    - name: Install Requests for when we retrieve Dapper
+      pip:
+        chdir: "{{ install_path }}"
+        virtualenv: "{{ virtualenv_folder }}"
+        name: requests
 
     - name: Get Dapper from S3
       command: "{{ virtualenv_python_executable}} {{ back_end_application_folder }}/utils/get_dapper.py"

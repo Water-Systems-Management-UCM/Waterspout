@@ -7,5 +7,5 @@
     - name: Git Pull and Update
       git:
         clone: no
-        force: yes  # we'll need to discard modified manage.py because we need to modify it to run it here
-        repo: "{{ back_end_application_folder }}"
+        force: yes
+        repo: "{{ front_end_application_folder }}"

@@ -4,6 +4,20 @@
     - name: Loading variables
       include_vars: ansible-waterspout-variables.yml
 
+    - name: Stop service waterspout, in all cases
+      become: true
+      become_method: sudo
+      service:
+        name: waterspout
+        state: stopped
+
+    - name: Stop service waterspout models, in all cases
+      become: true
+      become_method: sudo
+      service:
+        name: waterspoutmodels
+        state: stopped
+
     - name: Git Pull and Update
       git:
         clone: no
@@ -69,7 +83,7 @@
         name: waterspout
         state: restarted
 
-    - name: Restart service waterspout, in all cases
+    - name: Restart service waterspout models, in all cases
       become: true
       become_method: sudo
       service:
