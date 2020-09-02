@@ -303,6 +303,7 @@
 
 # now we're done with the standard setup, run the code that runs both the first time and for every update
 - import_playbook: ansible-install-dapper.yml
+- import_playbook: ansible-configure-postgres.yml
 - import_playbook: ansible-update-waterspout.yml
 - import_playbook: ansible-update-stormchaser.yml
 
