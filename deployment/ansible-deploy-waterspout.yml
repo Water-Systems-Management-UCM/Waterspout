@@ -145,14 +145,14 @@
       git:
         clone: yes
         force: yes  # if we run this after we've run the update script, then we'll have modified manage.py and need to force it to discard changes
-        repo: https://github.com/Water-Systems-Management-UCM/Waterspout
+        repo: "{{ back_end_repo_url }}"
         dest: "{{ back_end_application_folder }}"
 
     - name: Clone Stormchaser to machine
       git:
         clone: yes
         force: yes
-        repo: https://github.com/Water-Systems-Management-UCM/stormchaser
+        repo: "{{ front_end_repo_url }}"
         dest: "{{ front_end_application_folder }}"
 
     - name: Make virtualenv and install Python GDAL before rest of requirements (so it's present and matches correct version)
@@ -187,13 +187,14 @@
         regexp: 'root REPLACE_ROOT_FOLDER;'
         line: "root {{ front_end_application_folder }}/dist;"
 
+    # we only set this to the back end application folder because the Nginx config will end up adding the static folder, etc
     - name: Set Django Static Root in Nginx
       become: true
       become_method: sudo
       lineinfile:
         path: /etc/nginx/sites-available/static_site.cfg
         regexp: 'root DJANGO_STATIC_ROOT_FOLDER;'
-        line: "root {{ back_end_application_folder }}/static;"
+        line: "root {{ back_end_application_folder }}/;"
 
     - name: Set Access Log in Nginx
       become: true

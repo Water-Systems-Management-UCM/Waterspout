@@ -157,7 +157,14 @@ LOGGING = {
         'file_debug': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'debug.log'),
+            'filename': os.path.join(BASE_DIR, 'debug.log') if DEBUG else os.path.join(BASE_DIR, "..", "logs", "waterspout_debug.log"),
+            'formatter': 'verbose'
+        },
+        'file_error': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'warnings.log') if DEBUG else os.path.join(BASE_DIR, "..", "logs",
+                                                                                       "waterspout_error.log"),
             'formatter': 'verbose'
         },
         'email_warn': {

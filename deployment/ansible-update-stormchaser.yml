@@ -8,4 +8,6 @@
       git:
         clone: no
         force: yes
-        repo: "{{ front_end_application_folder }}"
+        update: yes
+        repo: "{{ front_end_repo_url }}"
+        dest: "{{ front_end_application_folder }}"

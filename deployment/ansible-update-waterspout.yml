@@ -21,8 +21,11 @@
     - name: Git Pull and Update
       git:
         clone: no
+        update: yes
+        version: release
         force: yes  # we'll need to discard modified manage.py because we need to modify it to run it here
-        repo: "{{ back_end_application_folder }}"
+        dest: "{{ back_end_application_folder }}"
+        repo: "{{ back_end_repo_url }}"
 
     - name: Install Python requirements
       pip:
