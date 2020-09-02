@@ -130,6 +130,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 if DEBUG:  # if DEBUG is on, don't email admins when problems happen
     log_handlers = ['console', 'file_debug']

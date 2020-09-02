@@ -187,6 +187,14 @@
         regexp: 'root REPLACE_ROOT_FOLDER;'
         line: "root {{ front_end_application_folder }}/dist;"
 
+    - name: Set Django Static Root in Nginx
+      become: true
+      become_method: sudo
+      lineinfile:
+        path: /etc/nginx/sites-available/static_site.cfg
+        regexp: 'root DJANGO_STATIC_ROOT_FOLDER;'
+        line: "root {{ back_end_application_folder }}/static;"
+
     - name: Set Access Log in Nginx
       become: true
       become_method: sudo

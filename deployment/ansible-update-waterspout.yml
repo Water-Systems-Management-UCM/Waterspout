@@ -76,6 +76,12 @@
         app_path: "{{ back_end_application_folder }}"
         virtualenv: "{{ virtualenv_folder }}"
 
+    - name: Collecting Static Files
+      django_manage:
+        command: collectstatic
+        app_path: "{{ back_end_application_folder }}"
+        virtualenv: "{{ virtualenv_folder }}"
+
     - name: Restart service waterspout, in all cases
       become: true
       become_method: sudo
