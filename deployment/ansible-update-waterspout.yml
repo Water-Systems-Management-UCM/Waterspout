@@ -50,7 +50,7 @@
       lineinfile:
         path: "{{ local_settings_file }}"
         regexp: '^SECRET_KEY\s*='
-        line: SECRET_KEY = "{{ lookup('password', '/tmp/passwordfile chars=ascii_letters,digits,punctuation length=50') }}"
+        line: SECRET_KEY = "{{ lookup('password', '/dev/null chars=ascii_letters,digits,punctuation length=50') }}"
 
     - name: Allowing all hosts to connect to Django
       lineinfile:

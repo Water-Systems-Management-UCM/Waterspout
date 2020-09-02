@@ -1,0 +1,91 @@
+---
+- hosts: webservers
+  vars:
+    waterspout_db_password: "{{ lookup('password', '/tmp/passwordfile chars=ascii_letters,digits,punctuation length=24') }}"
+  remote_user: nsantos5
+  tasks:
+    - name: Loading variables
+      include_vars: ansible-waterspout-variables.yml
+
+    - name: Install PostgreSQL
+      become: true
+      become_method: sudo
+      apt:
+        update_cache: yes
+        state: present
+        name: ["postgresql","postgresql-contrib","libpq-dev", "python3-psycopg2"]
+
+    - name: Ensure the PostgreSQL service is running
+      service:
+        name: postgresql
+        state: started
+        enabled: yes
+
+    - name: Ensure database is created
+      sudo_user: postgres
+      postgresql_db:
+        name: "{{ waterspout_db_name }}"
+        encoding: 'UTF-8'
+        lc_collate: 'en_US.UTF-8'
+        lc_ctype: 'en_US.UTF-8'
+        state: present
+
+    - name: Ensure user has access to the database
+      sudo_user: postgres
+      postgresql_user:
+        db: "{{ waterspout_ db_name }}"
+        name: "{{ waterspout_db_user }}"
+        password: "{{ waterspout_db_password }}"
+        priv: ALL
+        state: present
+
+    - name: Ensure user does not have unnecessary privileges
+      sudo_user: postgres
+      postgresql_user:
+        name: "{{ waterspout_db_user }}"
+        role_attr_flags: NOSUPERUSER,NOCREATEDB
+        state: pr
+
+    - name: Create DB Schema and assign to db user
+      sudo_user: postgres
+      postgresql_schema:
+        name: "{{ waterspout_db_schema }}"
+        owner: "{{ waterspout_db_user }}"
+        database: "{{ waterspout_db_name }}"
+
+    - name: Create/Update databases.py from template (so we don't overwrite when updating Waterspout)
+      copy:
+        remote_src: yes
+        force: yes
+        src: "{{ back_end_application_folder}}/Waterspout/databases_template.py"
+        dest: "{{ databases_settings_file }}"
+
+    - name: Configure Django with DB Username
+      lineinfile:
+        path: "{{ databases_settings_file }}"
+        regexp: '^DB_USER\s*='
+        line: "DB_USER  = {{ waterspout_db_username }}"
+
+    - name: Configure Django with DB Password
+      lineinfile:
+        path: "{{ databases_settings_file }}"
+        regexp: '^DB_PASSWORD\s*='
+        line: "DB_PASSWORD = {{ waterspout_db_password }}"
+
+    - name: Configure Django with DB Name
+      lineinfile:
+        path: "{{ databases_settings_file }}"
+        regexp: '^DB_NAME\s*='
+        line: "DB_NAME = {{ waterspout_db_name }}"
+
+    - name: Configure Django with DB Schema
+      lineinfile:
+        path: "{{ databases_settings_file }}"
+        regexp: '^DB_SCHEMA\s*='
+        line: "DB_SCHEMA  = {{ waterspout_db_schema }}"
+
+    - name: Set Postgres as the main DB
+      lineinfile:
+        path: "{{ databases_settings_file }}"
+        regexp: '^DATABASES\s*='
+        line: "DATABASES = PG_DATABASES"
