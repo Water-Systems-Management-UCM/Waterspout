@@ -20,6 +20,8 @@ logs_folder: "{{ install_path }}/logs"
 local_settings_file: "{{ back_end_application_folder}}/Waterspout/local_settings.py"
 databases_settings_file: "{{ back_end_application_folder}}/Waterspout/databases.py"
 
+ipopt_install_folder: "{{ install_path }}/coinbrew/ipopt"
+
 waterspout_db_name: "waterspout"
 waterspout_db_schema: "waterspout_backend"
 waterspout_db_username: "waterspout_app"

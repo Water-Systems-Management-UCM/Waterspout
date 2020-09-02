@@ -140,6 +140,11 @@
         permissions: rwx
         state: present
 
+    - name: Reboot to get new group membership
+      become: true
+      become_method: sudo
+      reboot:
+
     # need to verify that it's not going to make a folder /srv/Waterspout/Waterspout with this
     - name: Clone Waterspout to machine
       git:

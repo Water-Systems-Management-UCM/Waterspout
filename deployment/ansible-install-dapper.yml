@@ -27,7 +27,30 @@
       become_method: sudo
       script:
         cmd: ipopt-build.sh
-        creates: "{{ install_path }}/ipopt_dist"
+        creates: "{{ ipopt_install_folder }}"
+
+    - name: Set up ipopt environment variables
+      become: true
+      become_method: sudo
+      vars:
+        environment_vars:
+          - key: PATH
+            value: "{{ ipopt_install_folder }}:{{ ipopt_install_folder }}/bin:{{ ipopt_install_folder }}/lib"
+          - key: LD_LIBRARY_PATH
+            value: "{{ ipopt_install_folder }}:{{ ipopt_install_folder }}/bin:{{ ipopt_install_folder }}/lib"
+      lineinfile:
+        dest: "/etc/environment"
+        state: present
+        backrefs: yes
+        regexp: "^{{ item.key }}=(.*)$"
+        line: "{{ item.key }}=\\1:{{ item.value}}"
+        backup: yes
+      with_items: "{{ environment_vars }}"
+
+    - name: Reboot to apply new environment variables
+      become: true
+      become_method: sudo
+      reboot:
 
     - name: Install Requests for when we retrieve Dapper
       pip:

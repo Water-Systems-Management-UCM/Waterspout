@@ -17,7 +17,7 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost", "192.168.1.21"]
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-LIMITED_RESULTS_FIELDS = ["g", "i", "year", "xlandsc", "xwatersc"]  # which fields should be available to access as results for download and via the API?
+LIMITED_RESULTS_FIELDS = ["region", "crop", "year", "xlandsc", "xwatersc"]  # which fields should be available to access as results for download and via the API?
 
 LONG_POLL_DURATION = 30  # when using HTTP long polls, how long should we leave the connection open for before returning?
 POLL_CHECK_INTERVAL = 1  # how often should we poll the actual database for complete results during a long poll?

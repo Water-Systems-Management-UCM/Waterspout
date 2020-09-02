@@ -1,11 +1,13 @@
 ---
 - hosts: webservers
-  vars:
-    waterspout_db_password: "{{ lookup('password', '/tmp/passwordfile chars=ascii_letters,digits,punctuation length=24') }}"
   remote_user: nsantos5
   tasks:
     - name: Loading variables
       include_vars: ansible-waterspout-variables.yml
+
+    - name: Setting PW
+      set_fact:
+        waterspout_db_password: "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=32') }}"
 
     - name: Install PostgreSQL
       become: true
@@ -62,6 +64,14 @@
         name: "{{ waterspout_db_schema }}"
         owner: "{{ waterspout_db_username }}"
         database: "{{ waterspout_db_name }}"
+
+    - name: Restart Postgres
+      become: true
+      become_method: sudo
+      service:
+        name: postgresql
+        state: restarted
+        enabled: yes
 
     - name: Create/Update databases.py from template (so we don't overwrite when updating Waterspout)
       copy:
