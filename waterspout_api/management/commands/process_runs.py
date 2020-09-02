@@ -7,7 +7,7 @@ from waterspout_api import models
 from Waterspout import settings
 
 
-log = logging.getLogger("waterspout.commands.process_runs")
+log = logging.getLogger("waterspout_service_run_processor")
 
 
 class Command(BaseCommand):

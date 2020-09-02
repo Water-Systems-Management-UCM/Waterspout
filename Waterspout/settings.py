@@ -135,7 +135,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 if DEBUG:  # if DEBUG is on, don't email admins when problems happen
     log_handlers = ['console', 'file_debug']
 else:
-    log_handlers = ['console', 'file_debug', 'email_error', 'email_warn']
+    log_handlers = ['console', 'file_debug', 'file_error', 'email_error', 'email_warn']
 
 LOGGING = {
     'version': 1,
@@ -167,6 +167,13 @@ LOGGING = {
                                                                                        "waterspout_error.log"),
             'formatter': 'verbose'
         },
+        'file_model_run_processor': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'waterspout_process_runs.log') if DEBUG else os.path.join(BASE_DIR, "..", "logs",
+                                                                                          "waterspout_process_runs.log"),
+            'formatter': 'verbose'
+        },
         'email_warn': {
             'level': "WARNING",
             'class': "django.utils.log.AdminEmailHandler",
@@ -183,6 +190,10 @@ LOGGING = {
         },
         'Dapper': {
             'handlers': log_handlers,
+            'level': 'DEBUG'
+        },
+        'waterspout_service_run_processor': {
+            'handlers': ['file_model_run_processor', 'email_warn', 'email_error'],
             'level': 'DEBUG'
         },
 
