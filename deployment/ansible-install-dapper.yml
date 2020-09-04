@@ -47,6 +47,14 @@
         backup: yes
       with_items: "{{ environment_vars }}"
 
+    - name: Set ipopt environment variable for service
+      become: true
+      become_method: sudo
+      lineinfile:
+        dest: /etc/systemd/system/waterspoutmodels.service
+        regexp: "^Environment\s*="
+        line: "Environment=\"{{ ipopt_install_folder }}:{{ ipopt_install_folder }}/bin:{{ ipopt_install_folder }}/lib\""
+
     - name: Reboot to apply new environment variables
       become: true
       become_method: sudo
