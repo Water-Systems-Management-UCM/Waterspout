@@ -2,7 +2,7 @@
 
 ### Specific Items
 waterspout_api/data/dap/DLISRegions.*
-
+utils/dump_crop_coefficients/raw_results/*
 
 ### Vagrant
 .vagrant*

@@ -6,14 +6,15 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse, HttpResponse
 
-from rest_framework import viewsets, renderers
+from rest_framework import viewsets, renderers, authentication
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import BasePermission, IsAuthenticated, IsAdminUser, SAFE_METHODS
+from rest_framework.views import APIView
 
-from Waterspout import local_settings
+from Waterspout import settings
 from waterspout_api import models
 from waterspout_api import serializers
 from waterspout_api import support
@@ -41,6 +42,32 @@ class CustomAuthToken(ObtainAuthToken):
 			'is_superuser': user.is_superuser,
 			'email': user.email,
 		})
+
+
+class GetApplicationVariables(APIView):
+	"""
+	View to list all users in the system.
+
+	* Requires token authentication.
+	* Only admin users are able to access this view.
+	"""
+	authentication_classes = [authentication.TokenAuthentication]
+	permission_classes = [IsAuthenticated]
+
+	def get(self, request, format=None):
+		"""
+		Return a list of all users.
+		"""
+
+		application_variables = {
+		    "model_area_id": 1,
+		    "organization_id": 1,
+		    "calibration_set_id": 1,
+		    "user_api_token": f"{support.get_or_create_token(request.user)}",
+		    "api_url_regions": f"{settings.API_URLS['regions']['full']}",
+		    "api_url_model_runs": f"{settings.API_URLS['model_runs']['full']}"
+		}
+		return Response(application_variables)
 
 
 class RegionViewSet(viewsets.ModelViewSet):
@@ -125,7 +152,7 @@ class ModelRunViewSet(viewsets.ModelViewSet):
 		model_run = self.get_object()
 
 		total_time = 0
-		while model_run.complete is False or total_time < local_settings.LONG_POLL_DURATION:
+		while model_run.complete is False or total_time < settings.LONG_POLL_DURATION:
 			pass
 
 	def perform_create(self, serializer):
