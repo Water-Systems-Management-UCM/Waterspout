@@ -458,3 +458,22 @@ class CropModification(models.Model):
 	model_run = models.ForeignKey(ModelRun, null=True, blank=True, on_delete=models.CASCADE, related_name="crop_modifications")
 
 
+class HelpDocument(models.Model):
+	"""
+		We'll store help documents in the DB as well so that they can
+		be pulled into the app via the API - we can also publish them
+		elswhere if we'd like - this is ultimately just a simple article
+		system.
+
+		We'll plan to load these from specific articles in the Sphinx
+		documentation
+	"""
+	title = models.CharField(max_length=2048)
+	author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+	slug = models.CharField(max_length=64)
+
+	summary = models.TextField()
+	body = models.TextField()
+
+
+
