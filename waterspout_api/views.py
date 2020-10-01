@@ -65,9 +65,24 @@ class GetApplicationVariables(APIView):
 		    "calibration_set_id": 1,
 		    "user_api_token": f"{support.get_or_create_token(request.user)}",
 		    "api_url_regions": f"{settings.API_URLS['regions']['full']}",
+		    "api_url_crops": f"{settings.API_URLS['crops']['full']}",
 		    "api_url_model_runs": f"{settings.API_URLS['model_runs']['full']}"
 		}
 		return Response(application_variables)
+
+
+class CropViewSet(viewsets.ModelViewSet):
+	"""
+	API endpoint that allows users to be viewed or edited.
+	"""
+	permission_classes = [IsAuthenticated]
+	serializer_class = serializers.CropSerializer
+
+	def get_queryset(self):
+		# this could lead to people getting crops for multiple organizations at the same time. Going to leave it as is for now
+		# until we actually have something that sets the currently active organization. Should add that soon
+		# should crops also be associated with model areas rather than orgs?? Probably
+		return models.Crop.objects.filter(organization__in=support.get_organizations_for_user(self.request.user)).order_by("name")
 
 
 class RegionViewSet(viewsets.ModelViewSet):

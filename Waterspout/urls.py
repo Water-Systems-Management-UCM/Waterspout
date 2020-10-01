@@ -26,6 +26,7 @@ router = routers.DefaultRouter()
 router.register(API_URLS["regions"]["partial"], ws_views.RegionViewSet, basename="regions")
 router.register(API_URLS["model_runs"]["partial"], ws_views.ModelRunViewSet, basename="model_runs")
 router.register(API_URLS["region_modifications"]["partial"], ws_views.RegionModificationViewSet, basename="region_modifications")
+router.register(API_URLS["crops"]["partial"], ws_views.CropViewSet, basename="crops")
 
 
 urlpatterns = [

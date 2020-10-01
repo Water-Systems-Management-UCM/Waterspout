@@ -10,6 +10,12 @@ from waterspout_api import models
 log = logging.getLogger("waterspout.serializers")
 
 
+class CropSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = models.Crop
+		fields = '__all__'
+
+
 class RegionSerializer(serializers.ModelSerializer):
 	geometry = serializers.JSONField(read_only=True, binary=False)
 
