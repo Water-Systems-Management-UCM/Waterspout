@@ -33,6 +33,7 @@ class APIModelRunTestCase(APITransactionTestCase):
 			"calibration_set": self.calibration_set.id,
 			"organization": self.organization.id,
 			"region_modifications": [],
+			"crop_modifications": [],
 			"name": "test",
 		}
 
