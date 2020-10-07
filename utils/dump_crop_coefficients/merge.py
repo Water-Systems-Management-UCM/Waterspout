@@ -21,7 +21,7 @@ def merge_csvs(crops=CROPS, stations=stations, efficiencies=(100,), folder=os.pa
 		for station in stations:
 			for efficiency in efficiencies:
 				file_path = os.path.join(crop_folder, f"{crop}_{station}_{efficiency}.csv")
-				if not os.path.exists(file_path): # they might not exist because we've duplicated stations with hyphens in the ID
+				if not os.path.exists(file_path):  # they might not exist because we've duplicated stations with hyphens in the ID
 					continue
 
 				df = pandas.read_csv(file_path)
@@ -30,7 +30,7 @@ def merge_csvs(crops=CROPS, stations=stations, efficiencies=(100,), folder=os.pa
 				df["efficiency"] = efficiency
 				df["crop_id"] = crop
 				df["crop_name"] = crops[crop]
-				data_frames.append(df)
+				data_frames.append(df)  # just add it to the list right now - we'll actually merge them in one go later
 
 	final_df = pandas.concat(data_frames, ignore_index=True)
 	final_df.to_csv(os.path.join(folder, "merged_results.csv"))

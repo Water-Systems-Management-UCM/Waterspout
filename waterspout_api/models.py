@@ -349,6 +349,19 @@ class ModelRun(models.Model):
 		if len(water_modifications.keys()) > 0:
 			scenario.perform_adjustment("water", water_modifications)
 
+		# now attach the crop modifications - start by loading the data into a dict
+		price_modifications = {}
+		yield_modifications = {}
+		for modification in self.crop_modifications.all():
+			price_modifications[modification.crop.crop_code] = float(modification.price_proportion)
+			yield_modifications[modification.crop.crop_code] = float(modification.yield_proportion)
+
+		# then pass those dicts to the scenario code if we have items in the dicts
+		if len(price_modifications.keys()) > 0:
+			scenario.perform_adjustment("price", price_modifications)
+		if len(yield_modifications.keys()) > 0:
+			scenario.perform_adjustment("yield", yield_modifications)
+
 	def run(self, csv_output=None):
 		# initially, we won't support calibrating the data here - we'll
 		# just use an initial calibration set and then make our modifications
@@ -447,13 +460,16 @@ class CropModification(models.Model):
 	class Meta:
 		unique_together = ['model_run', 'crop']
 
+	serializer_fields = ["id", "crop", "crop_group", "price_proportion", "yield_proportion", "min_land_area_proportion", "max_land_area_proportion"]
+
 	crop = models.ForeignKey(Crop, on_delete=models.DO_NOTHING, related_name="modifications")
-	crop_group = models.ForeignKey(CropGroup, on_delete=models.DO_NOTHING, related_name="modifications")
+	crop_group = models.ForeignKey(CropGroup, on_delete=models.DO_NOTHING, related_name="modifications",
+	                               null=True, blank=True)
 
 	price_proportion = models.FloatField()  # the amount, relative to base values, to provide
 	yield_proportion = models.FloatField()  # the amount, relative to base values, to provide
-	min_land_area_proportion = models.FloatField()  # the amount, relative to base values, to provide
-	max_land_area_proportion = models.FloatField()  # the amount, relative to base values, to provide
+	min_land_area_proportion = models.FloatField(null=True, blank=True)  # the amount, relative to base values, to provide
+	max_land_area_proportion = models.FloatField(null=True, blank=True)  # the amount, relative to base values, to provide
 
 	model_run = models.ForeignKey(ModelRun, null=True, blank=True, on_delete=models.CASCADE, related_name="crop_modifications")
 

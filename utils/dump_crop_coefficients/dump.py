@@ -82,4 +82,4 @@ def dump_data(stations=STATIONS,
 					lines = b"\n".join(csv_data.split(b"\n")[9:])  # split by newline, remove the first 9 (header info), then rejoin them with a newline
 					output_fh.write(lines)
 
-				time.sleep(5)  # be courteous to their server - this is still somewhat aggressive, but we have 17,000 combinations
+				time.sleep(2)  # be courteous to their server - this is still somewhat aggressive, but we have 17,000 combinations

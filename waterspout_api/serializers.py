@@ -31,6 +31,13 @@ class RegionModificationSerializer(serializers.ModelSerializer):
 		model = models.RegionModification
 
 
+class CropModificationSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		fields = models.CropModification.serializer_fields
+		model = models.CropModification
+
+
 class ResultSerializer(serializers.ModelSerializer):
 	"""
 		For a single result - we'll basically never access this endpoint, but we'll use it to define the fields for the
@@ -57,11 +64,12 @@ class ResultSetSerializer(serializers.ModelSerializer):
 
 class ModelRunSerializer(ModelActionSerializer):
 	region_modifications = RegionModificationSerializer(allow_null=True, many=True)
+	crop_modifications = CropModificationSerializer(allow_null=True, many=True)
 	results = ResultSetSerializer(allow_null=True)
 
 	class Meta:
 		model = models.ModelRun
-		_base_fields = models.ModelRun.serializer_fields + ['region_modifications']
+		_base_fields = models.ModelRun.serializer_fields + ['region_modifications', 'crop_modifications']
 		fields = _base_fields
 		action_fields = {  # only send model results in detail view - that way the listing doesn't send massive amount
 			"retrieve": {     # of data, but we only need to load the specific model run again to get the results
@@ -73,8 +81,11 @@ class ModelRunSerializer(ModelActionSerializer):
 
 	def create(self, validated_data):
 		region_modification_data = validated_data.pop('region_modifications')
+		crop_modification_data = validated_data.pop('crop_modifications')
 
 		model_run = models.ModelRun.objects.create(**validated_data)
 		for modification in region_modification_data:
 			models.RegionModification.objects.create(model_run=model_run, **modification)
+		for modification in crop_modification_data:
+			models.CropModification.objects.create(model_run=model_run, **modification)
 		return model_run

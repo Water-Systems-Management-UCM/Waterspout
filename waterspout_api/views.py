@@ -107,6 +107,17 @@ class RegionModificationViewSet(viewsets.ModelViewSet):
 		return models.RegionModification.objects.filter(model_run__organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
 
 
+class CropModificationViewSet(viewsets.ModelViewSet):
+	"""
+	API endpoint that allows modifications to regions to be read and saved
+	"""
+	permission_classes = [IsAuthenticated]
+	serializer_class = serializers.CropModificationSerializer
+
+	def get_queryset(self):
+		return models.CropModification.objects.filter(model_run__organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
+
+
 class PassthroughRenderer(renderers.BaseRenderer):  # we need this so it won't mess with our CSV output and make it HTML
 	"""
 		Return data as-is. View should supply a Response.
