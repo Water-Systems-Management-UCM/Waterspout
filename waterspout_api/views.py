@@ -63,11 +63,11 @@ class GetApplicationVariables(APIView):
 		    "model_area_id": 1,
 		    "organization_id": 1,
 		    "calibration_set_id": 1,
-		    "user_api_token": f"{support.get_or_create_token(request.user)}",
-		    "api_url_regions": f"{settings.API_URLS['regions']['full']}",
-		    "api_url_crops": f"{settings.API_URLS['crops']['full']}",
-		    "api_url_model_runs": f"{settings.API_URLS['model_runs']['full']}"
+			"user_api_token": f"{support.get_or_create_token(request.user)}",
 		}
+		for url in settings.API_URLS:
+			application_variables[f"api_url_{url}"] = settings.API_URLS[url]['full']
+
 		return Response(application_variables)
 
 
@@ -105,6 +105,28 @@ class RegionModificationViewSet(viewsets.ModelViewSet):
 
 	def get_queryset(self):
 		return models.RegionModification.objects.filter(model_run__organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
+
+
+class UsersViewSet(viewsets.ModelViewSet):
+	"""
+	Returns Users in the same organizations as the current user
+	"""
+	permission_classes = [IsAuthenticated]
+	serializer_class = serializers.UsersSerializer
+
+	# this needs a TEST
+	def get_queryset(self):
+		# get the groups the user is in
+		groups = list(self.request.user.groups.all())
+		# get the queryset for the first user group
+		users = groups[0].user_set.all()  # get the first item to start any potential iteration
+		if len(groups) == 1:
+			return users  # if we only have that group, return it
+		else:
+			for group in groups[1:]:  # otherwise, iterate through the remaining groups and modify the queryset to include their users
+				users = users | group.user_set.all()  # trying to make Django do the work so we don't eval the queryset until we're done getting all of them
+
+		return users.distinct()  # now that we've joined the querysets, as for only the distinct users
 
 
 class CropModificationViewSet(viewsets.ModelViewSet):

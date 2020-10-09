@@ -31,6 +31,13 @@ class RegionModificationSerializer(serializers.ModelSerializer):
 		model = models.RegionModification
 
 
+class UsersSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		fields = ["username", "id"]
+		model = models.User
+
+
 class CropModificationSerializer(serializers.ModelSerializer):
 
 	class Meta:

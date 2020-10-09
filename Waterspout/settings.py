@@ -22,6 +22,7 @@ API_URLS = {  # partial is used in URLconf, full is used in templates
     "crops": {"partial": "crops", "full": f"{API_BASE_URL}crops/"},
     "model_runs": {"partial": "model_runs", "full": f"{API_BASE_URL}model_runs/"},
     "region_modifications": {"partial": "region_modifications", "full": f"{API_BASE_URL}region_modifications/"},
+    "users": {"partial": "users", "full": f"{API_BASE_URL}users/"},
 }
 
 

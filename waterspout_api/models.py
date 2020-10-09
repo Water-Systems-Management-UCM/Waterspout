@@ -49,6 +49,8 @@ class Organization(models.Model):
 		self.group.user_set.add(user)
 		self.group.save()
 
+	def __str__(self):
+		return f"Organization: {self.name}"
 
 class ModelArea(models.Model):
 	"""
@@ -309,11 +311,11 @@ class ModelRun(models.Model):
 	# crop_modifications - back-reference from related content
 
 	serializer_fields = ['id', 'name', 'description', 'ready', 'running', 'complete', 'status_message',
-		                'date_submitted', 'date_completed', "calibration_set", "organization",
+		                'date_submitted', 'date_completed', "calibration_set", "user_id", "organization",
 	                     "base_model_run_id", "is_base"]
 
 	def __str__(self):
-		return self.name
+		return f"Model Run: {self.name}"
 
 	def as_dict(self):
 		return {field: getattr(self, field) for field in self.serializer_fields}
