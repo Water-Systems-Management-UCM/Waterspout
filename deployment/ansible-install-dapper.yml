@@ -52,7 +52,7 @@
       become_method: sudo
       lineinfile:
         dest: /etc/systemd/system/waterspoutmodels.service
-        regexp: "^Environment\s*="
+        regexp: "^Environment\\s*="
         line: "Environment=\"{{ ipopt_install_folder }}:{{ ipopt_install_folder }}/bin:{{ ipopt_install_folder }}/lib\""
 
     - name: Reboot to apply new environment variables

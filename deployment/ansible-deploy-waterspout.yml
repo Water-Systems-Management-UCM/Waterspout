@@ -92,13 +92,29 @@
 #      apt_key:
 #        id: 314DF160
 
+    # really not sure why this is failing, but it is
+    #- name: Add the NodeJS PPA
+    #  become: true
+    #  become_method: sudo
+    #  script:
+    #    cmd: "node_ppa_add.sh"
+    #    executable: bash
+
+    # I really don't like doing this (the above commented out code was an attempt to avoid the download and execute
+    # but I don't know why it's not working - we should refactor this out at some point
+    - name: Add the NodeJS PPA
+      become: yes
+      shell: curl -sL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+      args:
+        warn: no
+
       # install some basic packages we'll want for this project
     - name: Install system apt packages
       become: true
       become_method: sudo
       apt:
         update_cache: yes
-        name: ['acl', 'git','nginx-full','{{ python_executable }}','{{ python_executable }}-dev','python3-pip','virtualenv','postgresql' ,'gdal-bin','libgdal-dev']
+        name: ['acl', 'git', 'nodejs', 'nginx-full', '{{ python_executable }}','{{ python_executable }}-dev','python3-pip','virtualenv','postgresql' ,'gdal-bin','libgdal-dev']
         state: present
       # not sure if the python-pip here will install it for python 3.8 - I'm not sure it will based on experience
       # we may need to adjust how we get pip

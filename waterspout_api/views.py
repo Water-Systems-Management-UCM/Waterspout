@@ -118,6 +118,10 @@ class UsersViewSet(viewsets.ModelViewSet):
 	def get_queryset(self):
 		# get the groups the user is in
 		groups = list(self.request.user.groups.all())
+
+		if len(groups) == 0:
+			return None
+
 		# get the queryset for the first user group
 		users = groups[0].user_set.all()  # get the first item to start any potential iteration
 		if len(groups) == 1:

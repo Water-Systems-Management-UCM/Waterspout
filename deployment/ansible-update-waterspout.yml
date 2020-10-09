@@ -62,7 +62,7 @@
       lineinfile:
         path: "{{ back_end_application_folder }}/manage.py"
         regexp: '#!/usr/bin/env python'
-        line: "#!{{ virtualenv_folder }}bin/python"
+        line: "#!{{ virtualenv_folder }}/bin/python"
 
     - name: Make manage.py executable to all (required according to docs)  # seems like I shouldn't need to, but OK
       file:
