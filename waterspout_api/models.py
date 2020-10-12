@@ -181,6 +181,7 @@ class RecordSet(models.Model):
 		:return:
 		"""
 		df = self.as_data_frame().sort_values(axis=0, by=["year", "g", "i"])
+		df = df.rename(columns={"g": "region", "i": "crop"})
 
 		if kwargs.pop("waterspout_sort_columns", True) is True:
 			# match the column output to how Spencer has it so we can compare
