@@ -333,10 +333,7 @@
     #     Can we generate and configure postgres user accounts and store them in variables
     #     to plug into local settings files? Do I need a separate script that dumps local_settings files?
     #     or can I do a replacement of a template string with ansible?
-    # TODO: Create user account for application to run as
     # TODO: Set permissions on application srv directory
-    # TODO: Process static files
     # TODO: Fail2ban and other services
     # TODO: Move SSH port?
-    # TODO: Check groundwater site setup instructions for other things that go here
     # TODO: Make application update playbook
