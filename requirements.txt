@@ -10,3 +10,4 @@ django-filter
 django-guardian
 drf-action-serializer
 waitress
+sentry-sdk

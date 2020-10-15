@@ -11,8 +11,22 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 from Waterspout.local_settings import *
+
+# sentry config - only run if DEBUG is False (basically, in production)
+if not DEBUG:
+    sentry_sdk.init(
+        dsn="https://a39545e9b4c940c18e62629856dedaed@o462396.ingest.sentry.io/5465746",
+        integrations=[DjangoIntegration()],
+        traces_sample_rate=1.0,
+
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True
+    )
 
 # With DRF, I don't see a way to use the Django `url` include in templates. So, I'd like to
 # have a single place to define API URLs that we can include in templates. That's here.
