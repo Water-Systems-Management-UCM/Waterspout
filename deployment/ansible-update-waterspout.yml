@@ -27,6 +27,15 @@
         dest: "{{ back_end_application_folder }}"
         repo: "{{ back_end_repo_url }}"
 
+    - name: Remove current version of Dapper
+      pip:
+        virtualenv: "{{ virtualenv_folder }}"
+        name: Dapper
+        state: absent
+
+    - name: Install updated Dapper
+      command: "{{ virtualenv_python_executable}} {{ back_end_application_folder }}/utils/get_dapper.py"
+
     - name: Install Python requirements
       pip:
         chdir: "{{ install_path }}"

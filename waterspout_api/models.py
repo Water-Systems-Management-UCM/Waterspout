@@ -301,6 +301,7 @@ class ModelRun(models.Model):
 	calibrated_parameters_text = models.TextField(null=True, blank=True)  # we'll put a snapshot of the calibration parameters in here, probably
 												# as a CSV. This way, if people eidt the calibration data for future runs,
 												# we still know what inputs ran this version of the model.
+	# model_area relation is through calibration_set
 
 	results = models.OneToOneField(ResultSet, null=True, blank=True,
 	                               on_delete=models.DO_NOTHING, related_name="model_run")
@@ -348,9 +349,20 @@ class ModelRun(models.Model):
 	def attach_modifications(self, scenario):
 		land_modifications = {}
 		water_modifications = {}
-		for modification in self.region_modifications.all():
+
+		region_modifications = self.region_modifications.filter(region__isnull=False)
+		for modification in region_modifications:  # get all the nondefault modifications
 			land_modifications[modification.region.internal_id] = float(modification.land_proportion)
 			water_modifications[modification.region.internal_id] = float(modification.water_proportion)
+
+		default_region_modification = self.region_modifications.get(region__isnull=True)
+		if default_region_modification.land_proportion != 1 or default_region_modification.water_proportion != 1:
+			# only process the default if it changes anything
+			specified_region_ids = [mod.id for mod in region_modifications]  # get the ids of the regions we already specified
+			regions = self.calibration_set.model_area.region_set.exclude(id__in=specified_region_ids)  # and then exclude those IDs but retrieve the rest of them
+			for region in regions:
+				land_modifications[region.internal_id] = default_region_modification.land_proportion
+				water_modifications[region.internal_id] = default_region_modification.water_proportion
 
 		if len(land_modifications.keys()) > 0:
 			scenario.perform_adjustment("land", land_modifications)
@@ -360,9 +372,19 @@ class ModelRun(models.Model):
 		# now attach the crop modifications - start by loading the data into a dict
 		price_modifications = {}
 		yield_modifications = {}
-		for modification in self.crop_modifications.all():
+		crop_modifications = self.crop_modifications.filter(crop__isnull=False)
+		for modification in crop_modifications:  # get all the nondefault modifications
 			price_modifications[modification.crop.crop_code] = float(modification.price_proportion)
 			yield_modifications[modification.crop.crop_code] = float(modification.yield_proportion)
+
+		default_crop_modification = self.crop_modifications.get(crop__isnull=True)
+		if default_region_modification.land_proportion != 1 or default_region_modification.water_proportion != 1:
+			# only process the default if it changes anything
+			specified_crop_ids = [mod.id for mod in crop_modifications]  # get the ids of the regions we already specified
+			crops = self.organization.crop_set.exclude(id__in=specified_crop_ids)  # and then exclude those IDs but retrieve the rest of them
+			for crop in crops:
+				price_modifications[crop.crop_code] = default_crop_modification.price_proportion
+				yield_modifications[crop.crop_code] = default_crop_modification.yield_proportion
 
 		# then pass those dicts to the scenario code if we have items in the dicts
 		if len(price_modifications.keys()) > 0:
@@ -470,7 +492,8 @@ class CropModification(models.Model):
 
 	serializer_fields = ["id", "crop", "crop_group", "price_proportion", "yield_proportion", "min_land_area_proportion", "max_land_area_proportion"]
 
-	crop = models.ForeignKey(Crop, on_delete=models.DO_NOTHING, related_name="modifications")
+	crop = models.ForeignKey(Crop, on_delete=models.DO_NOTHING, related_name="modifications",
+	                            null=True, blank=True)
 	crop_group = models.ForeignKey(CropGroup, on_delete=models.DO_NOTHING, related_name="modifications",
 	                               null=True, blank=True)
 
