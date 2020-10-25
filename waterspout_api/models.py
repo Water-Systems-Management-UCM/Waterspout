@@ -356,18 +356,11 @@ class ModelRun(models.Model):
 			water_modifications[modification.region.internal_id] = float(modification.water_proportion)
 
 		default_region_modification = self.region_modifications.get(region__isnull=True)
-		if default_region_modification.land_proportion != 1 or default_region_modification.water_proportion != 1:
-			# only process the default if it changes anything
-			specified_region_ids = [mod.id for mod in region_modifications]  # get the ids of the regions we already specified
-			regions = self.calibration_set.model_area.region_set.exclude(id__in=specified_region_ids)  # and then exclude those IDs but retrieve the rest of them
-			for region in regions:
-				land_modifications[region.internal_id] = default_region_modification.land_proportion
-				water_modifications[region.internal_id] = default_region_modification.water_proportion
 
 		if len(land_modifications.keys()) > 0:
-			scenario.perform_adjustment("land", land_modifications)
+			scenario.perform_adjustment("land", land_modifications, default=float(default_region_modification.land_proportion))
 		if len(water_modifications.keys()) > 0:
-			scenario.perform_adjustment("water", water_modifications)
+			scenario.perform_adjustment("water", water_modifications, default=float(default_region_modification.water_proportion))
 
 		# now attach the crop modifications - start by loading the data into a dict
 		price_modifications = {}
@@ -377,20 +370,17 @@ class ModelRun(models.Model):
 			price_modifications[modification.crop.crop_code] = float(modification.price_proportion)
 			yield_modifications[modification.crop.crop_code] = float(modification.yield_proportion)
 
-		default_crop_modification = self.crop_modifications.get(crop__isnull=True)
-		if default_region_modification.land_proportion != 1 or default_region_modification.water_proportion != 1:
-			# only process the default if it changes anything
-			specified_crop_ids = [mod.id for mod in crop_modifications]  # get the ids of the regions we already specified
-			crops = self.organization.crop_set.exclude(id__in=specified_crop_ids)  # and then exclude those IDs but retrieve the rest of them
-			for crop in crops:
-				price_modifications[crop.crop_code] = default_crop_modification.price_proportion
-				yield_modifications[crop.crop_code] = default_crop_modification.yield_proportion
+			# we can always add it, and it's OK if they're both None - that'll get checked later
+			scenario.add_crop_area_constraint(crop_code=modification.crop.crop_code,
+			                                  min_proportion=modification.min_land_area_proportion,
+			                                  max_proportion=modification.max_land_area_proportion)
 
+		default_crop_modification = self.crop_modifications.get(crop__isnull=True)
 		# then pass those dicts to the scenario code if we have items in the dicts
 		if len(price_modifications.keys()) > 0:
-			scenario.perform_adjustment("price", price_modifications)
+			scenario.perform_adjustment("price", price_modifications, default=float(default_crop_modification.price_proportion))
 		if len(yield_modifications.keys()) > 0:
-			scenario.perform_adjustment("yield", yield_modifications)
+			scenario.perform_adjustment("yield", yield_modifications, default=float(default_crop_modification.yield_proportion))
 
 	def run(self, csv_output=None):
 		# initially, we won't support calibrating the data here - we'll
@@ -409,6 +399,12 @@ class ModelRun(models.Model):
 
 			if csv_output is not None:
 				results.to_csv(csv_output)
+
+			# before loading results, make sure we weren't deleted in the app between starting the run and now
+			try:
+				ModelRun.objects.get(pk=self.id)
+			except ModelRun.DoesNotExist:
+				return
 
 			# now we need to load the resulting df back into the DB
 			self.load_records(results_df=results)
@@ -490,7 +486,8 @@ class CropModification(models.Model):
 	class Meta:
 		unique_together = ['model_run', 'crop']
 
-	serializer_fields = ["id", "crop", "crop_group", "price_proportion", "yield_proportion", "min_land_area_proportion", "max_land_area_proportion"]
+	serializer_fields = ["id", "crop", "crop_group", "price_proportion", "yield_proportion",
+	                     "min_land_area_proportion", "max_land_area_proportion"]
 
 	crop = models.ForeignKey(Crop, on_delete=models.DO_NOTHING, related_name="modifications",
 	                            null=True, blank=True)
