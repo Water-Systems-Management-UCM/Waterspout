@@ -4,6 +4,9 @@
     - name: Loading variables
       include_vars: ansible-waterspout-variables.yml
 
+    - name: Loading secrets
+      include_vars: ansible-secrets.yml
+
     - name: Stop service waterspout, in all cases
       become: true
       become_method: sudo
@@ -66,6 +69,24 @@
         path: "{{ local_settings_file }}"
         regexp: '^ALLOWED_HOSTS\s*='
         line: ALLOWED_HOSTS = ["0.0.0.0"]
+
+    - name: Set send as email address
+      lineinfile:
+        path: "{{ local_settings_file }}"
+        regexp: '^SERVER_EMAIL\s*='
+        line: "SERVER_EMAIL = {{ secrets.send_as_email }}"
+
+    - name: Set email log in username
+      lineinfile:
+        path: "{{ local_settings_file }}"
+        regexp: '^EMAIL_HOST_USER\s*='
+        line: "EMAIL_HOST_USER = {{ secrets.send_as_email }}"
+
+    - name: Set email password from secrets
+      lineinfile:
+        path: "{{ local_settings_file }}"
+        regexp: '^EMAIL_HOST_PASSWORD\s*='
+        line: "EMAIL_HOST_PASSWORD = {{ secrets.send_as_password }}"
 
     - name: Setting Shebang Line in manage.py
       lineinfile:
