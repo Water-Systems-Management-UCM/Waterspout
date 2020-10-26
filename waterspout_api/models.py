@@ -448,6 +448,7 @@ class Result(ModelItem):
 
 	result_set = models.ForeignKey(ResultSet, on_delete=models.CASCADE, related_name="result_set")
 
+	net_revenue = models.DecimalField(max_digits=18, decimal_places=3)
 
 class RegionModification(models.Model):
 	"""
