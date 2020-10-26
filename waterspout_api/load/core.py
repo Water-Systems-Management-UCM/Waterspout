@@ -116,7 +116,7 @@ def load_calibration_set(csv_file, model_area, years, organization):
 
 
 def get_or_create_system_user():
-	return models.User.objects.get_or_create(name="system")
+	return models.User.objects.get_or_create(username="system")[0]
 
 
 def add_system_user_to_org(org):
