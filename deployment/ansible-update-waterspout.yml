@@ -5,7 +5,7 @@
       include_vars: ansible-waterspout-variables.yml
 
     - name: Loading secrets
-      include_vars: ansible-secrets.yml
+      include_vars: secrets.yml
 
     - name: Stop service waterspout, in all cases
       become: true
@@ -74,19 +74,19 @@
       lineinfile:
         path: "{{ local_settings_file }}"
         regexp: '^SERVER_EMAIL\s*='
-        line: "SERVER_EMAIL = {{ secrets.send_as_email }}"
+        line: 'SERVER_EMAIL = "{{ send_as_email }}"'
 
     - name: Set email log in username
       lineinfile:
         path: "{{ local_settings_file }}"
         regexp: '^EMAIL_HOST_USER\s*='
-        line: "EMAIL_HOST_USER = {{ secrets.send_as_email }}"
+        line: 'EMAIL_HOST_USER = "{{ send_as_email }}"'
 
     - name: Set email password from secrets
       lineinfile:
         path: "{{ local_settings_file }}"
         regexp: '^EMAIL_HOST_PASSWORD\s*='
-        line: "EMAIL_HOST_PASSWORD = {{ secrets.send_as_password }}"
+        line: 'EMAIL_HOST_PASSWORD = "{{ send_as_password }}"'
 
     - name: Setting Shebang Line in manage.py
       lineinfile:

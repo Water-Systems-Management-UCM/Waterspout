@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import re
+
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
@@ -39,6 +41,19 @@ API_URLS = {  # partial is used in URLconf, full is used in templates
     "users": {"partial": "users", "full": f"{API_BASE_URL}users/"},
 }
 
+
+# We want Django to ignore some 404s because they're mostly just attempts by bots
+# to drive-by exploit. I don't want a notification for every single one.
+IGNORABLE_404_URLS = [
+    re.compile(r'\.(php|cgi)$'),
+    re.compile(r'^/phpmyadmin/'),
+    re.compile(r'^/hudson'),
+    re.compile(r'^/requested.html'),
+    re.compile(r'^/ab2g'),
+    re.compile(r'^/ab2h'),
+    re.compile(r'^/.env'),
+    re.compile(r'^/boaform'),
+]
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
