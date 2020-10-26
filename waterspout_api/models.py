@@ -494,8 +494,8 @@ class CropModification(models.Model):
 	crop_group = models.ForeignKey(CropGroup, on_delete=models.DO_NOTHING, related_name="modifications",
 	                               null=True, blank=True)
 
-	price_proportion = models.FloatField()  # the amount, relative to base values, to provide
-	yield_proportion = models.FloatField()  # the amount, relative to base values, to provide
+	price_proportion = models.FloatField(default=1.0, blank=True)  # the amount, relative to base values, to provide
+	yield_proportion = models.FloatField(default=1.0, blank=True)  # the amount, relative to base values, to provide
 	min_land_area_proportion = models.FloatField(null=True, blank=True)  # the amount, relative to base values, to provide
 	max_land_area_proportion = models.FloatField(null=True, blank=True)  # the amount, relative to base values, to provide
 

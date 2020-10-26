@@ -33,6 +33,10 @@ class ModelResultsTest(TransactionTestCase):  # Need to have a TransactionTestCa
 		)
 		self.model_run.save()
 
+		# add the default region and crop modifications
+		models.RegionModification(model_run=self.model_run).save()
+		models.CropModification(model_run=self.model_run).save()
+
 	def test_final_results_are_correct(self):
 		"""
 			This test might need updating as the model changes, but for now, it's an
