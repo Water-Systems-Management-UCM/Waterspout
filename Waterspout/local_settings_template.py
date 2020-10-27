@@ -20,7 +20,7 @@ ADMINS = [("Nick", "nsantos5@ucmerced.edu",), ]
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-LIMITED_RESULTS_FIELDS = ["region", "crop", "year", "xlandsc", "xwatersc"]  # which fields should be available to access as results for download and via the API?
+LIMITED_RESULTS_FIELDS = ["region", "crop", "year", "xlandsc", "xwatersc", "water_per_acre", "net_revenue", "gross_revenue"]  # which fields should be available to access as results for download and via the API?
 
 LONG_POLL_DURATION = 30  # when using HTTP long polls, how long should we leave the connection open for before returning?
 POLL_CHECK_INTERVAL = 1  # how often should we poll the actual database for complete results during a long poll?
