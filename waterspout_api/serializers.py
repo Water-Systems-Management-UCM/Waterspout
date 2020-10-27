@@ -65,7 +65,7 @@ class ResultSetSerializer(serializers.ModelSerializer):
 	result_set = ResultSerializer(allow_null=True, many=True)
 
 	class Meta:
-		fields = ["result_set"]
+		fields = ["result_set", "dapper_version"]
 		model = models.ResultSet
 
 
