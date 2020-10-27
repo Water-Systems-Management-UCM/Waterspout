@@ -45,7 +45,7 @@ API_URLS = {  # partial is used in URLconf, full is used in templates
 # We want Django to ignore some 404s because they're mostly just attempts by bots
 # to drive-by exploit. I don't want a notification for every single one.
 IGNORABLE_404_URLS = [
-    re.compile(r'\.(php|cgi)$'),
+    re.compile(r'\.(php|cgi|sql|pl)$'),
     re.compile(r'^/phpmyadmin/'),
     re.compile(r'^/hudson'),
     re.compile(r'^/requested.html'),

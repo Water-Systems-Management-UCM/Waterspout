@@ -10,7 +10,7 @@ from django.contrib.auth.models import User, Group
 from Waterspout import settings
 
 import pandas
-from Dapper import scenarios
+from Dapper import scenarios, get_version as get_dapper_version
 
 log = logging.getLogger("waterspout.models")
 
@@ -210,6 +210,9 @@ class CalibrationSet(RecordSet):
 
 class ResultSet(RecordSet):
 	reverse_name = "result_set"
+
+	# store the dapper version that the model ran with - that way we can detect if an updated version might provide different results
+	dapper_version = models.CharField(max_length=20)
 
 
 class ModelItem(models.Model):
@@ -423,7 +426,7 @@ class ModelRun(models.Model):
 		:return:
 		"""
 		log.info(f"Loading results for model run {self.id}")
-		result_set = ResultSet(model_run=self)
+		result_set = ResultSet(model_run=self, dapper_version=get_dapper_version())
 		result_set.save()
 
 		for record in results_df.itertuples():
@@ -449,6 +452,9 @@ class Result(ModelItem):
 	result_set = models.ForeignKey(ResultSet, on_delete=models.CASCADE, related_name="result_set")
 
 	net_revenue = models.DecimalField(max_digits=18, decimal_places=3, null=True)
+	gross_revenue = models.DecimalField(max_digits=18, decimal_places=3, null=True)
+	water_per_acre = models.DecimalField(max_digits=18, decimal_places=5, null=True)
+
 
 class RegionModification(models.Model):
 	"""
