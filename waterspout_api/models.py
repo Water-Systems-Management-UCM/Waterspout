@@ -135,10 +135,12 @@ class RecordSet(models.Model):
 		of calibrated parameters initially, but then provide a black box version of the calibration parameters. We can
 		then have behavior that tries a lookup for a calibration set, and if it doesn't exist, runs the calibration.
 	"""
+
+	record_model_name = "ModelItem"
 	years = models.TextField()  # yes, text. We'll concatenate text as a year lookup
 	# prices = model
 
-	def as_data_frame(self,):
+	def as_data_frame(self):
 		"""
 			Returns the data frame that needs to be run through the model itself
 		:return:
@@ -155,7 +157,9 @@ class RecordSet(models.Model):
 		# day right now.
 
 		foreign_keys = ["region", "crop"]
-		fields = [f.name for f in ModelItem._meta.get_fields()]  # get all the fields for calibrated parameters
+
+		record_model = globals()[self.record_model_name]
+		fields = [f.name for f in record_model._meta.get_fields()]  # get all the fields for calibrated parameters
 		basic_fields = list(set(fields) - set(foreign_keys))  # remove the foreign keys - we'll process those separately
 
 		# reverse_name will exist for subclasses
@@ -210,6 +214,7 @@ class CalibrationSet(RecordSet):
 
 class ResultSet(RecordSet):
 	reverse_name = "result_set"
+	record_model_name = "Result"
 
 	# store the dapper version that the model ran with - that way we can detect if an updated version might provide different results
 	dapper_version = models.CharField(max_length=20)
