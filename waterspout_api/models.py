@@ -365,10 +365,8 @@ class ModelRun(models.Model):
 
 		default_region_modification = self.region_modifications.get(region__isnull=True)
 
-		if len(land_modifications.keys()) > 0:
-			scenario.perform_adjustment("land", land_modifications, default=float(default_region_modification.land_proportion))
-		if len(water_modifications.keys()) > 0:
-			scenario.perform_adjustment("water", water_modifications, default=float(default_region_modification.water_proportion))
+		scenario.perform_adjustment("land", land_modifications, default=float(default_region_modification.land_proportion))
+		scenario.perform_adjustment("water", water_modifications, default=float(default_region_modification.water_proportion))
 
 		# now attach the crop modifications - start by loading the data into a dict
 		price_modifications = {}
@@ -384,11 +382,9 @@ class ModelRun(models.Model):
 			                                  max_proportion=modification.max_land_area_proportion)
 
 		default_crop_modification = self.crop_modifications.get(crop__isnull=True)
-		# then pass those dicts to the scenario code if we have items in the dicts
-		if len(price_modifications.keys()) > 0:
-			scenario.perform_adjustment("price", price_modifications, default=float(default_crop_modification.price_proportion))
-		if len(yield_modifications.keys()) > 0:
-			scenario.perform_adjustment("yield", yield_modifications, default=float(default_crop_modification.yield_proportion))
+		# then pass those dicts to the scenario code regardless if there are items (so defaults get set)
+		scenario.perform_adjustment("price", price_modifications, default=float(default_crop_modification.price_proportion))
+		scenario.perform_adjustment("yield", yield_modifications, default=float(default_crop_modification.yield_proportion))
 
 	def run(self, csv_output=None):
 		# initially, we won't support calibrating the data here - we'll
