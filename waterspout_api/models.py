@@ -180,14 +180,14 @@ class RecordSet(models.Model):
 		"""
 			Saves the set to a CSV file - all args are passed through to Pandas.to_csv, so it's
 			possible to have it return a CSV as a string by just calling to_csv()
-		:param args:
+		:param args: waterspout_sort_columns is not compatible with waterspout_limited
 		:param kwargs:
 		:return:
 		"""
 		df = self.as_data_frame().sort_values(axis=0, by=["year", "g", "i"])
 		df = df.rename(columns={"g": "region", "i": "crop"})
 
-		if kwargs.pop("waterspout_sort_columns", True) is True:
+		if kwargs.pop("waterspout_sort_columns", False) is True:
 			# match the column output to how Spencer has it so we can compare
 			column_order = ("region","crop","year","omegaland","omegasupply","omegalabor",
 			                "omegaestablish","omegacash","omeganoncash","omegatotal",

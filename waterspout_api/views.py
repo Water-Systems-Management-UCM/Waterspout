@@ -186,7 +186,7 @@ class ModelRunViewSet(viewsets.ModelViewSet):
 			return Response(json.dumps(model_run))
 
 		output_name = f"waterspout_model_run_{model_run.id}_{model_run.name}.csv"
-		response = Response(model_run.results.to_csv(waterspout_limited=True),
+		response = Response(model_run.results.to_csv(waterspout_limited=True, waterspout_sort_columns=False),
 		                    headers={'Content-Disposition': f'attachment; filename="{output_name}"'},
 		                    content_type='text/csv')
 		return response
