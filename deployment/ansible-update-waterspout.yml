@@ -88,6 +88,12 @@
         regexp: '^EMAIL_HOST_PASSWORD\s*='
         line: 'EMAIL_HOST_PASSWORD = "{{ send_as_password }}"'
 
+    - name: Set email password from secrets
+      lineinfile:
+        path: "{{ local_settings_file }}"
+        regexp: '^ADMINS\s*='
+        line: 'ADMINS = [("Nick", "{{ admin_address }}"), ]'
+
     - name: Setting Shebang Line in manage.py
       lineinfile:
         path: "{{ back_end_application_folder }}/manage.py"

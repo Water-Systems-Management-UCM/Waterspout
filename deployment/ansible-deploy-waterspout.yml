@@ -215,7 +215,7 @@
       lineinfile:
         path: /etc/nginx/sites-available/static_site.cfg
         regexp: 'root DJANGO_STATIC_ROOT_FOLDER;'
-        line: "root {{ back_end_application_folder }}/;"
+        line: "root {{ back_end_application_folder }}/static;"
 
     - name: Set Access Log in Nginx
       become: true

@@ -15,7 +15,7 @@ SERVE_ADDRESS = "*:8010"
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "192.168.1.21"]
 
 # Need this for emails
-ADMINS = [("Nick", "nsantos5@ucmerced.edu",), ]
+ADMINS = []
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
