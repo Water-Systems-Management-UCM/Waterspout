@@ -166,8 +166,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 if DEBUG:  # if DEBUG is on, don't email admins when problems happen
     log_handlers = ['console', 'file_debug']
+    django_request_handlers = log_handlers
 else:
     log_handlers = ['console', 'file_debug', 'file_error', 'email_error', 'email_warn']
+    django_request_handlers = ['console', 'file_debug', 'file_error', 'email_error',]
 
 LOGGING = {
     'version': 1,
@@ -217,8 +219,9 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': log_handlers,
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            # don't want warnings from django.request via email, which include 400-series errors like 401 and 404.
+            'handlers': django_request_handlers,
+            'level': "ERROR",
         },
         'Dapper': {
             'handlers': log_handlers,
