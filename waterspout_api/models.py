@@ -52,6 +52,7 @@ class Organization(models.Model):
 	def __str__(self):
 		return f"Organization: {self.name}"
 
+
 class ModelArea(models.Model):
 	"""
 		This would be something like "The Delta", or "Washington" - mostly, this will be one to one with organizations,
@@ -111,11 +112,11 @@ class Crop(models.Model):
 		duplicating crops between organizations.
 	"""
 	class Meta:
-		unique_together = ['crop_code', 'organization']
+		unique_together = ['crop_code', 'model_area']
 
 	name = models.CharField(max_length=255, null=False, blank=False)  # human readable crop name
 	crop_code = models.CharField(max_length=30, null=False, blank=False)  # code used in the models (like ALFAL for Alfalfa)
-	organization = models.ForeignKey(Organization, on_delete=models.CASCADE)  # clear any crops for an org when deleted
+	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE)  # clear any crops for an org when deleted
 
 
 class CropGroup(models.Model):
@@ -208,7 +209,7 @@ class RecordSet(models.Model):
 
 
 class CalibrationSet(RecordSet):
-	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE)
+	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE, related_name="calibration_data")
 	reverse_name = "calibration_set"
 
 
@@ -282,7 +283,9 @@ class CalibratedParameter(ModelItem):
 		parameters, and model results
 	"""
 	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.CASCADE, related_name="calibration_set")
-
+	serializer_fields = ["crop", "region", "year", "omegaland", "omegawater",
+	                     "omegasupply", "omegalabor", "omegaestablish", "omegacash",
+	                     "omeganoncash", "omegatotal", "p", "y"]
 
 class ModelRun(models.Model):
 	"""

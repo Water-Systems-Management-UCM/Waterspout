@@ -96,3 +96,44 @@ class ModelRunSerializer(ModelActionSerializer):
 		for modification in crop_modification_data:
 			models.CropModification.objects.create(model_run=model_run, **modification)
 		return model_run
+
+
+class CalibrationItemSerializer(serializers.ModelSerializer):
+	"""
+		Provides access to a single input data record for viewing the database
+	"""
+	class Meta:
+		fields = models.CalibratedParameter.serializer_fields
+		model = models.CalibratedParameter
+
+
+class CalibrationSetSerializer(serializers.ModelSerializer):
+	"""
+		Provides access to the input data records for viewing the database
+	"""
+	calibration_set = CalibrationItemSerializer(read_only=True, many=True)
+	model_runs = ModelRunSerializer(read_only=True, many=True)
+
+	class Meta:
+		fields = ["calibration_set", "model_runs"]
+		model = models.CalibrationSet
+
+		depth = 0
+
+
+class ModelAreaSerializer(ModelActionSerializer):
+	calibration_data = CalibrationSetSerializer(read_only=True, many=True, allow_null=True)
+	crop_set = CropSerializer(read_only=True, many=True, allow_null=True)
+	region_set = RegionSerializer(read_only=True, many=True, allow_null=True)
+
+	class Meta:
+		model = models.ModelArea
+		_base_fields = ["id", "organization_id", "name", "description"]
+		fields = _base_fields
+		action_fields = {  # only send model results in detail view - that way the listing doesn't send massive amount
+			"retrieve": {     # of data, but we only need to load the specific model run again to get the results
+				"fields": _base_fields + ["calibration_data", "crop_set", "region_set"]
+			}
+		}
+		depth = 0  # will still show objects that are explicitly declared as nested objects (like region_modifications)
+					# this lets us say "I don't want region geometries here" while still getting the modifications in one request

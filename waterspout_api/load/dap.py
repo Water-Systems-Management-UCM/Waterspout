@@ -18,11 +18,12 @@ def load_dap(regions="delta_islands_wDAP_simplified_0005.geojson",
 
 	model_area = core.reset_model_area(model_area_name=area_name, organization=organization)
 	load_regions(regions, model_area)
-	load_crops(core.get_data_file_path(data_name, calibration_file), organization)
+	load_crops(core.get_data_file_path(data_name, calibration_file), model_area)
 	calibration_set = load_calibration(calibration_file, model_area, organization=organization)
 
 	load_initial_runs(calibration_set=calibration_set,
 	                  organization=organization)
+
 
 def load_regions(regions, model_area):
 	core.load_regions(json_file=core.get_data_file_path(data_name, regions),
@@ -44,7 +45,7 @@ def load_calibration(calibration_file, model_area, organization):
 	                          )
 
 
-def load_crops(calibration_file, organization):
+def load_crops(calibration_file, model_area):
 	"""
 		This is a temporary hack, mostly, because this isn't a crop file - we should replace
 		this later
@@ -56,7 +57,7 @@ def load_crops(calibration_file, organization):
 		calib_csv = csv.DictReader(calib_data)
 		for row in calib_csv:
 			try:
-				models.Crop(crop_code=row["i"], organization=organization).save()
+				models.Crop(crop_code=row["i"], model_area=model_area).save()
 			except django.db.utils.IntegrityError:
 				pass  # if it already exists, skip it
 

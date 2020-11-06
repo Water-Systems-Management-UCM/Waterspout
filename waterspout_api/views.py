@@ -82,7 +82,7 @@ class CropViewSet(viewsets.ModelViewSet):
 		# this could lead to people getting crops for multiple organizations at the same time. Going to leave it as is for now
 		# until we actually have something that sets the currently active organization. Should add that soon
 		# should crops also be associated with model areas rather than orgs?? Probably
-		return models.Crop.objects.filter(organization__in=support.get_organizations_for_user(self.request.user)).order_by("name")
+		return models.Crop.objects.filter(model_area__organization__in=support.get_organizations_for_user(self.request.user)).order_by("name")
 
 
 class RegionViewSet(viewsets.ModelViewSet):
@@ -152,6 +152,14 @@ class PassthroughRenderer(renderers.BaseRenderer):  # we need this so it won't m
 	format = ''
 	def render(self, data, accepted_media_type=None, renderer_context=None):
 		return data
+
+
+class ModelAreaViewSet(viewsets.ModelViewSet):
+	permission_classes = [permissions.IsInSameOrganization]
+	serializer_class = serializers.ModelAreaSerializer
+
+	def get_queryset(self):
+		return models.ModelArea.objects.filter(organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
 
 
 class ModelRunViewSet(viewsets.ModelViewSet):
