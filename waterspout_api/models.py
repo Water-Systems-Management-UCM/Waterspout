@@ -230,8 +230,8 @@ class ModelItem(models.Model):
 	class Meta:
 		abstract = True
 
-	crop = models.ForeignKey(Crop, on_delete=models.SET_NULL)
-	region = models.ForeignKey(Region, on_delete=models.SET_NULL)
+	crop = models.ForeignKey(Crop, on_delete=models.CASCADE)
+	region = models.ForeignKey(Region, on_delete=models.CASCADE)
 	year = models.IntegerField()
 	omegaland = models.DecimalField(max_digits=10, decimal_places=1)
 	omegasupply = models.DecimalField(max_digits=10, decimal_places=1)
