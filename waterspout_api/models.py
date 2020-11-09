@@ -72,7 +72,7 @@ class RegionGroup(models.Model):
 	internal_id = models.CharField(max_length=100, null=False, blank=False)  # typically we have some kind of known ID to feed to a model that means something to people
 	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE)
 
-	geometry = SimpleJSONField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
+	geometry = models.JSONField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
 
 
 class Region(models.Model):
@@ -81,7 +81,7 @@ class Region(models.Model):
 	external_id = models.CharField(max_length=100, null=True, blank=True)  # a common external identifier of some kind
 	# .extra_attributes reverse lookup
 
-	geometry = SimpleJSONField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
+	geometry = models.JSONField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
 
 	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE)
 	group = models.ForeignKey(RegionGroup, null=True, blank=True, on_delete=models.CASCADE)  # there could be a reason to make it a many to many instead, but
