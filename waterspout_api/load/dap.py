@@ -62,10 +62,14 @@ def load_crops(calibration_file, model_area):
 
 
 def load_initial_runs(calibration_set, organization,):
-	models.ModelRun.objects.create(name="Base Case",
+	mr = models.ModelRun(name="Base Case",
 	                               organization=organization,
 	                               user=core.get_or_create_system_user(),
 	                               is_base=True,
 	                               calibration_set=calibration_set,
 	                               ready=True
 	                               )
+	mr.save()
+
+	models.RegionModification.objects.create(model_run=mr)
+	models.CropModification.objects.create(model_run=mr)

@@ -441,8 +441,8 @@ class ModelRun(models.Model):
 
 		for record in results_df.itertuples():  # returns named tuples
 			result = Result(result_set=result_set)
-			result.crop = Crop.objects.get(crop_code=record.i, organization=self.organization)
-			result.region = Region.objects.get(internal_id=record.g, model_area__organization=self.organization)
+			result.crop = Crop.objects.get(crop_code=record.i, model_area=self.calibration_set.model_area)
+			result.region = Region.objects.get(internal_id=record.g, model_area=self.calibration_set.model_area)
 			for column in fields:  # _fields isn't private - it's just preventing conflicts - see namedtuple docs
 				setattr(result, column, getattr(record, column))
 			result.save()
