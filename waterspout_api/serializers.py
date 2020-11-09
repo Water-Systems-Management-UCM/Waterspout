@@ -109,7 +109,8 @@ class CalibrationItemSerializer(serializers.ModelSerializer):
 
 class CalibrationSetSerializer(serializers.ModelSerializer):
 	"""
-		Provides access to the input data records for viewing the database
+		Provides access to the input data records for viewing the database, but is also how we'll
+		retrieve the list of model runs
 	"""
 	calibration_set = CalibrationItemSerializer(read_only=True, many=True)
 	model_runs = ModelRunSerializer(read_only=True, many=True)

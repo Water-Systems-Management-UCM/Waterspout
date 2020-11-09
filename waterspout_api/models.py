@@ -308,7 +308,7 @@ class ModelRun(models.Model):
 	base_model_run = models.ForeignKey("ModelRun", null=True, blank=True, on_delete=models.DO_NOTHING)
 	is_base = models.BooleanField(default=False)  # is this a base model run (True), or a normal model run (False)
 
-	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.DO_NOTHING)
+	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.DO_NOTHING, related_name="model_runs")
 	calibrated_parameters_text = models.TextField(null=True, blank=True)  # we'll put a snapshot of the calibration parameters in here, probably
 												# as a CSV. This way, if people eidt the calibration data for future runs,
 												# we still know what inputs ran this version of the model.
