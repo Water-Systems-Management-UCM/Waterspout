@@ -93,7 +93,7 @@ def load_regions(json_file, field_map, model_area):
 		region.save()  # save it with the new attributes
 
 
-def load_calibration_set(csv_file, model_area, years, organization):
+def load_calibration_set(csv_file, model_area, years):
 	calibration_set = models.CalibrationSet(model_area=model_area, years=",".join([str(year) for year in years]))
 	calibration_set.save()
 
@@ -104,9 +104,9 @@ def load_calibration_set(csv_file, model_area, years, organization):
 			for key in row:
 				# need to do lookups for foreign keys
 				if key == "g":
-					param.region = models.Region.objects.get(internal_id=row["g"], model_area__organization=organization)
+					param.region = models.Region.objects.get(internal_id=row["g"], model_area=model_area)
 				elif key == "i":
-					param.crop = models.Crop.objects.get(crop_code=row["i"], organization=organization)
+					param.crop = models.Crop.objects.get(crop_code=row["i"], model_area=model_area)
 				else:
 					setattr(param, key, row[key])
 
