@@ -59,7 +59,7 @@ class ModelArea(models.Model):
 		but just in case we want to be able to deploy multiple models for an organization in the future, we'll store it
 		this way.
 	"""
-	organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.DO_NOTHING)
+	organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.SET_NULL)
 	name = models.CharField(max_length=255, unique=True)
 	description = models.TextField(null=True, blank=True)
 
@@ -230,8 +230,8 @@ class ModelItem(models.Model):
 	class Meta:
 		abstract = True
 
-	crop = models.ForeignKey(Crop, on_delete=models.DO_NOTHING)
-	region = models.ForeignKey(Region, on_delete=models.DO_NOTHING)
+	crop = models.ForeignKey(Crop, on_delete=models.SET_NULL)
+	region = models.ForeignKey(Region, on_delete=models.SET_NULL)
 	year = models.IntegerField()
 	omegaland = models.DecimalField(max_digits=10, decimal_places=1)
 	omegasupply = models.DecimalField(max_digits=10, decimal_places=1)
