@@ -3,9 +3,12 @@ import traceback
 import decimal
 import json
 
+import numpy
+
 import django
 from django.db import models  # we're going to geodjango this one - might not need it, but could make some things nicer
 from django.contrib.auth.models import User, Group
+
 
 from Waterspout import settings
 
@@ -315,7 +318,7 @@ class ModelRun(models.Model):
 	# model_area relation is through calibration_set
 
 	results = models.OneToOneField(ResultSet, null=True, blank=True,
-	                               on_delete=models.DO_NOTHING, related_name="model_run")
+	                               on_delete=models.SET_NULL, related_name="model_run")
 
 	user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="model_runs")
 	organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="model_runs")
@@ -323,9 +326,11 @@ class ModelRun(models.Model):
 	# region_modifications - back-reference from related content
 	# crop_modifications - back-reference from related content
 
+	infeasibilities_text = models.TextField(null=True, blank=True)
+
 	serializer_fields = ['id', 'name', 'description', 'ready', 'running', 'complete', 'status_message',
 		                'date_submitted', 'date_completed', "calibration_set", "user_id", "organization",
-	                     "base_model_run_id", "is_base"]
+	                     "base_model_run_id", "is_base", "infeasibilities_text"] #, "infeasibilities", ]
 
 	def __str__(self):
 		return f"Model Run: {self.name}"
@@ -415,6 +420,7 @@ class ModelRun(models.Model):
 
 			# now we need to load the resulting df back into the DB
 			self.load_records(results_df=results)
+			self.load_infeasibilities(scenario_runner)
 
 			self.complete = True
 			log.info("Model run complete")
@@ -444,8 +450,44 @@ class ModelRun(models.Model):
 			result.crop = Crop.objects.get(crop_code=record.i, model_area=self.calibration_set.model_area)
 			result.region = Region.objects.get(internal_id=record.g, model_area=self.calibration_set.model_area)
 			for column in fields:  # _fields isn't private - it's just preventing conflicts - see namedtuple docs
-				setattr(result, column, getattr(record, column))
+				value = getattr(record, column)
+
+				if type(value) is not str and numpy.isnan(value):  # if we got NaN (such as with an infeasibility)
+					value = None  # then we need to skip it or it'll bork the whole table (seriously)
+
+				setattr(result, column, value)
 			result.save()
+
+	def load_infeasibilities(self, scenario):
+		log.debug("Assessing infeasibilities")
+		for infeasibility in scenario.infeasibilities:
+			Infeasibility.objects.create(model_run=self,
+			                             region=Region.objects.get(internal_id=infeasibility.region, model_area=self.calibration_set.model_area),
+			                             year=infeasibility.timeframe,
+			                             description=infeasibility.description
+			                             )
+
+		total_infeasibilities = len(scenario.infeasibilities)
+		crops = {}
+		# now let's see if there are any crops that are common to the infeasibilities
+		#if total_infeasibilities > 2:  # if we have more than a handful, we'll assess which crops are common
+		for infeasibility in scenario.infeasibilities:
+			infeasible_region_results = Result.objects.filter(result_set=self.results,
+					                                          region__internal_id=infeasibility.region,
+					                                          year=infeasibility.timeframe)
+
+			for result in infeasible_region_results:
+				crop = result.crop.crop_code
+				if crop in crops:
+					crops[crop] += 1
+				else:
+					crops[crop] = 1
+
+		# ideally we'd want to key this by name so that we can show the name here
+		if len(crops.keys()) > 0:
+			sorted_by_appearance = {k:v for k,v in sorted(crops.items(), key=lambda item: item[1], reverse=True)}
+			infeasibility_items = ["{} ({})".format(crop, value) for crop, value in sorted_by_appearance.items()]
+			self.infeasibilities_text = "Crops appearing in the most infeasible regions: " + ", ".join(infeasibility_items)
 
 
 class Result(ModelItem):
@@ -455,9 +497,16 @@ class Result(ModelItem):
 
 	result_set = models.ForeignKey(ResultSet, on_delete=models.CASCADE, related_name="result_set")
 
-	net_revenue = models.DecimalField(max_digits=18, decimal_places=3, null=True)
-	gross_revenue = models.DecimalField(max_digits=18, decimal_places=3, null=True)
-	water_per_acre = models.DecimalField(max_digits=18, decimal_places=5, null=True)
+	net_revenue = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
+	gross_revenue = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
+	water_per_acre = models.DecimalField(max_digits=18, decimal_places=5, null=True, blank=True)
+
+
+class Infeasibility(models.Model):
+	model_run = models.ForeignKey(ModelRun, on_delete=models.CASCADE, related_name="infeasibilities")
+	year = models.SmallIntegerField()
+	region = models.ForeignKey(Region, null=True, on_delete=models.SET_NULL, related_name="infeasibilities")
+	description = models.TextField()
 
 
 class RegionModification(models.Model):

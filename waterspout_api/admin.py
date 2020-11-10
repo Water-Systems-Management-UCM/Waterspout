@@ -17,10 +17,16 @@ class ModelRunRegionModificationInline(admin.TabularInline):
     model = models.RegionModification
 
 
+class ModelRunCropModificationInline(admin.TabularInline):
+    model = models.CropModification
+
+
 class ModelRunAdmin(admin.ModelAdmin):
-    inlines = [ModelRunRegionModificationInline]
+    inlines = [ModelRunRegionModificationInline, ModelRunCropModificationInline]
 
 
 admin.site.register(models.ModelRun, ModelRunAdmin)
 admin.site.register(models.RegionModification)
 admin.site.register(models.ResultSet)
+admin.site.register(models.Result)
+admin.site.register(models.Infeasibility)

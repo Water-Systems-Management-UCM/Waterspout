@@ -69,10 +69,18 @@ class ResultSetSerializer(serializers.ModelSerializer):
 		model = models.ResultSet
 
 
+class InfeasibilitySerializer(serializers.ModelSerializer):
+
+	class Meta:
+		fields = "__all__"
+		model = models.Infeasibility
+
+
 class ModelRunSerializer(ModelActionSerializer):
 	region_modifications = RegionModificationSerializer(allow_null=True, many=True)
 	crop_modifications = CropModificationSerializer(allow_null=True, many=True)
 	results = ResultSetSerializer(allow_null=True)
+	#infeasibilities = InfeasibilitySerializer(allow_null=True, many=True)
 
 	class Meta:
 		model = models.ModelRun
