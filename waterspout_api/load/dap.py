@@ -20,6 +20,7 @@ def load_dap(regions="delta_islands_wDAP_simplified_0005.geojson",
 	load_regions(regions, model_area)
 	load_crops(core.get_data_file_path(data_name, calibration_file), model_area)
 	calibration_set = load_calibration(calibration_file, model_area)
+	input_data_set = load_input_data(calibration_file, model_area)
 
 	load_initial_runs(calibration_set=calibration_set,
 	                  organization=organization)
@@ -38,9 +39,19 @@ def load_regions(regions, model_area):
 
 
 def load_calibration(calibration_file, model_area):
-	return core.load_calibration_set(csv_file=core.get_data_file_path(data_name, calibration_file),
+	return core.load_input_data_set(csv_file=core.get_data_file_path(data_name, calibration_file),
 	                          model_area=model_area,
 	                          years=[2014,2015,2016,2017]
+	                          )
+
+
+def load_input_data(calibration_file, model_area):
+	return core.load_input_data_set(csv_file=core.get_data_file_path(data_name, calibration_file),
+									model_area=model_area,
+									years=[2014,2015,2016,2017],
+									item_model=models.InputDataItem,
+									set_model=models.InputDataSet,
+	                                set_lookup="dataset"
 	                          )
 
 

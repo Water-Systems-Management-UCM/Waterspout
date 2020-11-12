@@ -211,6 +211,11 @@ class RecordSet(models.Model):
 		return df.to_csv(*args, **kwargs)
 
 
+class InputDataSet(RecordSet):
+	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE, related_name="input_data")
+	reverse_name = "input_data_set"
+
+
 class CalibrationSet(RecordSet):
 	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE, related_name="calibration_data")
 	reverse_name = "calibration_set"
@@ -222,6 +227,9 @@ class ResultSet(RecordSet):
 
 	# store the dapper version that the model ran with - that way we can detect if an updated version might provide different results
 	dapper_version = models.CharField(max_length=20)
+
+	infeasibilities_text = models.TextField(null=True, blank=True)
+	# infeasibilities reverse relation
 
 
 class ModelItem(models.Model):
@@ -248,6 +256,23 @@ class ModelItem(models.Model):
 	y = models.DecimalField(max_digits=13, decimal_places=5)
 	xland = models.DecimalField(max_digits=18, decimal_places=10)
 	omegawater = models.DecimalField(max_digits=10, decimal_places=2)
+
+
+class InputDataItem(ModelItem):
+	dataset = models.ForeignKey(InputDataSet, on_delete=models.CASCADE, related_name="input_data_set")
+
+	serializer_fields = ["crop", "region", "year", "omegaland", "omegawater",
+	                     "omegasupply", "omegalabor", "omegaestablish", "omegacash",
+	                     "omeganoncash", "omegatotal", "p", "y"]
+
+
+class CalibratedParameter(ModelItem):
+	"""
+		Note that it's of class ModelItem - ModelItems define the various input
+		parameters and results that we use for calibration inputs, calibrated
+		parameters, and model results
+	"""
+
 	sigma = models.DecimalField(max_digits=5, decimal_places=4)
 	theta = models.DecimalField(max_digits=5, decimal_places=4)
 	pimarginal = models.DecimalField(max_digits=18, decimal_places=10)
@@ -269,26 +294,12 @@ class ModelItem(models.Model):
 	#xwatercalib = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
 	#difflandpct = models.DecimalField(max_digits=12, decimal_places=10, null=True, blank=True)
 	#diffwaterpct = models.DecimalField(max_digits=12, decimal_places=10, null=True, blank=True)
-	resource_flag = models.CharField(max_length=5, null=True, blank=True)
 
-	# we may be able to drop these fields later, but they help us while we're comparing to the original DAP and our validation
-	xlandsc = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
-	xwatersc = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
-	xdiffland = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
-	xdifftotalland = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
-	xdiffwater = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
-
-
-class CalibratedParameter(ModelItem):
-	"""
-		Note that it's of class ModelItem - ModelItems define the various input
-		parameters and results that we use for calibration inputs, calibrated
-		parameters, and model results
-	"""
 	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.CASCADE, related_name="calibration_set")
 	serializer_fields = ["crop", "region", "year", "omegaland", "omegawater",
 	                     "omegasupply", "omegalabor", "omegaestablish", "omegacash",
 	                     "omeganoncash", "omegatotal", "p", "y"]
+
 
 class ModelRun(models.Model):
 	"""
@@ -326,11 +337,9 @@ class ModelRun(models.Model):
 	# region_modifications - back-reference from related content
 	# crop_modifications - back-reference from related content
 
-	infeasibilities_text = models.TextField(null=True, blank=True)
-
 	serializer_fields = ['id', 'name', 'description', 'ready', 'running', 'complete', 'status_message',
 		                'date_submitted', 'date_completed', "calibration_set", "user_id", "organization",
-	                     "base_model_run_id", "is_base", "infeasibilities_text"] #, "infeasibilities", ]
+	                     "base_model_run_id", "is_base"]
 
 	def __str__(self):
 		return f"Model Run: {self.name}"
@@ -419,8 +428,8 @@ class ModelRun(models.Model):
 				return
 
 			# now we need to load the resulting df back into the DB
-			self.load_records(results_df=results)
-			self.load_infeasibilities(scenario_runner)
+			result_set = self.load_records(results_df=results)
+			self.load_infeasibilities(scenario_runner, result_set)
 
 			self.complete = True
 			log.info("Model run complete")
@@ -458,10 +467,12 @@ class ModelRun(models.Model):
 				setattr(result, column, value)
 			result.save()
 
-	def load_infeasibilities(self, scenario):
+		return result_set
+
+	def load_infeasibilities(self, scenario, result_set):
 		log.debug("Assessing infeasibilities")
 		for infeasibility in scenario.infeasibilities:
-			Infeasibility.objects.create(model_run=self,
+			Infeasibility.objects.create(result_set=result_set,
 			                             region=Region.objects.get(internal_id=infeasibility.region, model_area=self.calibration_set.model_area),
 			                             year=infeasibility.timeframe,
 			                             description=infeasibility.description
@@ -487,13 +498,21 @@ class ModelRun(models.Model):
 		if len(crops.keys()) > 0:
 			sorted_by_appearance = {k:v for k,v in sorted(crops.items(), key=lambda item: item[1], reverse=True)}
 			infeasibility_items = ["{} ({})".format(crop, value) for crop, value in sorted_by_appearance.items()]
-			self.infeasibilities_text = "Crops appearing in the most infeasible regions: " + ", ".join(infeasibility_items)
+			self.infeasibilities_text = ", ".join(infeasibility_items)
 
 
 class Result(ModelItem):
 	"""
 		Holds the results for a single region/crop
 	"""
+
+	resource_flag = models.CharField(max_length=5, null=True, blank=True)
+	# we may be able to drop these fields later, but they help us while we're comparing to the original DAP and our validation
+	xlandsc = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+	xwatersc = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+	xdiffland = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+	xdifftotalland = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+	xdiffwater = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
 
 	result_set = models.ForeignKey(ResultSet, on_delete=models.CASCADE, related_name="result_set")
 
@@ -503,7 +522,7 @@ class Result(ModelItem):
 
 
 class Infeasibility(models.Model):
-	model_run = models.ForeignKey(ModelRun, on_delete=models.CASCADE, related_name="infeasibilities")
+	result_set = models.ForeignKey(ResultSet, on_delete=models.CASCADE, related_name="infeasibilities")
 	year = models.SmallIntegerField()
 	region = models.ForeignKey(Region, null=True, on_delete=models.SET_NULL, related_name="infeasibilities")
 	description = models.TextField()

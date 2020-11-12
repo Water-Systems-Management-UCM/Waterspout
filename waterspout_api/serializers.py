@@ -56,19 +56,6 @@ class ResultSerializer(serializers.ModelSerializer):
 		model = models.Result
 
 
-class ResultSetSerializer(serializers.ModelSerializer):
-	"""
-		For a single result - we'll basically never access this endpoint, but we'll use it to define the fields for the
-		full RunResultSerializer
-	"""
-
-	result_set = ResultSerializer(allow_null=True, many=True)
-
-	class Meta:
-		fields = ["result_set", "dapper_version"]
-		model = models.ResultSet
-
-
 class InfeasibilitySerializer(serializers.ModelSerializer):
 
 	class Meta:
@@ -76,11 +63,23 @@ class InfeasibilitySerializer(serializers.ModelSerializer):
 		model = models.Infeasibility
 
 
+class ResultSetSerializer(serializers.ModelSerializer):
+	"""
+		For a single result - we'll basically never access this endpoint, but we'll use it to define the fields for the
+		full RunResultSerializer
+	"""
+	result_set = ResultSerializer(allow_null=True, many=True)
+	infeasibilities = InfeasibilitySerializer(allow_null=True, many=True, read_only=True)
+
+	class Meta:
+		fields = ["result_set", "dapper_version", "infeasibilities", "infeasibilities_text"]
+		model = models.ResultSet
+
+
 class ModelRunSerializer(ModelActionSerializer):
 	region_modifications = RegionModificationSerializer(allow_null=True, many=True)
 	crop_modifications = CropModificationSerializer(allow_null=True, many=True)
 	results = ResultSetSerializer(allow_null=True)
-	#infeasibilities = InfeasibilitySerializer(allow_null=True, many=True)
 
 	class Meta:
 		model = models.ModelRun
@@ -120,18 +119,42 @@ class CalibrationSetSerializer(serializers.ModelSerializer):
 		Provides access to the input data records for viewing the database, but is also how we'll
 		retrieve the list of model runs
 	"""
-	calibration_set = CalibrationItemSerializer(read_only=True, many=True)
+	# calibration_set = CalibrationItemSerializer(read_only=True, many=True)
 	model_runs = ModelRunSerializer(read_only=True, many=True)
 
 	class Meta:
-		fields = ["calibration_set", "model_runs"]
+		fields = ["model_runs"]
 		model = models.CalibrationSet
+
+		depth = 0
+
+
+class InputDataItemSerializer(serializers.ModelSerializer):
+	"""
+		Provides access to a single input data record for viewing the database
+	"""
+	class Meta:
+		fields = models.InputDataItem.serializer_fields
+		model = models.InputDataItem
+
+
+class InputDataSetSerializer(serializers.ModelSerializer):
+	"""
+		Provides access to the input data records for viewing the database, but is also how we'll
+		retrieve the list of model runs
+	"""
+	input_data_set = InputDataItemSerializer(read_only=True, many=True)
+
+	class Meta:
+		fields = ["input_data_set"]
+		model = models.InputDataSet
 
 		depth = 0
 
 
 class ModelAreaSerializer(ModelActionSerializer):
 	calibration_data = CalibrationSetSerializer(read_only=True, many=True, allow_null=True)
+	input_data = InputDataSetSerializer(read_only=True, many=True, allow_null=True)
 	crop_set = CropSerializer(read_only=True, many=True, allow_null=True)
 	region_set = RegionSerializer(read_only=True, many=True, allow_null=True)
 
@@ -141,7 +164,7 @@ class ModelAreaSerializer(ModelActionSerializer):
 		fields = _base_fields
 		action_fields = {  # only send model results in detail view - that way the listing doesn't send massive amount
 			"retrieve": {     # of data, but we only need to load the specific model run again to get the results
-				"fields": _base_fields + ["calibration_data", "crop_set", "region_set"]
+				"fields": _base_fields + ["calibration_data", "input_data", "crop_set", "region_set"]
 			}
 		}
 		depth = 0  # will still show objects that are explicitly declared as nested objects (like region_modifications)
