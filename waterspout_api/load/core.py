@@ -114,18 +114,25 @@ def load_input_data_set(csv_file, model_area, years,
 	with open(csv_file, 'r') as csv_data:
 		reader = csv.DictReader(csv_data)
 		for row in reader:
+			continue_outer = False  # we need a flag in case we don't find an existing region object so we can skip it from the internal loop
+
 			param = item_model()
 			setattr(param, set_lookup, item_set)  # set the foreign key to the item_set - equiv to calibration_set=item_set if for calibration data
 			for key in row:
 				# need to do lookups for foreign keys
 				if key == "g":
-					param.region = models.Region.objects.get(internal_id=row["g"], model_area=model_area)
+					try:
+						param.region = models.Region.objects.get(internal_id=row["g"], model_area=model_area)
+					except models.Region.DoesNotExist:
+						continue_outer = True
+						break
 				elif key == "i":
 					param.crop = models.Crop.objects.get(crop_code=row["i"], model_area=model_area)
 				else:
 					setattr(param, key, row[key])
 
-			param.save()
+			if not continue_outer:
+				param.save()
 
 	return item_set
 

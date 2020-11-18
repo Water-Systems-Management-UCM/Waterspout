@@ -11,16 +11,19 @@ area_name = "DAP"
 
 
 def load_dap(regions="delta_islands_wDAP_simplified_0005.geojson",
-             calibration_file="DAP_calibrated.csv"):
+             calibration_file="DAP_calibrated.csv",
+             data_file="DAP_input.csv",
+             crop_file="crop_codes.csv"):
+
 	organization = core.reset_organization(org_name=area_name)
 
 	core.add_system_user_to_org(org=organization)
 
 	model_area = core.reset_model_area(model_area_name=area_name, organization=organization)
 	load_regions(regions, model_area)
-	load_crops(core.get_data_file_path(data_name, calibration_file), model_area)
+	load_crops(core.get_data_file_path(data_name, crop_file), model_area)
 	calibration_set = load_calibration(calibration_file, model_area)
-	input_data_set = load_input_data(calibration_file, model_area)
+	input_data_set = load_input_data(data_file, model_area)
 
 	load_initial_runs(calibration_set=calibration_set,
 	                  organization=organization)
@@ -45,8 +48,8 @@ def load_calibration(calibration_file, model_area):
 	                          )
 
 
-def load_input_data(calibration_file, model_area):
-	return core.load_input_data_set(csv_file=core.get_data_file_path(data_name, calibration_file),
+def load_input_data(data_file, model_area):
+	return core.load_input_data_set(csv_file=core.get_data_file_path(data_name, data_file),
 									model_area=model_area,
 									years=[2014,2015,2016,2017],
 									item_model=models.InputDataItem,
@@ -67,7 +70,7 @@ def load_crops(calibration_file, model_area):
 		calib_csv = csv.DictReader(calib_data)
 		for row in calib_csv:
 			try:
-				models.Crop(crop_code=row["i"], model_area=model_area).save()
+				models.Crop(crop_code=row["code"], name=row["name"], model_area=model_area).save()
 			except django.db.utils.IntegrityError:
 				pass  # if it already exists, skip it
 

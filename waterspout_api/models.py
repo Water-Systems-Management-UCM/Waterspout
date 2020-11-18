@@ -79,6 +79,12 @@ class RegionGroup(models.Model):
 
 
 class Region(models.Model):
+	class Meta:
+		unique_together = ['name', 'model_area']
+		indexes = [
+			models.Index(fields=("internal_id",))
+		]
+
 	name = models.CharField(max_length=255, null=False, blank=False)
 	internal_id = models.CharField(max_length=100, null=False, blank=False, unique=True)  # typically we have some kind of known ID to feed to a model that means something to people
 	external_id = models.CharField(max_length=100, null=True, blank=True)  # a common external identifier of some kind
@@ -116,11 +122,16 @@ class Crop(models.Model):
 	"""
 	class Meta:
 		unique_together = ['crop_code', 'model_area']
+		indexes = [
+			models.Index(fields=("name",))
+		]
 
 	name = models.CharField(max_length=255, null=False, blank=False)  # human readable crop name
 	crop_code = models.CharField(max_length=30, null=False, blank=False)  # code used in the models (like ALFAL for Alfalfa)
 	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE)  # clear any crops for an org when deleted
 
+	def __str__(self):
+		return self.name
 
 class CropGroup(models.Model):
 	"""
@@ -218,6 +229,7 @@ class InputDataSet(RecordSet):
 
 class CalibrationSet(RecordSet):
 	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE, related_name="calibration_data")
+	record_model_name = "CalibratedParameter"
 	reverse_name = "calibration_set"
 
 
@@ -225,11 +237,17 @@ class ResultSet(RecordSet):
 	reverse_name = "result_set"
 	record_model_name = "Result"
 
+	model_run = models.OneToOneField("ModelRun", null=True, blank=True,
+	                               on_delete=models.CASCADE, related_name="results")
+
 	# store the dapper version that the model ran with - that way we can detect if an updated version might provide different results
 	dapper_version = models.CharField(max_length=20)
 
 	infeasibilities_text = models.TextField(null=True, blank=True)
 	# infeasibilities reverse relation
+
+	def __str__(self):
+		return f"Results for Model Run {self.model_run.name}"
 
 
 class ModelItem(models.Model):
@@ -240,10 +258,13 @@ class ModelItem(models.Model):
 	"""
 	class Meta:
 		abstract = True
+		indexes = [
+			models.Index(fields=("year",))
+		]
 
 	crop = models.ForeignKey(Crop, on_delete=models.CASCADE)
 	region = models.ForeignKey(Region, on_delete=models.CASCADE)
-	year = models.IntegerField()
+	year = models.IntegerField(null=True, blank=True)  # inputs will have this, but calibrated items and results may not
 	omegaland = models.DecimalField(max_digits=10, decimal_places=1)
 	omegasupply = models.DecimalField(max_digits=10, decimal_places=1)
 	omegalabor = models.DecimalField(max_digits=10, decimal_places=1)
@@ -255,13 +276,12 @@ class ModelItem(models.Model):
 	p = models.DecimalField(max_digits=18, decimal_places=10)
 	y = models.DecimalField(max_digits=13, decimal_places=5)
 	xland = models.DecimalField(max_digits=18, decimal_places=10)
-	omegawater = models.DecimalField(max_digits=10, decimal_places=2)
 
 
 class InputDataItem(ModelItem):
 	dataset = models.ForeignKey(InputDataSet, on_delete=models.CASCADE, related_name="input_data_set")
 
-	serializer_fields = ["crop", "region", "year", "omegaland", "omegawater",
+	serializer_fields = ["crop", "region", "year", "omegaland",
 	                     "omegasupply", "omegalabor", "omegaestablish", "omegacash",
 	                     "omeganoncash", "omegatotal", "p", "y"]
 
@@ -273,6 +293,8 @@ class CalibratedParameter(ModelItem):
 		parameters, and model results
 	"""
 
+	omegawater = models.DecimalField(max_digits=10, decimal_places=2)
+	pc = models.DecimalField(max_digits=10, decimal_places=3)
 	sigma = models.DecimalField(max_digits=5, decimal_places=4)
 	theta = models.DecimalField(max_digits=5, decimal_places=4)
 	pimarginal = models.DecimalField(max_digits=18, decimal_places=10)
@@ -306,6 +328,11 @@ class ModelRun(models.Model):
 		The central object for configuring an individual run of the model - is related to modification objects from the
 		modification side.
 	"""
+	class Meta:
+		indexes = [
+			models.Index(fields=("ready", "running", "complete")),
+			models.Index(fields=("date_submitted",))
+		]
 	name = models.CharField(max_length=255)
 	description = models.TextField(null=True, blank=True)
 
@@ -327,9 +354,6 @@ class ModelRun(models.Model):
 												# as a CSV. This way, if people eidt the calibration data for future runs,
 												# we still know what inputs ran this version of the model.
 	# model_area relation is through calibration_set
-
-	results = models.OneToOneField(ResultSet, null=True, blank=True,
-	                               on_delete=models.SET_NULL, related_name="model_run")
 
 	user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="model_runs")
 	organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="model_runs")
@@ -451,7 +475,7 @@ class ModelRun(models.Model):
 		for record in results_df.itertuples():
 			# get the first tuple's fields, then exit the loop
 			# this should be faster than retrieving it every time in the next loop, but we need to do it once
-			fields = list(set(record._fields) - set(["g", "i", "calibration_set"]))
+			fields = list(set(record._fields) - set(["id", "g", "i", "calibration_set"]))
 			break
 
 		for record in results_df.itertuples():  # returns named tuples
@@ -506,6 +530,7 @@ class Result(ModelItem):
 		Holds the results for a single region/crop
 	"""
 
+	omegawater = models.DecimalField(max_digits=10, decimal_places=2)
 	resource_flag = models.CharField(max_length=5, null=True, blank=True)
 	# we may be able to drop these fields later, but they help us while we're comparing to the original DAP and our validation
 	xlandsc = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
