@@ -10,5 +10,6 @@ Restart=always
 RestartSec=10
 User=
 ExecStart=
+Environment="PATH="
 [Install]
 WantedBy=multi-user.target

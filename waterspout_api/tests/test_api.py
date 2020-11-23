@@ -33,6 +33,7 @@ class APIModelRunTestCase(APITransactionTestCase):
 			"calibration_set": self.calibration_set.id,
 			"organization": self.organization.id,
 			"region_modifications": [],
+			"crop_modifications": [],
 			"name": "test",
 		}
 
@@ -56,12 +57,57 @@ class APIModelRunTestCase(APITransactionTestCase):
 		# should be getting a PermissionError because user isn't in the right group
 		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+	def test_nonmember_user_cant_delete(self):
+		"""
+			Make sure that only members of the same organization as a model run
+			can delete it
+		:return:
+		"""
+		org_user = User(username="deletion_test1")
+		org_user.save()
+		org_user.groups.add(self.organization.group)
+		org_user.save()
+
+		self.model_area.organization = self.organization
+		self.model_area.save()
+
+		other_user = User(username="deletion_test2")
+		other_user.save()
+
+		# make a new model run
+		self.client.force_authenticate(user=org_user)  # set the authentication - no tokens needed
+		response = self.client.post(self.url, self.test_request_data, format="json")
+		# we're not testing model creation here, but we can't proceed if this isn't created, so test it
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+		# now switch back to the one with no permissions
+		self.client.force_authenticate(user=other_user)
+		model_run_url = self.url + str(response.data["id"]) + "/"
+		response = self.client.delete(model_run_url)
+		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+		# create another org and add other_user to it to make sure that being in *any* org isn't sufficient
+		org2 = models.Organization(name="deletion_test")
+		org2.save()
+		other_user.groups.add(org2.group)
+		self.client.force_authenticate(user=other_user)
+		response = self.client.delete(model_run_url)
+		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+		# now delete from the user who should have permissions.
+		self.client.force_authenticate(user=org_user)
+		response = self.client.delete(model_run_url)
+		self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
 	def test_member_calibration_set_fails(self):
 		# new user is now a group member
 		new_user = User(username="test1")
 		new_user.save()
 		new_user.groups.add(self.organization.group)
 		new_user.save()
+
+		self.model_area.organization = None
+		self.model_area.save()
 
 		self.client.force_authenticate(user=new_user)  # set the authentication - no tokens needed
 

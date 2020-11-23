@@ -26,11 +26,14 @@ router = routers.DefaultRouter()
 router.register(API_URLS["regions"]["partial"], ws_views.RegionViewSet, basename="regions")
 router.register(API_URLS["model_runs"]["partial"], ws_views.ModelRunViewSet, basename="model_runs")
 router.register(API_URLS["region_modifications"]["partial"], ws_views.RegionModificationViewSet, basename="region_modifications")
+router.register(API_URLS["crops"]["partial"], ws_views.CropViewSet, basename="crops")
+router.register(API_URLS["users"]["partial"], ws_views.UsersViewSet, basename="users")
+router.register(API_URLS["model_areas"]["partial"], ws_views.ModelAreaViewSet, basename="model_areas")
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('application-variables/', ws_views.stormchaser_variable_only),
+    path('application-variables/', ws_views.GetApplicationVariables.as_view()),
     path('api/', include(router.urls)),
     url(r'^api-token-auth/', ws_views.CustomAuthToken.as_view()),  # POST a username and password here, get a token back
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))

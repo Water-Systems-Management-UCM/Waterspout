@@ -8,4 +8,28 @@
       git:
         clone: no
         force: yes
-        repo: "{{ front_end_application_folder }}"
+        update: yes
+        repo: "{{ front_end_repo_url }}"
+        dest: "{{ front_end_application_folder }}"
+
+    - name: Install NPM Packages
+      become: true
+      become_method: sudo
+      shell:
+        chdir: "{{ front_end_application_folder }}"
+        cmd: npm install
+
+    - name: Switch Code to Production Build
+      become: true
+      become_method: sudo
+      lineinfile:
+        path: "{{ front_end_application_folder }}/vue.config.js"
+        regexp: "mode: 'development'"
+        line: "mode: 'production',"
+
+    - name: Run build of distribution
+      become: true
+      become_method: sudo
+      shell:
+        chdir: "{{ front_end_application_folder }}"
+        cmd: npm run-script build

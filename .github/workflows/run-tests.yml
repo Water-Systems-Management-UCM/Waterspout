@@ -74,6 +74,7 @@ jobs:
     - name: Django Setup  # make sure local_settings.py exists
       run: |
         cp Waterspout/local_settings_template.py Waterspout/local_settings.py
+        cp Waterspout/databases_template.py Waterspout/databases.py
     - name: Run Django Tests
       run: |
         python manage.py test

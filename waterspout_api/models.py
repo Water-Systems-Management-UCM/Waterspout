@@ -3,14 +3,17 @@ import traceback
 import decimal
 import json
 
+import numpy
+
 import django
 from django.db import models  # we're going to geodjango this one - might not need it, but could make some things nicer
 from django.contrib.auth.models import User, Group
 
+
 from Waterspout import settings
 
 import pandas
-from Dapper import scenarios
+from Dapper import scenarios, get_version as get_dapper_version
 
 log = logging.getLogger("waterspout.models")
 
@@ -49,6 +52,9 @@ class Organization(models.Model):
 		self.group.user_set.add(user)
 		self.group.save()
 
+	def __str__(self):
+		return f"Organization: {self.name}"
+
 
 class ModelArea(models.Model):
 	"""
@@ -56,7 +62,7 @@ class ModelArea(models.Model):
 		but just in case we want to be able to deploy multiple models for an organization in the future, we'll store it
 		this way.
 	"""
-	organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.DO_NOTHING)
+	organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.SET_NULL)
 	name = models.CharField(max_length=255, unique=True)
 	description = models.TextField(null=True, blank=True)
 
@@ -69,16 +75,22 @@ class RegionGroup(models.Model):
 	internal_id = models.CharField(max_length=100, null=False, blank=False)  # typically we have some kind of known ID to feed to a model that means something to people
 	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE)
 
-	geometry = SimpleJSONField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
+	geometry = models.JSONField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
 
 
 class Region(models.Model):
+	class Meta:
+		unique_together = ['name', 'model_area']
+		indexes = [
+			models.Index(fields=("internal_id",))
+		]
+
 	name = models.CharField(max_length=255, null=False, blank=False)
 	internal_id = models.CharField(max_length=100, null=False, blank=False, unique=True)  # typically we have some kind of known ID to feed to a model that means something to people
 	external_id = models.CharField(max_length=100, null=True, blank=True)  # a common external identifier of some kind
 	# .extra_attributes reverse lookup
 
-	geometry = SimpleJSONField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
+	geometry = models.JSONField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
 
 	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE)
 	group = models.ForeignKey(RegionGroup, null=True, blank=True, on_delete=models.CASCADE)  # there could be a reason to make it a many to many instead, but
@@ -109,12 +121,17 @@ class Crop(models.Model):
 		duplicating crops between organizations.
 	"""
 	class Meta:
-		unique_together = ['crop_code', 'organization']
+		unique_together = ['crop_code', 'model_area']
+		indexes = [
+			models.Index(fields=("name",))
+		]
 
 	name = models.CharField(max_length=255, null=False, blank=False)  # human readable crop name
 	crop_code = models.CharField(max_length=30, null=False, blank=False)  # code used in the models (like ALFAL for Alfalfa)
-	organization = models.ForeignKey(Organization, on_delete=models.CASCADE)  # clear any crops for an org when deleted
+	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE)  # clear any crops for an org when deleted
 
+	def __str__(self):
+		return self.name
 
 class CropGroup(models.Model):
 	"""
@@ -133,10 +150,12 @@ class RecordSet(models.Model):
 		of calibrated parameters initially, but then provide a black box version of the calibration parameters. We can
 		then have behavior that tries a lookup for a calibration set, and if it doesn't exist, runs the calibration.
 	"""
+
+	record_model_name = "ModelItem"
 	years = models.TextField()  # yes, text. We'll concatenate text as a year lookup
 	# prices = model
 
-	def as_data_frame(self,):
+	def as_data_frame(self):
 		"""
 			Returns the data frame that needs to be run through the model itself
 		:return:
@@ -153,7 +172,9 @@ class RecordSet(models.Model):
 		# day right now.
 
 		foreign_keys = ["region", "crop"]
-		fields = [f.name for f in ModelItem._meta.get_fields()]  # get all the fields for calibrated parameters
+
+		record_model = globals()[self.record_model_name]
+		fields = [f.name for f in record_model._meta.get_fields()]  # get all the fields for calibrated parameters
 		basic_fields = list(set(fields) - set(foreign_keys))  # remove the foreign keys - we'll process those separately
 
 		# reverse_name will exist for subclasses
@@ -174,13 +195,14 @@ class RecordSet(models.Model):
 		"""
 			Saves the set to a CSV file - all args are passed through to Pandas.to_csv, so it's
 			possible to have it return a CSV as a string by just calling to_csv()
-		:param args:
+		:param args: waterspout_sort_columns is not compatible with waterspout_limited
 		:param kwargs:
 		:return:
 		"""
 		df = self.as_data_frame().sort_values(axis=0, by=["year", "g", "i"])
+		df = df.rename(columns={"g": "region", "i": "crop"})
 
-		if kwargs.pop("waterspout_sort_columns", True) is True:
+		if kwargs.pop("waterspout_sort_columns", False) is True:
 			# match the column output to how Spencer has it so we can compare
 			column_order = ("region","crop","year","omegaland","omegasupply","omegalabor",
 			                "omegaestablish","omegacash","omeganoncash","omegatotal",
@@ -200,13 +222,32 @@ class RecordSet(models.Model):
 		return df.to_csv(*args, **kwargs)
 
 
+class InputDataSet(RecordSet):
+	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE, related_name="input_data")
+	reverse_name = "input_data_set"
+
+
 class CalibrationSet(RecordSet):
-	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE)
+	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE, related_name="calibration_data")
+	record_model_name = "CalibratedParameter"
 	reverse_name = "calibration_set"
 
 
 class ResultSet(RecordSet):
 	reverse_name = "result_set"
+	record_model_name = "Result"
+
+	model_run = models.OneToOneField("ModelRun", null=True, blank=True,
+	                               on_delete=models.CASCADE, related_name="results")
+
+	# store the dapper version that the model ran with - that way we can detect if an updated version might provide different results
+	dapper_version = models.CharField(max_length=20)
+
+	infeasibilities_text = models.TextField(null=True, blank=True)
+	# infeasibilities reverse relation
+
+	def __str__(self):
+		return f"Results for Model Run {self.model_run.name}"
 
 
 class ModelItem(models.Model):
@@ -217,10 +258,13 @@ class ModelItem(models.Model):
 	"""
 	class Meta:
 		abstract = True
+		indexes = [
+			models.Index(fields=("year",))
+		]
 
-	crop = models.ForeignKey(Crop, on_delete=models.DO_NOTHING)
-	region = models.ForeignKey(Region, on_delete=models.DO_NOTHING)
-	year = models.IntegerField()
+	crop = models.ForeignKey(Crop, on_delete=models.CASCADE)
+	region = models.ForeignKey(Region, on_delete=models.CASCADE)
+	year = models.IntegerField(null=True, blank=True)  # inputs will have this, but calibrated items and results may not
 	omegaland = models.DecimalField(max_digits=10, decimal_places=1)
 	omegasupply = models.DecimalField(max_digits=10, decimal_places=1)
 	omegalabor = models.DecimalField(max_digits=10, decimal_places=1)
@@ -232,7 +276,25 @@ class ModelItem(models.Model):
 	p = models.DecimalField(max_digits=18, decimal_places=10)
 	y = models.DecimalField(max_digits=13, decimal_places=5)
 	xland = models.DecimalField(max_digits=18, decimal_places=10)
+
+
+class InputDataItem(ModelItem):
+	dataset = models.ForeignKey(InputDataSet, on_delete=models.CASCADE, related_name="input_data_set")
+
+	serializer_fields = ["crop", "region", "year", "omegaland",
+	                     "omegasupply", "omegalabor", "omegaestablish", "omegacash",
+	                     "omeganoncash", "omegatotal", "p", "y"]
+
+
+class CalibratedParameter(ModelItem):
+	"""
+		Note that it's of class ModelItem - ModelItems define the various input
+		parameters and results that we use for calibration inputs, calibrated
+		parameters, and model results
+	"""
+
 	omegawater = models.DecimalField(max_digits=10, decimal_places=2)
+	pc = models.DecimalField(max_digits=10, decimal_places=3)
 	sigma = models.DecimalField(max_digits=5, decimal_places=4)
 	theta = models.DecimalField(max_digits=5, decimal_places=4)
 	pimarginal = models.DecimalField(max_digits=18, decimal_places=10)
@@ -254,23 +316,11 @@ class ModelItem(models.Model):
 	#xwatercalib = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
 	#difflandpct = models.DecimalField(max_digits=12, decimal_places=10, null=True, blank=True)
 	#diffwaterpct = models.DecimalField(max_digits=12, decimal_places=10, null=True, blank=True)
-	resource_flag = models.CharField(max_length=5, null=True, blank=True)
 
-	# we may be able to drop these fields later, but they help us while we're comparing to the original DAP and our validation
-	xlandsc = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
-	xwatersc = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
-	xdiffland = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
-	xdifftotalland = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
-	xdiffwater = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
-
-
-class CalibratedParameter(ModelItem):
-	"""
-		Note that it's of class ModelItem - ModelItems define the various input
-		parameters and results that we use for calibration inputs, calibrated
-		parameters, and model results
-	"""
 	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.CASCADE, related_name="calibration_set")
+	serializer_fields = ["crop", "region", "year", "omegaland", "omegawater",
+	                     "omegasupply", "omegalabor", "omegaestablish", "omegacash",
+	                     "omeganoncash", "omegatotal", "p", "y"]
 
 
 class ModelRun(models.Model):
@@ -278,6 +328,11 @@ class ModelRun(models.Model):
 		The central object for configuring an individual run of the model - is related to modification objects from the
 		modification side.
 	"""
+	class Meta:
+		indexes = [
+			models.Index(fields=("ready", "running", "complete")),
+			models.Index(fields=("date_submitted",))
+		]
 	name = models.CharField(max_length=255)
 	description = models.TextField(null=True, blank=True)
 
@@ -290,13 +345,15 @@ class ModelRun(models.Model):
 	date_submitted = models.DateTimeField(default=django.utils.timezone.now, null=True, blank=True)
 	date_completed = models.DateTimeField(null=True, blank=True)
 
-	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.DO_NOTHING)
+	# which model run is the base, unmodified version? Useful for data viz
+	base_model_run = models.ForeignKey("ModelRun", null=True, blank=True, on_delete=models.DO_NOTHING)
+	is_base = models.BooleanField(default=False)  # is this a base model run (True), or a normal model run (False)
+
+	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.DO_NOTHING, related_name="model_runs")
 	calibrated_parameters_text = models.TextField(null=True, blank=True)  # we'll put a snapshot of the calibration parameters in here, probably
 												# as a CSV. This way, if people eidt the calibration data for future runs,
 												# we still know what inputs ran this version of the model.
-
-	results = models.OneToOneField(ResultSet, null=True, blank=True,
-	                               on_delete=models.DO_NOTHING, related_name="model_run")
+	# model_area relation is through calibration_set
 
 	user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="model_runs")
 	organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="model_runs")
@@ -305,10 +362,11 @@ class ModelRun(models.Model):
 	# crop_modifications - back-reference from related content
 
 	serializer_fields = ['id', 'name', 'description', 'ready', 'running', 'complete', 'status_message',
-		          'date_submitted', 'date_completed', "calibration_set", "organization"]
+		                'date_submitted', 'date_completed', "calibration_set", "user_id", "organization",
+	                     "base_model_run_id", "is_base"]
 
 	def __str__(self):
-		return self.name
+		return f"Model Run: {self.name}"
 
 	def as_dict(self):
 		return {field: getattr(self, field) for field in self.serializer_fields}
@@ -340,14 +398,34 @@ class ModelRun(models.Model):
 	def attach_modifications(self, scenario):
 		land_modifications = {}
 		water_modifications = {}
-		for modification in self.region_modifications.all():
+
+		region_modifications = self.region_modifications.filter(region__isnull=False)
+		for modification in region_modifications:  # get all the nondefault modifications
 			land_modifications[modification.region.internal_id] = float(modification.land_proportion)
 			water_modifications[modification.region.internal_id] = float(modification.water_proportion)
 
-		if len(land_modifications.keys()) > 0:
-			scenario.perform_adjustment("land", land_modifications)
-		if len(water_modifications.keys()) > 0:
-			scenario.perform_adjustment("water", water_modifications)
+		default_region_modification = self.region_modifications.get(region__isnull=True)
+
+		scenario.perform_adjustment("land", land_modifications, default=float(default_region_modification.land_proportion))
+		scenario.perform_adjustment("water", water_modifications, default=float(default_region_modification.water_proportion))
+
+		# now attach the crop modifications - start by loading the data into a dict
+		price_modifications = {}
+		yield_modifications = {}
+		crop_modifications = self.crop_modifications.filter(crop__isnull=False)
+		for modification in crop_modifications:  # get all the nondefault modifications
+			price_modifications[modification.crop.crop_code] = float(modification.price_proportion)
+			yield_modifications[modification.crop.crop_code] = float(modification.yield_proportion)
+
+			# we can always add it, and it's OK if they're both None - that'll get checked later
+			scenario.add_crop_area_constraint(crop_code=modification.crop.crop_code,
+			                                  min_proportion=modification.min_land_area_proportion,
+			                                  max_proportion=modification.max_land_area_proportion)
+
+		default_crop_modification = self.crop_modifications.get(crop__isnull=True)
+		# then pass those dicts to the scenario code regardless if there are items (so defaults get set)
+		scenario.perform_adjustment("price", price_modifications, default=float(default_crop_modification.price_proportion))
+		scenario.perform_adjustment("yield", yield_modifications, default=float(default_crop_modification.yield_proportion))
 
 	def run(self, csv_output=None):
 		# initially, we won't support calibrating the data here - we'll
@@ -367,8 +445,15 @@ class ModelRun(models.Model):
 			if csv_output is not None:
 				results.to_csv(csv_output)
 
+			# before loading results, make sure we weren't deleted in the app between starting the run and now
+			try:
+				ModelRun.objects.get(pk=self.id)
+			except ModelRun.DoesNotExist:
+				return
+
 			# now we need to load the resulting df back into the DB
-			self.load_records(results_df=results)
+			result_set = self.load_records(results_df=results)
+			self.load_infeasibilities(scenario_runner, result_set)
 
 			self.complete = True
 			log.info("Model run complete")
@@ -384,22 +469,60 @@ class ModelRun(models.Model):
 		:return:
 		"""
 		log.info(f"Loading results for model run {self.id}")
-		result_set = ResultSet(model_run=self)
+		result_set = ResultSet(model_run=self, dapper_version=get_dapper_version())
 		result_set.save()
 
 		for record in results_df.itertuples():
 			# get the first tuple's fields, then exit the loop
 			# this should be faster than retrieving it every time in the next loop, but we need to do it once
-			fields = list(set(record._fields) - set(["g", "i", "calibration_set"]))
+			fields = list(set(record._fields) - set(["id", "g", "i", "calibration_set"]))
 			break
 
 		for record in results_df.itertuples():  # returns named tuples
 			result = Result(result_set=result_set)
-			result.crop = Crop.objects.get(crop_code=record.i, organization=self.organization)
-			result.region = Region.objects.get(internal_id=record.g, model_area__organization=self.organization)
+			result.crop = Crop.objects.get(crop_code=record.i, model_area=self.calibration_set.model_area)
+			result.region = Region.objects.get(internal_id=record.g, model_area=self.calibration_set.model_area)
 			for column in fields:  # _fields isn't private - it's just preventing conflicts - see namedtuple docs
-				setattr(result, column, getattr(record, column))
+				value = getattr(record, column)
+
+				if type(value) is not str and numpy.isnan(value):  # if we got NaN (such as with an infeasibility)
+					value = None  # then we need to skip it or it'll bork the whole table (seriously)
+
+				setattr(result, column, value)
 			result.save()
+
+		return result_set
+
+	def load_infeasibilities(self, scenario, result_set):
+		log.debug("Assessing infeasibilities")
+		for infeasibility in scenario.infeasibilities:
+			Infeasibility.objects.create(result_set=result_set,
+			                             region=Region.objects.get(internal_id=infeasibility.region, model_area=self.calibration_set.model_area),
+			                             year=infeasibility.timeframe,
+			                             description=infeasibility.description
+			                             )
+
+		total_infeasibilities = len(scenario.infeasibilities)
+		crops = {}
+		# now let's see if there are any crops that are common to the infeasibilities
+		#if total_infeasibilities > 2:  # if we have more than a handful, we'll assess which crops are common
+		for infeasibility in scenario.infeasibilities:
+			infeasible_region_results = Result.objects.filter(result_set=self.results,
+					                                          region__internal_id=infeasibility.region,
+					                                          year=infeasibility.timeframe)
+
+			for result in infeasible_region_results:
+				crop = result.crop.crop_code
+				if crop in crops:
+					crops[crop] += 1
+				else:
+					crops[crop] = 1
+
+		# ideally we'd want to key this by name so that we can show the name here
+		if len(crops.keys()) > 0:
+			sorted_by_appearance = {k:v for k,v in sorted(crops.items(), key=lambda item: item[1], reverse=True)}
+			infeasibility_items = ["{} ({})".format(crop, value) for crop, value in sorted_by_appearance.items()]
+			self.infeasibilities_text = ", ".join(infeasibility_items)
 
 
 class Result(ModelItem):
@@ -407,7 +530,27 @@ class Result(ModelItem):
 		Holds the results for a single region/crop
 	"""
 
+	omegawater = models.DecimalField(max_digits=10, decimal_places=2)
+	resource_flag = models.CharField(max_length=5, null=True, blank=True)
+	# we may be able to drop these fields later, but they help us while we're comparing to the original DAP and our validation
+	xlandsc = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+	xwatersc = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+	xdiffland = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+	xdifftotalland = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+	xdiffwater = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+
 	result_set = models.ForeignKey(ResultSet, on_delete=models.CASCADE, related_name="result_set")
+
+	net_revenue = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
+	gross_revenue = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
+	water_per_acre = models.DecimalField(max_digits=18, decimal_places=5, null=True, blank=True)
+
+
+class Infeasibility(models.Model):
+	result_set = models.ForeignKey(ResultSet, on_delete=models.CASCADE, related_name="infeasibilities")
+	year = models.SmallIntegerField()
+	region = models.ForeignKey(Region, null=True, on_delete=models.SET_NULL, related_name="infeasibilities")
+	description = models.TextField()
 
 
 class RegionModification(models.Model):
@@ -447,14 +590,38 @@ class CropModification(models.Model):
 	class Meta:
 		unique_together = ['model_run', 'crop']
 
-	crop = models.ForeignKey(Crop, on_delete=models.DO_NOTHING, related_name="modifications")
-	crop_group = models.ForeignKey(CropGroup, on_delete=models.DO_NOTHING, related_name="modifications")
+	serializer_fields = ["id", "crop", "crop_group", "price_proportion", "yield_proportion",
+	                     "min_land_area_proportion", "max_land_area_proportion"]
 
-	price_proportion = models.FloatField()  # the amount, relative to base values, to provide
-	yield_proportion = models.FloatField()  # the amount, relative to base values, to provide
-	min_land_area_proportion = models.FloatField()  # the amount, relative to base values, to provide
-	max_land_area_proportion = models.FloatField()  # the amount, relative to base values, to provide
+	crop = models.ForeignKey(Crop, on_delete=models.DO_NOTHING, related_name="modifications",
+	                            null=True, blank=True)
+	crop_group = models.ForeignKey(CropGroup, on_delete=models.DO_NOTHING, related_name="modifications",
+	                               null=True, blank=True)
+
+	price_proportion = models.FloatField(default=1.0, blank=True)  # the amount, relative to base values, to provide
+	yield_proportion = models.FloatField(default=1.0, blank=True)  # the amount, relative to base values, to provide
+	min_land_area_proportion = models.FloatField(null=True, blank=True)  # the amount, relative to base values, to provide
+	max_land_area_proportion = models.FloatField(null=True, blank=True)  # the amount, relative to base values, to provide
 
 	model_run = models.ForeignKey(ModelRun, null=True, blank=True, on_delete=models.CASCADE, related_name="crop_modifications")
+
+
+class HelpDocument(models.Model):
+	"""
+		We'll store help documents in the DB as well so that they can
+		be pulled into the app via the API - we can also publish them
+		elswhere if we'd like - this is ultimately just a simple article
+		system.
+
+		We'll plan to load these from specific articles in the Sphinx
+		documentation
+	"""
+	title = models.CharField(max_length=2048)
+	author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+	slug = models.CharField(max_length=64)
+
+	summary = models.TextField()
+	body = models.TextField()
+
 
 

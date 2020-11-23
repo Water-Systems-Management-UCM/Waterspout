@@ -6,14 +6,15 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse, HttpResponse
 
-from rest_framework import viewsets, renderers
+from rest_framework import viewsets, renderers, authentication
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import BasePermission, IsAuthenticated, IsAdminUser, SAFE_METHODS
+from rest_framework.views import APIView
 
-from Waterspout import local_settings
+from Waterspout import settings
 from waterspout_api import models
 from waterspout_api import serializers
 from waterspout_api import support
@@ -43,6 +44,47 @@ class CustomAuthToken(ObtainAuthToken):
 		})
 
 
+class GetApplicationVariables(APIView):
+	"""
+	View to list all users in the system.
+
+	* Requires token authentication.
+	* Only admin users are able to access this view.
+	"""
+	authentication_classes = [authentication.TokenAuthentication]
+	permission_classes = [IsAuthenticated]
+
+	def get(self, request, format=None):
+		"""
+		Return a list of all users.
+		"""
+
+		application_variables = {
+		    "model_area_id": 1,
+		    "organization_id": 1,
+		    "calibration_set_id": 1,
+			"user_api_token": f"{support.get_or_create_token(request.user)}",
+		}
+		for url in settings.API_URLS:
+			application_variables[f"api_url_{url}"] = settings.API_URLS[url]['full']
+
+		return Response(application_variables)
+
+
+class CropViewSet(viewsets.ModelViewSet):
+	"""
+	API endpoint that allows users to be viewed or edited.
+	"""
+	permission_classes = [IsAuthenticated]
+	serializer_class = serializers.CropSerializer
+
+	def get_queryset(self):
+		# this could lead to people getting crops for multiple organizations at the same time. Going to leave it as is for now
+		# until we actually have something that sets the currently active organization. Should add that soon
+		# should crops also be associated with model areas rather than orgs?? Probably
+		return models.Crop.objects.filter(model_area__organization__in=support.get_organizations_for_user(self.request.user)).order_by("name")
+
+
 class RegionViewSet(viewsets.ModelViewSet):
 	"""
 	API endpoint that allows users to be viewed or edited.
@@ -65,6 +107,43 @@ class RegionModificationViewSet(viewsets.ModelViewSet):
 		return models.RegionModification.objects.filter(model_run__organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
 
 
+class UsersViewSet(viewsets.ModelViewSet):
+	"""
+	Returns Users in the same organizations as the current user
+	"""
+	permission_classes = [IsAuthenticated]
+	serializer_class = serializers.UsersSerializer
+
+	# this needs a TEST
+	def get_queryset(self):
+		# get the groups the user is in
+		groups = list(self.request.user.groups.all())
+
+		if len(groups) == 0:
+			return None
+
+		# get the queryset for the first user group
+		users = groups[0].user_set.all()  # get the first item to start any potential iteration
+		if len(groups) == 1:
+			return users  # if we only have that group, return it
+		else:
+			for group in groups[1:]:  # otherwise, iterate through the remaining groups and modify the queryset to include their users
+				users = users | group.user_set.all()  # trying to make Django do the work so we don't eval the queryset until we're done getting all of them
+
+		return users.distinct()  # now that we've joined the querysets, as for only the distinct users
+
+
+class CropModificationViewSet(viewsets.ModelViewSet):
+	"""
+	API endpoint that allows modifications to regions to be read and saved
+	"""
+	permission_classes = [IsAuthenticated]
+	serializer_class = serializers.CropModificationSerializer
+
+	def get_queryset(self):
+		return models.CropModification.objects.filter(model_run__organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
+
+
 class PassthroughRenderer(renderers.BaseRenderer):  # we need this so it won't mess with our CSV output and make it HTML
 	"""
 		Return data as-is. View should supply a Response.
@@ -73,6 +152,14 @@ class PassthroughRenderer(renderers.BaseRenderer):  # we need this so it won't m
 	format = ''
 	def render(self, data, accepted_media_type=None, renderer_context=None):
 		return data
+
+
+class ModelAreaViewSet(viewsets.ModelViewSet):
+	permission_classes = [permissions.IsInSameOrganization]
+	serializer_class = serializers.ModelAreaSerializer
+
+	def get_queryset(self):
+		return models.ModelArea.objects.filter(organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
 
 
 class ModelRunViewSet(viewsets.ModelViewSet):
@@ -107,7 +194,7 @@ class ModelRunViewSet(viewsets.ModelViewSet):
 			return Response(json.dumps(model_run))
 
 		output_name = f"waterspout_model_run_{model_run.id}_{model_run.name}.csv"
-		response = Response(model_run.results.to_csv(waterspout_limited=True),
+		response = Response(model_run.results.to_csv(waterspout_limited=True, waterspout_sort_columns=False),
 		                    headers={'Content-Disposition': f'attachment; filename="{output_name}"'},
 		                    content_type='text/csv')
 		return response
@@ -125,7 +212,7 @@ class ModelRunViewSet(viewsets.ModelViewSet):
 		model_run = self.get_object()
 
 		total_time = 0
-		while model_run.complete is False or total_time < local_settings.LONG_POLL_DURATION:
+		while model_run.complete is False or total_time < settings.LONG_POLL_DURATION:
 			pass
 
 	def perform_create(self, serializer):

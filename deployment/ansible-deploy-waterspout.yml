@@ -92,13 +92,29 @@
 #      apt_key:
 #        id: 314DF160
 
+    # really not sure why this is failing, but it is
+    #- name: Add the NodeJS PPA
+    #  become: true
+    #  become_method: sudo
+    #  script:
+    #    cmd: "node_ppa_add.sh"
+    #    executable: bash
+
+    # I really don't like doing this (the above commented out code was an attempt to avoid the download and execute
+    # but I don't know why it's not working - we should refactor this out at some point
+    - name: Add the NodeJS PPA
+      become: yes
+      shell: curl -sL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+      args:
+        warn: no
+
       # install some basic packages we'll want for this project
     - name: Install system apt packages
       become: true
       become_method: sudo
       apt:
         update_cache: yes
-        name: ['acl', 'git','nginx-full','{{ python_executable }}','{{ python_executable }}-dev','python3-pip','virtualenv','postgresql' ,'gdal-bin','libgdal-dev']
+        name: ['acl', 'git', 'nodejs', 'nginx-full', '{{ python_executable }}','{{ python_executable }}-dev','python3-pip','virtualenv','postgresql' ,'gdal-bin','libgdal-dev']
         state: present
       # not sure if the python-pip here will install it for python 3.8 - I'm not sure it will based on experience
       # we may need to adjust how we get pip
@@ -140,19 +156,24 @@
         permissions: rwx
         state: present
 
+    - name: Reboot to get new group membership
+      become: true
+      become_method: sudo
+      reboot:
+
     # need to verify that it's not going to make a folder /srv/Waterspout/Waterspout with this
     - name: Clone Waterspout to machine
       git:
         clone: yes
         force: yes  # if we run this after we've run the update script, then we'll have modified manage.py and need to force it to discard changes
-        repo: https://github.com/Water-Systems-Management-UCM/Waterspout
+        repo: "{{ back_end_repo_url }}"
         dest: "{{ back_end_application_folder }}"
 
     - name: Clone Stormchaser to machine
       git:
         clone: yes
         force: yes
-        repo: https://github.com/Water-Systems-Management-UCM/stormchaser
+        repo: "{{ front_end_repo_url }}"
         dest: "{{ front_end_application_folder }}"
 
     - name: Make virtualenv and install Python GDAL before rest of requirements (so it's present and matches correct version)
@@ -186,6 +207,15 @@
         path: /etc/nginx/sites-available/static_site.cfg
         regexp: 'root REPLACE_ROOT_FOLDER;'
         line: "root {{ front_end_application_folder }}/dist;"
+
+    # we only set this to the back end application folder because the Nginx config will end up adding the static folder, etc
+    - name: Set Django Static Root in Nginx
+      become: true
+      become_method: sudo
+      lineinfile:
+        path: /etc/nginx/sites-available/static_site.cfg
+        regexp: 'root DJANGO_STATIC_ROOT_FOLDER;'
+        line: "root {{ back_end_application_folder }}/static;"
 
     - name: Set Access Log in Nginx
       become: true
@@ -294,6 +324,7 @@
 
 # now we're done with the standard setup, run the code that runs both the first time and for every update
 - import_playbook: ansible-install-dapper.yml
+- import_playbook: ansible-configure-postgres.yml
 - import_playbook: ansible-update-waterspout.yml
 - import_playbook: ansible-update-stormchaser.yml
 
@@ -302,10 +333,7 @@
     #     Can we generate and configure postgres user accounts and store them in variables
     #     to plug into local settings files? Do I need a separate script that dumps local_settings files?
     #     or can I do a replacement of a template string with ansible?
-    # TODO: Create user account for application to run as
     # TODO: Set permissions on application srv directory
-    # TODO: Process static files
     # TODO: Fail2ban and other services
     # TODO: Move SSH port?
-    # TODO: Check groundwater site setup instructions for other things that go here
     # TODO: Make application update playbook

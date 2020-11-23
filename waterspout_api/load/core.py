@@ -93,22 +93,55 @@ def load_regions(json_file, field_map, model_area):
 		region.save()  # save it with the new attributes
 
 
-def load_calibration_set(csv_file, model_area, years, organization):
-	calibration_set = models.CalibrationSet(model_area=model_area, years=",".join([str(year) for year in years]))
-	calibration_set.save()
+def load_input_data_set(csv_file, model_area, years,
+                         set_model=models.CalibrationSet,
+                         item_model=models.CalibratedParameter,
+                         set_lookup="calibration_set"):
+	"""
+		Load Input Data or Calibration Data, but they use the same format - just the calibration data will store
+		more fields. provide the set_model, item_model, and set_lookup in order to use it for input data
+	:param csv_file:
+	:param model_area:
+	:param years:
+	:param set_model: which model to use for the dataset
+	:param item_model: which model to use for individual data items
+	:param set_lookup: string for the foreign key from the item_model to the set_model
+	:return:
+	"""
+	item_set = set_model(model_area=model_area, years=",".join([str(year) for year in years]))
+	item_set.save()
 
 	with open(csv_file, 'r') as csv_data:
 		reader = csv.DictReader(csv_data)
 		for row in reader:
-			param = models.CalibratedParameter(calibration_set=calibration_set)
+			continue_outer = False  # we need a flag in case we don't find an existing region object so we can skip it from the internal loop
+
+			param = item_model()
+			setattr(param, set_lookup, item_set)  # set the foreign key to the item_set - equiv to calibration_set=item_set if for calibration data
 			for key in row:
 				# need to do lookups for foreign keys
 				if key == "g":
-					param.region = models.Region.objects.get(internal_id=row["g"], model_area__organization=organization)
+					try:
+						param.region = models.Region.objects.get(internal_id=row["g"], model_area=model_area)
+					except models.Region.DoesNotExist:
+						continue_outer = True
+						break
 				elif key == "i":
-					param.crop = models.Crop.objects.get(crop_code=row["i"], organization=organization)
+					param.crop = models.Crop.objects.get(crop_code=row["i"], model_area=model_area)
 				else:
 					setattr(param, key, row[key])
 
-			param.save()
+			if not continue_outer:
+				param.save()
 
+	return item_set
+
+
+def get_or_create_system_user():
+	return models.User.objects.get_or_create(username="system")[0]
+
+
+def add_system_user_to_org(org):
+	system_user = get_or_create_system_user()
+	system_user.groups.add(org.group)  # add the system user to this group
+	system_user.save()
