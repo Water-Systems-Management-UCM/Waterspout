@@ -283,7 +283,7 @@ class InputDataItem(ModelItem):
 
 	serializer_fields = ["crop", "region", "year", "omegaland",
 	                     "omegasupply", "omegalabor", "omegaestablish", "omegacash",
-	                     "omeganoncash", "omegatotal", "p", "y"]
+	                     "omeganoncash", "omegatotal", "p", "y", "xland", "xwater"]
 
 
 class CalibratedParameter(ModelItem):
