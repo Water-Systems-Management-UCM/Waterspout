@@ -62,9 +62,13 @@ class ModelArea(models.Model):
 		but just in case we want to be able to deploy multiple models for an organization in the future, we'll store it
 		this way.
 	"""
-	organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.SET_NULL)
+	organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.SET_NULL, related_name="model_areas")
 	name = models.CharField(max_length=255, unique=True)
 	description = models.TextField(null=True, blank=True)
+
+	map_center_latitude = models.DecimalField(max_digits=4, decimal_places=2)
+	map_center_longitude = models.DecimalField(max_digits=5, decimal_places=2)
+	map_default_zoom = models.SmallIntegerField()
 
 	def __str__(self):
 		return self.name

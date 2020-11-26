@@ -34,13 +34,14 @@ class CustomAuthToken(ObtainAuthToken):
 		serializer.is_valid(raise_exception=True)
 		user = serializer.validated_data['user']
 		token, created = Token.objects.get_or_create(user=user)
+
 		return Response({
 			'token': token.key,
 			'user_id': user.pk,
 			'username': user.username,
 			'is_staff': user.is_staff,
 			'is_superuser': user.is_superuser,
-			'email': user.email,
+			'email': user.email
 		})
 
 
@@ -59,10 +60,16 @@ class GetApplicationVariables(APIView):
 		Return a list of all users.
 		"""
 
+		# get the user defaults
+		group = request.user.groups.first()
+		organization = models.Organization.objects.filter(group=group).first()
+		model_area = organization.model_areas.first()
+		calibration_set = model_area.calibration_data.first()
+
 		application_variables = {
-		    "model_area_id": 1,
-		    "organization_id": 1,
-		    "calibration_set_id": 1,
+		    "model_area_id": model_area.id,
+		    "organization_id": organization.id,
+		    "calibration_set_id": calibration_set.id,
 			"user_api_token": f"{support.get_or_create_token(request.user)}",
 		}
 		for url in settings.API_URLS:
