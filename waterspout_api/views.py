@@ -185,42 +185,43 @@ class ModelRunViewSet(viewsets.ModelViewSet):
 		# but permissions should be saying "
 		return models.ModelRun.objects.filter(organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
 
-	@action(detail=True, url_name="model_run_csv", renderer_classes=(PassthroughRenderer,))
-	def csv(self, request, pk):
-		"""
-			A temporary proof of concept - allows downloading a csv of model results. Realistically,
-			we may want to save these as static files somewhere, but then we'd still want to read
-			them in through Django on request to manage permissions. Still would be faster and more
-			reliable than making the data frame a CSV on the fly though
-		:param request:
-		:param pk:
-		:return:
-		"""
-		model_run = self.get_object()  # this checks DRF's permissions here
-		if model_run.complete is False:  # if it's not complete, just return the current serialized response - should use the API view instead!
-			return Response(json.dumps(model_run))
+	# Commented out 11/28/2020 - no longer using back end to generate CSVs through stormchaser
+	#@action(detail=True, url_name="model_run_csv", renderer_classes=(PassthroughRenderer,))
+	#def csv(self, request, pk):
+	#	"""
+	#		A temporary proof of concept - allows downloading a csv of model results. Realistically,
+	#		we may want to save these as static files somewhere, but then we'd still want to read
+	#		them in through Django on request to manage permissions. Still would be faster and more
+	#		reliable than making the data frame a CSV on the fly though
+	#	:param request:
+	#	:param pk:
+	#	:return:
+	#	"""
+	#	model_run = self.get_object()  # this checks DRF's permissions here
+	#	if model_run.complete is False:  # if it's not complete, just return the current serialized response - should use the API view instead!
+	#		return Response(json.dumps(model_run))
+	#
+	#	output_name = f"waterspout_model_run_{model_run.id}_{model_run.name}.csv"
+	#	response = Response(model_run.results.to_csv(waterspout_limited=True, waterspout_sort_columns=False),
+	#	                    headers={'Content-Disposition': f'attachment; filename="{output_name}"'},
+	#	                    content_type='text/csv')
+	#	return response
 
-		output_name = f"waterspout_model_run_{model_run.id}_{model_run.name}.csv"
-		response = Response(model_run.results.to_csv(waterspout_limited=True, waterspout_sort_columns=False),
-		                    headers={'Content-Disposition': f'attachment; filename="{output_name}"'},
-		                    content_type='text/csv')
-		return response
-
-	@action(detail=True)
-	def status_longpoll(self, request, pk):
-		"""
-			Trying to make something that keeps a longpoll connection
-			open, but it's not complete yet.
-		:param request:
-		:param pk:
-		:return:
-		"""
-
-		model_run = self.get_object()
-
-		total_time = 0
-		while model_run.complete is False or total_time < settings.LONG_POLL_DURATION:
-			pass
+	#@action(detail=True)
+	#def status_longpoll(self, request, pk):
+	#	"""
+	#		Trying to make something that keeps a longpoll connection
+	#		open, but it's not complete yet.
+	#	:param request:
+	#	:param pk:
+	#	:return:
+	#	"""
+	#
+	#	model_run = self.get_object()
+	#
+	#	total_time = 0
+	#	while model_run.complete is False or total_time < settings.LONG_POLL_DURATION:
+	#		pass
 
 	def perform_create(self, serializer):
 		serializer.save(user=self.request.user)
