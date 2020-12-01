@@ -367,7 +367,9 @@ class ModelRun(models.Model):
 
 	serializer_fields = ['id', 'name', 'description', 'ready', 'running', 'complete', 'status_message',
 		                'date_submitted', 'date_completed', "calibration_set", "user_id", "organization",
-	                     "base_model_run_id", "is_base"]
+	                     "base_model_run_id", "is_base",
+	                     "land_modifications_average", "water_modifications_average",
+	                     "price_modifications_average", "yield_modifications_average"]
 
 	def __str__(self):
 		return f"Model Run: {self.name}"
@@ -378,6 +380,27 @@ class ModelRun(models.Model):
 	def as_json(self):
 		# using the Django serializer class handles datetimes, etc properly
 		return json.dumps(self.as_dict(), cls=django.core.serializers.json.DjangoJSONEncoder)
+
+	def _get_modification_average(self, queryset_name, property_name):
+		mods = list(getattr(self, queryset_name).all())
+		num_items = len(mods)
+		return float(sum([getattr(mod, property_name) for mod in mods]))/num_items
+
+	@property
+	def land_modifications_average(self):
+		return self._get_modification_average("region_modifications", "land_proportion")
+
+	@property
+	def water_modifications_average(self):
+		return self._get_modification_average("region_modifications", "water_proportion")
+
+	@property
+	def price_modifications_average(self):
+		return self._get_modification_average("crop_modifications", "price_proportion")
+
+	@property
+	def yield_modifications_average(self):
+		return self._get_modification_average("crop_modifications", "yield_proportion")
 
 	@property
 	def scenario_df(self):
