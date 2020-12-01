@@ -1,3 +1,9 @@
+"""
+    This example script uses the Waterspout API to create numerous new model runs in the web application.
+    These model runs will be visible to users logging into the web application itself, but this code
+    can also be used to retrieve results once they're available.
+"""
+
 import itertools
 import json
 import time
@@ -13,7 +19,7 @@ CALIBRATION_SET_ID = 1  # this should be 1 for now, ask Nick and he'll confirm
 MODEL_RUN_CREATION_URL = "https://dap.ucmerced.edu/api/model_runs/"
 
 # now we're going to use a Python tool to give us every possible combination of 3 values for land/water/price/yield (81 total)
-# we'll define the combinations here
+# we'll define the combinations here. The values are the proportion values for each.
 LAND_KEY = 0
 LAND_OPTIONS = (0.5, 1, 1.2)
 WATER_KEY = 1
