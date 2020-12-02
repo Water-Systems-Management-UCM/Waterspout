@@ -12,8 +12,8 @@ import requests
 
 # the API token is your authentication in here - it identifies you to the application. ask Nick for yours
 API_TOKEN = ""
-ORGANIZATION_ID = 1  # Your organization identifies where the model runs will be placed and who they'll be available to. DSC's ID is 2
-CALIBRATION_SET_ID = 1  # this should be 1 for now, ask Nick and he'll confirm
+ORGANIZATION_ID = 4  # Your organization identifies where the model runs will be placed and who they'll be available to. DSC's ID is 4
+CALIBRATION_SET_ID = 2  # this should be 2 for now, ask Nick and he'll confirm
 
 # set the URL to post model runs to in order to create them in the interface
 MODEL_RUN_CREATION_URL = "https://dap.ucmerced.edu/api/model_runs/"
