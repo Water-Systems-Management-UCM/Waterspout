@@ -48,7 +48,7 @@ def add_user_to_organization_by_name(username, organization_name):
 
 
 def get_organizations_for_user(user):
-	return [group.organization for group in user.groups.all()]
+	return [val for val in [getattr(group, "organization", None) for group in user.groups.all()] if val is not None]
 
 
 def compare_runs(run1, run2, compare_digits=3):
