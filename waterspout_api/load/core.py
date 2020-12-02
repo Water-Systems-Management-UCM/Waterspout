@@ -31,11 +31,14 @@ def reset_organization(org_name):
 	# this could return more than one object, but if it does, we want the error to
 	# make sure we aren't clearing a bunch of things we don't want to clear
 	try:
-		org = models.Organization.objects.get(name=org_name)
-		group = models.Group.objects.get(name=org_name)
+		org_group = models.Group.objects.get(name=org_name)
 	except models.Organization.DoesNotExist:
 		org_group = models.Group(name=org_name)
 		org_group.save()
+		
+	try:
+		organization = models.Organization.objects.get(name=org_name)
+	except models.Organization.DoesNotExist:
 		organization = models.Organization(name=org_name, group=org_group)
 		organization.save()
 
