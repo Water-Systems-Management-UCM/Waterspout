@@ -160,7 +160,8 @@ class ModelAreaSerializer(ModelActionSerializer):
 
 	class Meta:
 		model = models.ModelArea
-		_base_fields = ["id", "organization_id", "name", "description", "map_center_latitude", "map_center_longitude", "map_default_zoom"]
+		_base_fields = ["id", "organization_id", "name", "description", "map_center_latitude",
+		                "map_center_longitude", "map_default_zoom", "model_defaults"]
 		fields = _base_fields
 		action_fields = {  # only send model results in detail view - that way the listing doesn't send massive amount
 			"retrieve": {     # of data, but we only need to load the specific model run again to get the results

@@ -70,8 +70,36 @@ class ModelArea(models.Model):
 	map_center_longitude = models.DecimalField(max_digits=5, decimal_places=2)
 	map_default_zoom = models.SmallIntegerField()
 
+	# these values define the ranges available when creating a model run in this region
+	min_water = models.PositiveSmallIntegerField(default=50)
+	max_water = models.PositiveSmallIntegerField(default=120)
+	min_land = models.PositiveSmallIntegerField(default=50)
+	max_land = models.PositiveSmallIntegerField(default=100)
+	min_price = models.PositiveSmallIntegerField(default=80)
+	max_price = models.PositiveSmallIntegerField(default=120)
+	min_yield = models.PositiveSmallIntegerField(default=80)
+	max_yield = models.PositiveSmallIntegerField(default=120)
+	min_crop_area = models.PositiveSmallIntegerField(default=0)
+	max_crop_area = models.PositiveSmallIntegerField(default=200)
+
 	def __str__(self):
 		return self.name
+
+	@property
+	def model_defaults(self):
+		# Just making it a dict so that it comes out of the serializer grouped
+		return {
+			"min_water": self.min_water,
+			"max_water": self.max_water,
+			"min_land": self.min_land,
+			"max_land": self.max_land,
+			"min_price": self.min_price,
+			"max_price": self.max_price,
+			"min_yield": self.min_yield,
+			"max_yield": self.max_yield,
+			"min_crop_area": self.min_crop_area,
+			"max_crop_area": self.max_crop_area,
+		}
 	
 
 class RegionGroup(models.Model):
