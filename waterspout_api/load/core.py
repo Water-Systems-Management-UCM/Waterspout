@@ -17,12 +17,10 @@ def reset_model_area(model_area_name, organization, latitude, longitude, default
 		model_area = models.ModelArea.objects.get(name=model_area_name, organization=organization)
 		model_area.delete()
 	except models.ModelArea.DoesNotExist:
-		pass
-
-	model_area = models.ModelArea(name=model_area_name, organization=organization,
-	                              map_center_latitude=latitude, map_center_longitude=longitude,
-	                              map_default_zoom=default_zoom)
-	model_area.save()
+		model_area = models.ModelArea(name=model_area_name, organization=organization,
+		                              map_center_latitude=latitude, map_center_longitude=longitude,
+		                              map_default_zoom=default_zoom)
+		model_area.save()
 
 	# do any other cleanup here - regions will cascade delete
 
@@ -34,17 +32,12 @@ def reset_organization(org_name):
 	# make sure we aren't clearing a bunch of things we don't want to clear
 	try:
 		org = models.Organization.objects.get(name=org_name)
-		org.delete()
 		group = models.Group.objects.get(name=org_name)
-		group.delete()
 	except models.Organization.DoesNotExist:
-		pass
-
-	org_group = models.Group(name=org_name)
-	org_group.save()
-	organization = models.Organization(name=org_name, group=org_group)
-	organization.save()
-	# do any other cleanup here - regions will cascade delete
+		org_group = models.Group(name=org_name)
+		org_group.save()
+		organization = models.Organization(name=org_name, group=org_group)
+		organization.save()
 
 	return organization
 
