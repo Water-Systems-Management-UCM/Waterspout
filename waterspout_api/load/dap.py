@@ -19,7 +19,7 @@ def load_dap(regions="delta_islands_wDAP_simplified_0005.geojson",
 
 	core.add_system_user_to_org(org=organization)
 
-	model_area = core.reset_model_area(model_area_name=area_name, organization=organization,
+	model_area = core.reset_model_area(model_area_name=f"DAPLoad: {area_name}", organization=organization,
 	                                   latitude=38.10, longitude=-121.50, default_zoom=9)
 	load_regions(regions, model_area)
 	load_crops(core.get_data_file_path(data_name, crop_file), model_area)
