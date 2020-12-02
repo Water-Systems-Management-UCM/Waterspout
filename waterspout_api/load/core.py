@@ -35,6 +35,8 @@ def reset_organization(org_name):
 	try:
 		org = models.Organization.objects.get(name=org_name)
 		org.delete()
+		group = models.Group.objects.get(name=org_name)
+		group.delete()
 	except models.Organization.DoesNotExist:
 		pass
 
