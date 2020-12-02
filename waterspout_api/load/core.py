@@ -15,7 +15,6 @@ def reset_model_area(model_area_name, organization, latitude, longitude, default
 	# make sure we aren't clearing a bunch of things we don't want to clear
 	try:
 		model_area = models.ModelArea.objects.get(name=model_area_name, organization=organization)
-		model_area.delete()
 	except models.ModelArea.DoesNotExist:
 		model_area = models.ModelArea(name=model_area_name, organization=organization,
 		                              map_center_latitude=latitude, map_center_longitude=longitude,
@@ -35,7 +34,7 @@ def reset_organization(org_name):
 	except models.Organization.DoesNotExist:
 		org_group = models.Group(name=org_name)
 		org_group.save()
-		
+
 	try:
 		organization = models.Organization.objects.get(name=org_name)
 	except models.Organization.DoesNotExist:

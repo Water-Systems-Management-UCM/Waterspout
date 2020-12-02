@@ -90,7 +90,7 @@ class Region(models.Model):
 		]
 
 	name = models.CharField(max_length=255, null=False, blank=False)
-	internal_id = models.CharField(max_length=100, null=False, blank=False, unique=True)  # typically we have some kind of known ID to feed to a model that means something to people
+	internal_id = models.CharField(max_length=100, null=False, blank=False)  # typically we have some kind of known ID to feed to a model that means something to people
 	external_id = models.CharField(max_length=100, null=True, blank=True)  # a common external identifier of some kind
 	# .extra_attributes reverse lookup
 
