@@ -10,7 +10,7 @@ from Waterspout.settings import BASE_DIR
 log = logging.getLogger("waterspout.load")
 
 
-def reset_model_area(model_area_name, organization):
+def reset_model_area(model_area_name, organization, latitude, longitude, default_zoom):
 	# this could return more than one object, but if it does, we want the error to
 	# make sure we aren't clearing a bunch of things we don't want to clear
 	try:
@@ -19,7 +19,9 @@ def reset_model_area(model_area_name, organization):
 	except models.ModelArea.DoesNotExist:
 		pass
 
-	model_area = models.ModelArea(name=model_area_name, organization=organization)
+	model_area = models.ModelArea(name=model_area_name, organization=organization,
+	                              map_center_latitude=latitude, map_center_longitude=longitude,
+	                              map_default_zoom=default_zoom)
 	model_area.save()
 
 	# do any other cleanup here - regions will cascade delete
