@@ -120,6 +120,7 @@ class Region(models.Model):
 	name = models.CharField(max_length=255, null=False, blank=False)
 	internal_id = models.CharField(max_length=100, null=False, blank=False)  # typically we have some kind of known ID to feed to a model that means something to people
 	external_id = models.CharField(max_length=100, null=True, blank=True)  # a common external identifier of some kind
+	description = models.TextField(null=True, blank=True)
 	# .extra_attributes reverse lookup
 
 	geometry = models.JSONField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
