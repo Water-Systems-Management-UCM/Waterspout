@@ -23,7 +23,7 @@ class APIModelRunTestCase(APITransactionTestCase):
 		self.group.save()
 		self.organization = models.Organization(group=self.group)
 		self.organization.save()
-		self.model_area = models.ModelArea(name="test")
+		self.model_area = models.ModelArea(name="test", map_center_longitude=1, map_center_latitude=1, map_default_zoom=1)
 		self.model_area.save()
 		self.calibration_set = models.CalibrationSet(model_area=self.model_area)
 		self.calibration_set.save()

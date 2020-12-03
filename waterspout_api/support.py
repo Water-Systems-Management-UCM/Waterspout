@@ -51,7 +51,7 @@ def get_organizations_for_user(user):
 	return [val for val in [getattr(group, "organization", None) for group in user.groups.all()] if val is not None]
 
 
-def compare_runs(run1, run2, compare_digits=3):
+def compare_runs(run1, run2, compare_digits=3, keep_fields=False):
 	"""
 		Compares two model runs using pandas comparison tools - excludes difference fields (they
 		may have compounding errors. Returns None if they're the same and raises an error if they're
@@ -82,16 +82,28 @@ def compare_runs(run1, run2, compare_digits=3):
 	if not isinstance(run1, pandas.DataFrame) or not isinstance(run2, pandas.DataFrame):
 		raise TypeError("Runs provided for comparison must be integer model run IDs, ModelRun instances, or Pandas DataFrames.")
 
+	run1.year = 1
+	run2.year = 1
 	# sort them by their effective year/island/crop index so that the rows are in the same order
 	sorted_df1 = run1.sort_values(axis=0, by=["year", "g", "i"])
 	sorted_df2 = run2.sort_values(axis=0, by=["year", "g", "i"])
 
+	# drop the indexes or else the sorting is for nothing
+	sorted_df1.reset_index(drop=True, inplace=True)
+	sorted_df2.reset_index(drop=True, inplace=True)
+
 	# we'll exclude these fields from comparison - since they're differences between values, ther
 	# errors seem to compound, so we get differences even with less precise checking. I'm satisfied
 	# if the other values come out equivalent.
-	ignore_fields = ("xdiffland", "xdifftotalland", "xdiffwater")
-	for field in ignore_fields:
-		del sorted_df1[field]
-		del sorted_df2[field]
+	if not keep_fields:
+		ignore_fields = ("xdiffland", "xdifftotalland", "xdiffwater")
+		for field in ignore_fields:
+			del sorted_df1[field]
+			del sorted_df2[field]
+	else:
+		# make sure g, i, and year are in keep_fields
+		keep_fields = list(set(list(keep_fields) + ["g", "i", "year"]))
+		sorted_df1 = sorted_df1[keep_fields]
+		sorted_df2 = sorted_df2[keep_fields]
 
 	return pandas.testing.assert_frame_equal(sorted_df1, sorted_df2, check_like=True, check_column_type=False, check_dtype=False, check_less_precise=compare_digits)

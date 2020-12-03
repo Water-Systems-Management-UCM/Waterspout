@@ -413,6 +413,8 @@ class ModelRun(models.Model):
 	def _get_modification_average(self, queryset_name, property_name):
 		mods = list(getattr(self, queryset_name).all())
 		num_items = len(mods)
+		if num_items == 0:
+			return 0
 		return float(sum([getattr(mod, property_name) for mod in mods]))/num_items
 
 	@property

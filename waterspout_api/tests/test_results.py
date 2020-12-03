@@ -47,7 +47,7 @@ class ModelResultsTest(TransactionTestCase):  # Need to have a TransactionTestCa
 
 		self.model_run.run()
 
-		actual_results = pandas.read_csv(os.path.join(TEST_DATA_FOLDER, "DAP_v2_results.csv"))
+		actual_results = pandas.read_csv(os.path.join(TEST_DATA_FOLDER, "DAP_v3_results.csv"))
 		calculated_results = self.model_run.results.as_data_frame()
 
 		# commented out for CD use where it was failing - useful for debug when run manually though
@@ -56,4 +56,4 @@ class ModelResultsTest(TransactionTestCase):  # Need to have a TransactionTestCa
 
 		# assert_frame_equal returns None if two DFs are effectively equal
 		# compare them to 2 decimal places - ignore data type differences since some is inferred from CSV
-		self.assertIsNone(support.compare_runs(actual_results, calculated_results, compare_digits=2), None)
+		self.assertIsNone(support.compare_runs(actual_results, calculated_results, compare_digits=3, keep_fields=["xland", "xwater", "xlandsc", "xwatersc"]), None)

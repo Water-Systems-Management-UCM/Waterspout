@@ -31,7 +31,7 @@ def reset_organization(org_name):
 	# make sure we aren't clearing a bunch of things we don't want to clear
 	try:
 		org_group = models.Group.objects.get(name=org_name)
-	except models.Organization.DoesNotExist:
+	except models.Group.DoesNotExist:
 		org_group = models.Group(name=org_name)
 		org_group.save()
 
