@@ -24,9 +24,9 @@ jobs:
     # Dapper/ipopt Setup!!
     - name: Set Up Environment
       run: |
-        echo "::set-env name=LD_LIBRARY_PATH::/home/runner/work/Dapper/Dapper/ipopt_dist:/home/runner/work/Dapper/Dapper/ipopt_dist/lib:/usr/lib/coinbrew/ipopt:/usr/lib/coinbrew/ipopt/lib:/usr/lib/x86_64-linux-gnu/"
-        echo "::set-env name=PATH::$PATH:/home/runner/work/Dapper/Dapper/ipopt_dist:/home/runner/work/Dapper/Dapper/ipopt_dist/bin:/usr/lib/coinbrew/ipopt:/usr/lib/coinbrew/ipopt/bin:/usr/lib/x86_64-linux-gnu/"
-        echo "::set-env name=PKG_CONFIG_PATH::$PKG_CONFIG_PATH:/home/runner/work/Dapper/Dapper/ipopt_dist:/home/runner/work/Dapper/Dapper/ipopt_dist/lib:/usr/lib/coinbrew/ipopt:/usr/lib/x86_64-linux-gnu/"
+        echo "LD_LIBRARY_PATH=/home/runner/work/Dapper/Dapper/ipopt_dist:/home/runner/work/Dapper/Dapper/ipopt_dist/lib:/usr/lib/coinbrew/ipopt:/usr/lib/coinbrew/ipopt/lib:/usr/lib/x86_64-linux-gnu/" >> $GITHUB_ENV
+        echo "PATH=$PATH:/home/runner/work/Dapper/Dapper/ipopt_dist:/home/runner/work/Dapper/Dapper/ipopt_dist/bin:/usr/lib/coinbrew/ipopt:/usr/lib/coinbrew/ipopt/bin:/usr/lib/x86_64-linux-gnu/" >> $GITHUB_ENV
+        echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/home/runner/work/Dapper/Dapper/ipopt_dist:/home/runner/work/Dapper/Dapper/ipopt_dist/lib:/usr/lib/coinbrew/ipopt:/usr/lib/x86_64-linux-gnu/" >> $GITHUB_ENV
     - name: Check Environment
       run: |
         echo "$PATH"
