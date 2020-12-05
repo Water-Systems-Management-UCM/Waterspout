@@ -168,6 +168,16 @@ class ModelAreaViewSet(viewsets.ModelViewSet):
 	def get_queryset(self):
 		return models.ModelArea.objects.filter(organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
 
+	@action(detail=True, url_name="get_model_runs", )
+	def model_runs(self, request, pk):
+		mrs = models.ModelRun.objects.filter(
+			calibration_set__model_area__id=pk,
+			organization__in=support.get_organizations_for_user(self.request.user)
+		).order_by('id')
+
+		serializer = serializers.ModelRunSerializer(mrs, many=True)
+		return Response(serializer.data)
+
 
 class ModelRunViewSet(viewsets.ModelViewSet):
 	"""
