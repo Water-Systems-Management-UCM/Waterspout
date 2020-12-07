@@ -38,6 +38,12 @@ class UsersSerializer(serializers.ModelSerializer):
 		model = models.User
 
 
+class UserProfileSerializer(serializers.ModelSerializer):
+	class Meta:
+		fields = models.UserProfile._serializer_fields
+		model = models.UserProfile
+
+
 class CropModificationSerializer(serializers.ModelSerializer):
 
 	class Meta:

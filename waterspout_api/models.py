@@ -7,7 +7,12 @@ import numpy
 
 import django
 from django.db import models  # we're going to geodjango this one - might not need it, but could make some things nicer
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
+from django.contrib.auth import get_user_model
+User = get_user_model()  # define user by this method rather than direct import - safer for the future
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 from Waterspout import settings
@@ -29,6 +34,33 @@ class SimpleJSONField(models.TextField):
 
 	def from_db_value(self, value, expression, connection):
 		return json.loads(value)
+
+
+class UserProfile(models.Model):
+	"""
+		Basically just for user settings
+	"""
+	user = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE)
+
+	_serializer_fields = "__all__"
+	# basic settings
+	show_organization_model_runs = models.BooleanField(default=True)
+	show_organization_model_runs_tooltip = "By default, the application shows all model runs from within your organization" \
+	                                       " and gives you the option to temporarily show only your model runs." \
+	                                       " This setting changes that behavior so that, by default, you only see model runs" \
+	                                       " that you created yourself and then you can temporarily change the listing to" \
+	                                       " see all model runs in your organization."
+
+# set up the signal receivers that get triggered after a user is created
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+	if created:
+		UserProfile.objects.create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+	instance.profile.save()
 
 
 class Organization(models.Model):

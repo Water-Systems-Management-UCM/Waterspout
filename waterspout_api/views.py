@@ -78,6 +78,14 @@ class GetApplicationVariables(APIView):
 		return Response(application_variables)
 
 
+class UserProfileSet(viewsets.ModelViewSet):
+	permission_classes = [IsAuthenticated]
+	serializer_class = serializers.UserProfileSerializer
+
+	def get_queryset(self):
+		return models.UserProfile.objects.get(user=request.user)
+
+
 class CropViewSet(viewsets.ModelViewSet):
 	"""
 	API endpoint that allows users to be viewed or edited.
