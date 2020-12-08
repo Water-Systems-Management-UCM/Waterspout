@@ -138,10 +138,10 @@ class CalibrationSetSerializer(serializers.ModelSerializer):
 		retrieve the list of model runs
 	"""
 	# calibration_set = CalibrationItemSerializer(read_only=True, many=True)
-	model_runs = ModelRunSerializer(read_only=True, many=True)
+	#model_runs = ModelRunSerializer(read_only=True, many=True)
 
 	class Meta:
-		fields = ["model_runs"]
+		fields = ["id"] #, "model_runs"]
 		model = models.CalibrationSet
 
 		depth = 0
