@@ -39,12 +39,17 @@ class UsersSerializer(serializers.ModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
+	user = UsersSerializer(read_only=True)
+
 	class Meta:
 		fields = models.UserProfile._serializer_fields
 		model = models.UserProfile
+		depth = 1
 
 	def update(self, instance, validated_data):
 		for key in validated_data:
+			if key == "user":  # make sure we ignore anything that's part of the user object itself
+				continue
 			# assign the data from the serializer, or use the value the instance already has
 			setattr(instance, key, validated_data.get(key, getattr(instance, key)))
 		instance.save()

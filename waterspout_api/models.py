@@ -44,7 +44,7 @@ class UserProfile(models.Model):
 
 	user = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE)
 
-	_serializer_fields = ["id", "show_organization_model_runs", "show_organization_model_runs_tooltip"]
+	_serializer_fields = ["id", "user", "show_organization_model_runs", "show_organization_model_runs_tooltip"]
 	# basic settings
 	show_organization_model_runs = models.BooleanField(default=True)
 	show_organization_model_runs_tooltip = "By default, the application shows all model runs from within your organization" \
