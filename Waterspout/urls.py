@@ -28,6 +28,7 @@ router.register(API_URLS["model_runs"]["partial"], ws_views.ModelRunViewSet, bas
 router.register(API_URLS["region_modifications"]["partial"], ws_views.RegionModificationViewSet, basename="region_modifications")
 router.register(API_URLS["crops"]["partial"], ws_views.CropViewSet, basename="crops")
 router.register(API_URLS["users"]["partial"], ws_views.UsersViewSet, basename="users")
+router.register(API_URLS["user_profile"]["partial"], ws_views.UserProfileViewSet, basename="user_profile")
 router.register(API_URLS["model_areas"]["partial"], ws_views.ModelAreaViewSet, basename="model_areas")
 
 

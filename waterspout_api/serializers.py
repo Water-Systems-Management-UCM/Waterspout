@@ -43,6 +43,13 @@ class UserProfileSerializer(serializers.ModelSerializer):
 		fields = models.UserProfile._serializer_fields
 		model = models.UserProfile
 
+	def update(self, instance, validated_data):
+		for key in validated_data:
+			# assign the data from the serializer, or use the value the instance already has
+			setattr(instance, key, validated_data.get(key, getattr(instance, key)))
+		instance.save()
+		return instance
+
 
 class CropModificationSerializer(serializers.ModelSerializer):
 

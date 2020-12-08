@@ -40,6 +40,7 @@ API_URLS = {  # partial is used in URLconf, full is used in templates
     "region_modifications": {"partial": "region_modifications", "full": f"{API_BASE_URL}region_modifications/"},
     "users": {"partial": "users", "full": f"{API_BASE_URL}users/"},
     "model_areas": {"partial": "model_areas", "full": f"{API_BASE_URL}model_areas/"},
+    "user_profile": {"partial": "user_profile", "full": f"{API_BASE_URL}user_profile/"},
 }
 
 

@@ -11,7 +11,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import BasePermission, IsAuthenticated, IsAdminUser, SAFE_METHODS
+from rest_framework.permissions import BasePermission, DjangoObjectPermissions, IsAuthenticated, IsAdminUser, SAFE_METHODS
 from rest_framework.views import APIView
 
 from Waterspout import settings
@@ -78,12 +78,12 @@ class GetApplicationVariables(APIView):
 		return Response(application_variables)
 
 
-class UserProfileSet(viewsets.ModelViewSet):
-	permission_classes = [IsAuthenticated]
+class UserProfileViewSet(viewsets.ModelViewSet):
+	permission_classes = [DjangoObjectPermissions]  # handles locking it to a particular user
 	serializer_class = serializers.UserProfileSerializer
 
 	def get_queryset(self):
-		return models.UserProfile.objects.get(user=request.user)
+		return models.UserProfile.objects.filter(user=self.request.user)
 
 
 class CropViewSet(viewsets.ModelViewSet):

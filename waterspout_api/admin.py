@@ -3,6 +3,7 @@ from waterspout_api import models
 # Register your models here.
 
 admin.site.register(models.Organization)
+admin.site.register(models.UserProfile)
 admin.site.register(models.ModelArea)
 admin.site.register(models.RegionGroup)
 admin.site.register(models.Region)

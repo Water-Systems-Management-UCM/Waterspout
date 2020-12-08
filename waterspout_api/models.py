@@ -11,6 +11,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 User = get_user_model()  # define user by this method rather than direct import - safer for the future
 
+from guardian.shortcuts import assign_perm
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -40,9 +41,10 @@ class UserProfile(models.Model):
 	"""
 		Basically just for user settings
 	"""
+
 	user = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE)
 
-	_serializer_fields = "__all__"
+	_serializer_fields = ["id", "show_organization_model_runs", "show_organization_model_runs_tooltip"]
 	# basic settings
 	show_organization_model_runs = models.BooleanField(default=True)
 	show_organization_model_runs_tooltip = "By default, the application shows all model runs from within your organization" \
@@ -51,11 +53,13 @@ class UserProfile(models.Model):
 	                                       " that you created yourself and then you can temporarily change the listing to" \
 	                                       " see all model runs in your organization."
 
-# set up the signal receivers that get triggered after a user is created
+
+# set up the signal receivers that get triggered after a user is created so that everyone has a userprofile
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
 	if created:
-		UserProfile.objects.create(user=instance)
+		new_profile = UserProfile.objects.create(user=instance)
+		assign_perm("change_userprofile", instance, new_profile)
 
 
 @receiver(post_save, sender=User)
