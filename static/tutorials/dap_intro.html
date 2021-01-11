@@ -1,0 +1,756 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>DAP Tutorial</title>
+  <link rel="stylesheet" href="./steps-dap_tutorial/assets/spectre.css"></link>
+  <link rel="stylesheet" href="./steps-dap_tutorial/assets/toc.css"></link>
+  <script src="./steps-dap_tutorial/assets/toc.js"></script>
+  <style>
+    .bg {
+      background-color: #eff0f3;
+    }
+    .headline {
+      color: #0d0d0d;
+    }
+    .topSection {
+      padding: 50px .5rem;
+    }
+    .card {
+      border: 0;
+      box-shadow: 0 0.25rem 1rem rgba(48,55,66,.15);
+      height: 100%;
+      margin-bottom: 3.5rem;
+    }
+    .card-header, .card-body {
+      padding-left: 2rem !important;
+    }
+    .card-image {
+      text-align: left;
+      padding: 1rem;
+    }
+    .card-image img{
+      box-shadow: 0 40px 50px rgba(7,30,87,.2); 
+      /* max-width: 750px; */
+      margin: auto;
+      margin-bottom: 2rem;
+      display: unset !important;
+    }
+    .toc, .tocFake {
+      z-index: 10;
+      position: fixed;
+      top: 60px;
+      left: 15px;
+      max-width: 250px;
+      padding: 10px;
+      box-shadow: 0 0.25rem 1rem rgba(48,55,66,.15);
+      background-color: white;
+    }
+    .tocFake {
+      cursor: pointer;
+      top: 20px;
+    }
+    @media (max-width:1350px){
+      .toc {
+        max-width: 200px;
+      }
+    }
+
+    .headline:focus, .headline:hover {
+      outline : none !important;
+    }
+    .toc-link::before{
+      width:5px;
+    }
+    .is-active-link::before{
+      background-color: rgba(255,196,35,1);
+    }
+    .toc-link {
+      font-size: 0.8em;
+    }
+    .doubleCheesburger {
+      width: 12px;
+      height: 12px;
+      background-size: contain;
+      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABmJLR0QA/wD/AP+gvaeTAAAAw0lEQVR4nO3YMQ7CMAxG4Qc74gJlRL07qjgBV+rQXCAMHUBRhiAKSdv3SV482R48/CBJkiRJLxdgAAIQV14BuAP9J8uPDQy+dI1AV3KAoYFhf1W3dNlD5gABOJVcaoUCcH5vHCsNUktMG7kDPP4wSC1Fu/Vs9wleSy/VMT+MqYHBv62J+bEXLy9JkvbNPKCBwZcu8wDMA8wDYtowD8gwD8A8QJIk7Zh5QAODL13mAZgHmAfEtGEekGEegHmAJEmSpI17AhoPKkbYwzDbAAAAAElFTkSuQmCC);
+    }
+    .form-checkbox {
+      display: inline;
+    }
+    input[type="checkbox"], .form-icon {
+      transform:scale(2, 2);
+    }
+    .stepTitle {
+      display:inline-block;
+      margin-left: 10px;
+    }
+    .card {
+      border: 2px solid transparent;
+    }
+    .completedCard {
+      border: 2px solid #2a9a39;
+      box-shadow: 0 0.25rem 1rem rgb(43 154 56 / 0.45);
+    }
+
+    .form-checkbox input:checked+.form-icon,
+    .form-radio input:checked+.form-icon,
+    .form-switch input:checked+.form-icon {
+      background: #00c400;
+      border-color: #00c400
+    }
+
+    .form-checkbox input:focus+.form-icon,
+    .form-radio input:focus+.form-icon,
+    .form-switch input:focus+.form-icon {
+      border-color: #00c400;
+      box-shadow: 0 0.25rem 1rem rgb(43 154 56 / 0.2);
+    }
+
+    .form-checkbox input:indeterminate+.form-icon {
+      background: #00c400;
+      border-color: #00c400
+    }
+
+    
+  </style>
+
+  <script>
+    var exportSettings = {"format":"png","imageSize":100,"imageAlign":"left","oneStepPerPage":false,"includeTOS":true,"includeCoverPage":true,"includeNumbers":true,"includeCheckboxes":true,"tocHeadline":"Table of contents","includeFooter":true,"includeHeader":true,"headerText":"[[Guide_Title]]","headerLogo":null,"headerLogoAlign":"right","footerNumbering":"Page [[Page_Number]]","footerLogo":null,"footerText":"[[Guide_Title]]","customCSS":"","pageOrientation":"portrait","footerLogoAlign":"left","pdfStepMode":"mode2","preparsed":{"headers":["DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial"],"footers":["DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial","DAP Tutorial"],"numberings":["Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]","Page [[Page_Number]]"]}};
+
+    window.onload = function() {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.toc',
+        positionFixedSelector: '.toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.section',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: '.headline',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+        headingsOffset: 5,
+        headingLabelCallback: function(heading, node) {
+          var ancestor = findAncestor(node, 'card');
+          var isCompleted = ancestor && (findAncestor(node, 'card').classList.contains('completedCard'));
+          return (isCompleted ? '✅ ' : '') + heading.trim();
+        }
+      });
+      var tocFake = document.getElementsByClassName('tocFake')[0]
+      var tocReal = document.getElementsByClassName('toc')[0];
+      tocFake.addEventListener('click', function() {
+        toggleClassName(tocFake, 'show-md');
+        toggleClassName(tocReal, 'hide-md');
+      })
+      
+
+      var nodes = document.getElementsByClassName('completionCheckbox')
+      var checkboxes = Array.prototype.slice.call(nodes);
+      checkboxes.forEach(checkboxListener)
+    }
+    function toggleClassName(element, className) {
+      element.classList.toggle(className);
+    }
+    function checkboxListener(checkbox) {
+      checkbox.addEventListener('change', (event) => {
+        var stepId = event.target.getAttribute('data-step-id');
+        var isChecked = event.target.checked
+        var cardNode = document.querySelector('.card[data-step-id="'+stepId+'"]');
+        cardNode.classList.toggle('completedCard');
+        tocbot.refresh();
+      })
+    }
+    function findAncestor (el, cls) {
+        while ((el = el && el.parentElement) && !el.classList.contains(cls));
+        return el;
+    }
+  </script>
+
+</head>
+
+<body class="bg">
+  <div class="tocFake show-md">
+    <div class="icon doubleCheesburger"></div>
+  </div>
+  <div class="toc hide-md"></div>
+  <div class="topSection">
+    <div class="container grid-lg text-center guideDetailsWrapper">
+      <h2 class="headline title">DAP Tutorial</h2>
+    </div>
+  </div>
+  <div class="section">
+      <div class="container grid-md">
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-1">
+
+              <div class="card-header card-title h5 headline" id="step-1">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-1">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>1. </b>
+                Introduction
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p><strong>Conventions in this tutorial</strong></p><p>This tutorial uses screenshots and associated text about that screenshot to walk you through a scenario in the DAP application. In the process, you will notice a few common conventions throughout. Each screenshot will typically have one or more circled numbers, which indicate places for you to click or take some action <strong>at the end of the step</strong> - that is, <strong>after</strong> you have finished reading all the text on the step. In cases where there is more than one numbered circle, you're meant to do those items in order, as described and noted by number in the text of the step.</p><p>In the text for each step, some items will be <em>italicized</em>. These words reflect specific terms or names of items in the application. When we want to emphasize something, it is shown in <strong>bold</strong>.</p><p>This tutorial will also instruct you to "click" occasionally. Since the application also works on mobile devices and touchscreens, "click" stands in for "tap" as well.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-2">
+
+              <div class="card-header card-title h5 headline" id="step-2">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-2">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>2. </b>
+                What is DAP?
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>Before we learn how to use the application, let's take a moment to understand DAP. DAP stands for the <em>Delta Agricultural Production</em> model and it's a Positive Mathematical Programming (PMP) model that helps us understand how changes in various resources might impact land use decisions and economic outcomes.</p><p>DAP is structured around <em>regions</em> and <em>crops</em> primarily, as the resources of interest. Regions are typically a Delta island, but in some cases they encompass a bit more area or join together a few disconnected islands or parts of the Delta. DAP runs the model for each region separately, meaning changes to one region do not impact the others. We'll see how to account for this a bit later when we do a "water transfer" example - it generally means we have to think a bit differently. DAP also uses <em>crops</em>, which, strictly speaking, are crop groups and not individual crops. You'll be able to make changes to the prices, yields, and crop area for each crop, but again, changes to cropping in one region are independent from other regions (eg: the model won't intentionally move a crop like corn from one island to another, though it may reduce corn in one location and increase it in another if the very specific set of model inputs you provide makes that more optimal in each location). This will make more sense as we work through some examples.</p><p>In this guide, we have the model, DAP running within the application when we create <em>model runs</em>, which change the resource availability and constraints, such as available water and land, as well as crop prices, yields, and land area constraints. A <em>model run</em> encompasses a set of these resource allocation changes, which are then run through the DAP model to give you results on land use and revenue - we'll see what that looks like in a little bit.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-3">
+
+              <div class="card-header card-title h5 headline" id="step-3">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-3">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>3. </b>
+                Log in
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>To start:</p><ol><li>Go to <a href="https://dap.ucmerced.edu" rel="noopener noreferrer" target="_blank">https://dap.ucmerced.edu</a> in your browser (note - no "www" in front!)</li><li>Type in your username and password, as provided to you via email. Note that both the username and password are case sensitive and must be typed *exactly* as provided to you (without any quotes around them, but including any spaces)</li><li>Click the <em>Log In</em> button</li></ol><p>If it succeeds, you will see a loading <em>spinner</em>, otherwise, if your login fails, you'll see amessage bar at the top of the page informing you that it failed.</p></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/LAxJjua21X.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-4">
+
+              <div class="card-header card-title h5 headline" id="step-4">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-4">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>4. </b>
+                DAP Home Page
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>When login is complete, it will take you to the home page. The home page has quick links to the main parts of the application, as well as visualizations of model runs you and your colleagues have created (the home page visualizations are <strong>not</strong> covered in this tutorial).</p><p>The page includes links to make new model runs, view existing model runs, and view input data, as well as the menu at the top left. </p><ol><li>Feel free to look around a bit, but when you're ready, click on the menu icon in the top left.</li></ol></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/fNAPbs.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-5">
+
+              <div class="card-header card-title h5 headline" id="step-5">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-5">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>5. </b>
+                The Menu
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>The menu includes some of the same links as the home page, but is accessible from any page in the application, and includes links back to the home page, to the settings page, and to log out as well.</p><p>If you open the menu and wish to close it without changing the page you're on, just click somewhere to the right of the menu on the page and the menu will close.</p><p>For now, let's jump into creating a new model run, so click "New Model Run" to proceed.</p></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/cKQFIX.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-6">
+
+              <div class="card-header card-title h5 headline" id="step-6">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-6">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>6. </b>
+                Creating a new model run: Region modifications
+                </div>
+              </div>
+              <div class="card-body stepDescription"><h2>Our scenario</h2><p>So, imagine we have a scenario - we want to model the impacts of a modest drought at a time in the future where we expect crop yields will decline due to salinity. We're not certain how these factors will be spatially distributed through the Delta, so we'll model everything Delta-wide. Let's build a model run that informs that scenario.</p><p>Before diving in, note that if we leave the model run creation workflow by going to another page from the menu, we will lose all model run inputs unless we have finished creating the model run. So don't leave the model run creation workflow until you have submitted or are ready to discard your model run!</p><h2>Creating a model run</h2><p>Recall that when we create a model run, we are running the model with a new set of input parameters. When we create a model run, we do it in three steps:</p><ul><li>starting with changes to region-level resources like water and land, </li><li>then moving to crop group resources (price, yield, crop area),</li><li>and then finally adding model details and metadata. We can see these items across the top of the page.</li></ul><p>We also see a few other things on the page, a dropdown menu for "region modifications" and a map. We'll come back to these in another model run, but for now, we can just adjust the inputs for every region in the model using the "All Regions" card at the top.</p><ol><li>For our scenario, since we're looking to simulate a small drought, just adjust the slider for "water availability" left until the value on the right side reads 90%. You can do this by clicking and dragging, or using the +/- buttons. Changing this value adjusts the water available in each region as a percent of the calibrated value for that region. So, a region with 100 acre feet of water available will only have 90 acre feet available with this adjustment. Another region with 50 acre feet will have 45.</li><li>Click <em>Continue</em> to proceed to the next step in model run creation.</li></ol></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/pfovt9.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-7">
+
+              <div class="card-header card-title h5 headline" id="step-7">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-7">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>7. </b>
+                Crop Modifications
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>Similar to region modifications, crop modifications adjust the model inputs relative to the model's calibrated values for each region. </p><p>For our scenario, we're interested in understanding how salinity might impact land use. The model does not have direct controls for salinity response. Instead, you can control the yield of each crop group. As you obtain information on salinity/yield response for each crop, you could create more accurate model runs here. For now, we will just reduce the yield of all crops 10% to reflect some reduction in yield due to salinity.</p><ol><li>As with the region card on the previous page, adjust the slider for yield on the <em>All Crops </em>card downward 10% until the value box on the right side shows <em>90</em>. </li><li>Click <em>Continue</em> to proceed with creating the model run.</li></ol></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/onGvU7.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-8">
+
+              <div class="card-header card-title h5 headline" id="step-8">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-8">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>8. </b>
+                Creating the model run
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>Now all that's left is to create metadata for the model, such as a name and a description. </p><ol><li>Give the model a meaningful name and a description that will help you understand <strong>why </strong>the model run includes the set of inputs you provided. You will be able to view the actual input values later, but on their own, they may not give you enough context to understand the purpose of the model run in the future. The description box helps you with that. Example text is included in the screenshot. (If working through this tutorial in a group and many of you will create model runs, you might want to put your name in here somewhere to make it easier to find).</li><li>Click <em>Run Model</em> to create the model run and put it in the queue to run. If there is capacity on the server it will run immediately - otherwise it will run in the order it is created.</li></ol></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/l3Z8CN.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-9">
+
+              <div class="card-header card-title h5 headline" id="step-9">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-9">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>9. </b>
+                Model Run Created!
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>If the model run is successfully created, a <em>snackbar</em> will show up at the top telling you that it was created. You can click the <em>Go to Model Run</em> button to go to the page for your new model run, or you can click <em>Close </em>to make the notice disappear and create additional model runs.</p><p>If there was a problem creating the model run, a snackbar will show up in the same spot giving you information about the error. Note that some snack bars are ephemeral and disappear after some time, while important notices will stay there until you take action on them.</p><p>Note that controls for creating a model run are reset once a model run is created. We do not yet have the ability to duplicate model runs and their inputs in the application, so you will need to create each one from scratch.</p><ol><li>Click <em>Go to Model Run </em>to proceed</li></ol></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/bdjy6g.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-10">
+
+              <div class="card-header card-title h5 headline" id="step-10">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-10">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>10. </b>
+                Viewing the model run
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>Once you have clicked through to the model run, you will see some basic details such as your description of the model run (top left), your username and when you created it (top right), and the current status of the model run (top middle). The status can be:</p><ul><li><em>Waiting:</em> if it is queued up to run, but the server does not yet have capacity to run it,</li><li><em>Running:</em> if it is currently being processed,</li><li><em>Results Available: </em>when the model run has been completed and results are saved. It will be green if everything completed successfully, or orange if the model solver encountered any infeasibilities (conditions and constraints in the inputs that resulted in an impossible outcome). Infeasibilities are rare, but possible.</li><li><em>Error: </em>If the server tried to run the model and it failed. In some cases, it will automatically try again, and in others this is permanent and you will need to recreate the model run to resolve it.</li></ul><p>Note also on the lefthand side that there are two tabs: <em>Results</em> and <em>Inputs.</em> The page starts with only the <em>Inputs</em> tab and will show the <em>Results</em> tab automatically once results are available. A third tab for infeasibilities will show up if the model encounters any during its run.</p></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/7jryKq.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-11">
+
+              <div class="card-header card-title h5 headline" id="step-11">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-11">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>11. </b>
+                Viewing results
+                </div>
+              </div>
+              <div class="card-body stepDescription"><h2>Types of Results</h2><p>Results in the DAP model are available as charts, tables, maps, and CSV table downloads. In the default "chart" view, the application shows results compared with the <em>Base Case</em>, or a model run with no modifications to the calibrated data (in fact, if you make a model run without adding any modifications, you will get results equivalent to the base case). You can think of the base case as what we might expect the world to look like in a typical year, based on the calibration data. In many cases, the raw results of a model run aren't nearly as useful as the comparison to the base case because the comparison tells us the impact of the changes to the model.</p><br><h2>Viewing Results</h2><p>Once your results are available, scroll down to view them. By default, they will show as a set of bar charts, with a pair of bars per crop group, one for the current model run (orange) and one for the base case (blue). By default, it displays gross revenue, though you can change the display to other results. The default view is good for viewing the impact on individual crops, but in many cases, you may be unable to tell the overall result - did gross revenue increase or decrease?</p><ol><li>To change the display, click the <em>Stack Bars By Crop</em> toggle.</li></ol><br></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/euk5cq.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-12">
+
+              <div class="card-header card-title h5 headline" id="step-12">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-12">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>12. </b>
+                Changing the charts
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>Once we change that toggle, we see one bar for the base case and one bar for our current model run, with each banded by crop. It becomes clear in this format that the changes we made reduced gross revenue.</p><br><p>What about cropped land area though? To find out:</p><ol><li>Click the <em>Plot Value</em> dropdown </li><li>and select <em>Land</em> to change the chart to display land acreage results instead of revenue.</li></ol></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/6JwHmX.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-13">
+
+              <div class="card-header card-title h5 headline" id="step-13">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-13">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>13. </b>
+                Land acreage results
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>It looks like cropped land acreage declined in the model run, but less than revenue. To find out why, you might wish to switch back to the original bar chart view to see which crops declined the most in area, or switch back to revenue to see where the largest revenue declines were (we'll leave that as an independent exercise for you though!).</p><br><ol><li>When you're done exploring the charts, click the "Table" tab to switch to viewing the tabular results of the model</li></ol></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/Fe82y1.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-14">
+
+              <div class="card-header card-title h5 headline" id="step-14">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-14">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>14. </b>
+                Tabular Results
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>After switching to the <em>Table </em>tab, we see the same results, but in a tabular format. The raw tabular results are often less useful than the aggregate results, but you may want to compare exact result values for specific regions or crop groups sometimes. You can see all the result values per region/crop group here. By default, it displays all results, but you can filter it to specific regions or crop groups (or both) at the top.</p><ol><li>Feel free to look around here for a bit before proceeding to the next step by clicking on the <em>Map </em>tab.</li></ol></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/WaTkKM.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-15">
+
+              <div class="card-header card-title h5 headline" id="step-15">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-15">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>15. </b>
+                Mapping results
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>The map viewer shows you raw results values - the same ones you obtain from the table view - spatially. As of this writing, it does <strong>not</strong> normalize those results to region area (unless specified), and does not yet compare values from this model run to the base case values.</p><p>By default, the map viewer does not show anything. You need to select a crop and a value to map before it does. </p><ol><li>Select <em>Land</em> from the righthand dropdown, unless it is already selected from a previous step, </li><li>then select <em>Alfalfa </em>from the <em>Filter to Crop </em>dropdown</li></ol></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/woKhtx.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-16">
+
+              <div class="card-header card-title h5 headline" id="step-16">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-16">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>16. </b>
+                Viewing Results on the map
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>Once you select the two values, the map will display data as a choropleth - each region will be filled with a color based on its value for the variable you selected. A color ramp will show the range of values in the top right corner. </p><p>You can also hover your mouse over each region to see its raw values for all variables in the bottom left corner. The selected variable will always be at the top of the list, but the remaining variables will always be in the same order.</p><p>Finally, if you want to change the basemap, such as to one with more or less detail, or to a satellite view, you can do that from the bottom right corner of the map. </p></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/i3g8uA.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-17">
+
+              <div class="card-header card-title h5 headline" id="step-17">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-17">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>17. </b>
+                Downloading Data
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>If you wish to do further analysis, aggregation, normalization, or comparison on the results, you may download them as a CSV from the menu at the top. Scroll the page up, click the <em>Downloads </em>button and then click <em>Results </em>to download a CSV (Comma Separated Values) formatted table of the results. CSV files are just text, so you can read them in any text editor, but importantly, you can open them as a table in your spreadsheet-editor or scripting language of choice, such as Microsoft Excel, R, or Python.</p></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/00CNlT.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-18">
+
+              <div class="card-header card-title h5 headline" id="step-18">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-18">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>18. </b>
+                Back to the list of runs
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>OK, now that we're done examining the results of this model run, let's go back to the list of model runs. </p><ol><li>You can get there either from the menu, or by clicking <em>Return to List</em> in the top left.</li></ol></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/VHcMFK.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-19">
+
+              <div class="card-header card-title h5 headline" id="step-19">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-19">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>19. </b>
+                Customizing the list of model runs
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>Now, we can see the list of all model runs that are available to view. This list doesn't automatically update while you're working in the app, so it may not show new model runs created by colleagues, or the latest status of ones you've created. To get it up to date, you can click the <em>Update </em>button in the top left. </p><br><p>This list shows quite a lot of model runs, including those preloaded for your region and those from colleagues. Let's filter it to just show the base model run and those you've created.</p><ol><li>Click the X next to <em>Runs created by others in my organization </em>in the <em>Filter model runs</em> area at the top in order to remove model runs created by anyone but you from the list.</li><li>Then click the X next to <em>Prepopulated runs</em> to remove all model runs that were preloaded for you.</li></ol></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/bXE1JP.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-20">
+
+              <div class="card-header card-title h5 headline" id="step-20">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-20">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>20. </b>
+                A simpler list
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>Great! Now you should only see those model runs you created and the base run, making it easier to find your own work. If you wanted to see the rest of the model runs again, you can add them back from the same filter dropdown.</p></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/Byq6FE.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-21">
+
+              <div class="card-header card-title h5 headline" id="step-21">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-21">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>21. </b>
+                Making the filter permanent
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>What if we wanted to only show our own model runs by default? We can do that!</p><ol><li>Open the menu and go to the <em>Settings</em> section (not shown)</li><li>Click the toggle next to <em>Show model runs created by anyone in my organization</em> to turn it off, meaning you'll only see yours by default.</li></ol><p>You'll get a confirmation <em>snackbar </em>again indicating that your settings were saved. If something went wrong, you'll see an error message (at the time of this writing, there was a bug saving settings, so you may encounter that. We'll get that fixed!)</p></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/eGyoCV.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-22">
+
+              <div class="card-header card-title h5 headline" id="step-22">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-22">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>22. </b>
+                Another model run
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>OK, now let's try making another model run that uses more of the features in the application to control the model at a more granular level.</p><p>This time, our scenario is that we want to transfer some water. As mentioned earlier, water transfers aren't truly available in the application - each region is run independently, then aggregated later. But, we <strong>can</strong> reduce the available water in one location and increase it in another to simulate the impacts of a water transfer between regions. So, let's do that now.</p><p>We'll use the Yolano and Yolo bypass regions, mostly because they readily show up on a map so you can see the impact of your choices.</p><ol><li>Open the menu and go to the <em>New Model Run </em>section (not shown)</li><li>This time, we'll leave the <em>All Regions</em> settings alone. Instead, we'll add <em>Region Modifications</em>. Click the dropdown below the <em>Add Region Modifications </em>header and type "Yol" in the box to filter the list or regions to the Yolo Bypass and Yolano regions.</li></ol></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/hd0Kyj.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-23">
+
+              <div class="card-header card-title h5 headline" id="step-23">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-23">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>23. </b>
+                Add the region cards
+                </div>
+              </div>
+              <div class="card-body stepDescription"><ol><li>Then, click the boxes next to both Yolano and Yolo Bypass to add a card for each one of them and click outside of the dropdown to close it.</li></ol></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/50V3Fs.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-24">
+
+              <div class="card-header card-title h5 headline" id="step-24">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-24">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>24. </b>
+                Working with Region Modifications
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>Now, with these cards added, we can adjust the water and land percentages for each region individually. The settings on each card <strong>override</strong> the ones on the all regions card, so if you change one of the sliders on the <em style="background-color: rgb(255, 255, 255);">All Regions </em><span style="background-color: rgb(255, 255, 255);">card, then its value only applies to regions that do not have their own card added to the model run. Every region is always included in the model, so adding a card is just to allow you to refine the parameters for the region.</span></p></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/VDKvfs.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-25">
+
+              <div class="card-header card-title h5 headline" id="step-25">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-25">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>25. </b>
+                Making the transfer
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>Now, let's make the transfer. We won't make an exact transfer since we're adjusting percents rather than raw values (though we could calculate the percents required to make an exact transfer by looking up the input values for water in these regions in the Input Data Viewer). Instead, we'll just reduce Yolano's water as far as the slider allows and increase Yolo Bypass' water as much as allowed.</p><ol><li>On the Yolano card, adjust the <em>Water Availability</em> slider all the way down to 50%. The model has limits on these values to keep your inputs within a reasonable range of the calibrated values so that your inputs are valid. Extreme inputs could produce unknown or invalid results</li><li>Increase the Yolo Bypass slider all the way up to 120%.</li></ol><p>Note that as you adjust those values, the map updates its representations of the inputs. Yolano's region darkened to represent less water and Yolo Bypass' region became a brighter green to represent more water. Note also the toggle in the top right of the map to switch it to visualizing land inputs instead of water inputs.</p><p>3. Click Continue </p></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/dyS3R5.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-26">
+
+              <div class="card-header card-title h5 headline" id="step-26">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-26">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>26. </b>
+                Making crop modifications
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>Similarly to region modifications, we can make modifications to specific crop groups. To do so, we just add the crop from the dropdown menu to add a card for it to the model run configuration. We won't add any in this model run, but they work the same way region cards do. Any crop that has its own card uses the values from the card, otherwise each crop uses the values from the <em>All Crops </em>card.</p><br><p>When you're done looking at the crop listing, continue to the next step.</p></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/X1BYUq.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-27">
+
+              <div class="card-header card-title h5 headline" id="step-27">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-27">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>27. </b>
+                Add model metadata
+                </div>
+              </div>
+              <div class="card-body stepDescription"><ol><li>Once again, add metadata for your model run,</li><li>then click Run Model to create the model run. Once it confirms creation with a <em>snackbar</em>, click through to the new model run.</li></ol></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/fbwGOI.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-28">
+
+              <div class="card-header card-title h5 headline" id="step-28">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-28">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>28. </b>
+                Model Run State
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>If you clicked through quickly, or the server is busy, you might catch the model run in the <em>Waiting</em> or <em>Running</em> state. Wait for the model run to have results, and the page will automatically load them once they're available.</p></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/JEoTga.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-29">
+
+              <div class="card-header card-title h5 headline" id="step-29">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-29">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>29. </b>
+                Model inputs
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>While you're waiting, you can look at the model inputs to see how it shows them.</p><ol><li>If the model results are already showing, click on the <em>Inputs </em>tab.</li><li>We can view both region and crop modifications as tables or as plots showing us the distribution of the inputs we chose. Let's look at a scatterplot version, so click the <em>Scatterplot </em>tab under the <em>Region Modifications </em>header.</li><li>Hover your mouse over the points to see which region they represent and the values chosen for them.</li><li>Switch to <em>Result </em>view when you're done looking at the inputs.</li></ol></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/Mba5fj.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="columns flex-centered">
+          <div class="column col-xs-10 col-md-10 col-xl-10">
+            <div class="card stepCard" data-step-id="step-30">
+
+              <div class="card-header card-title h5 headline" id="step-30">
+                <label class="form-checkbox">
+                  <input type="checkbox" class="completionCheckbox" data-step-id="step-30">
+                  <i class="form-icon"></i>
+                </label>
+                <div class="stepTitle">
+                  <b>30. </b>
+                Viewing the transfer on a map
+                </div>
+              </div>
+              <div class="card-body stepDescription"><p>Aggregate results in the charts likely won't capture the impact of our small water transfer (though you <strong>can</strong> see some changes - try hovering your mouse over some of the charts to see which ones changed at scales not easily shown on the full charts - pasture in particular seems impacted by the transfer).</p><p>So, let's go look at a single crop for the regions included in the transfer instead. Switch to the Map of results, then select <em>Field Crops</em> as the crop filter and <em>Land </em>as the <em>Map Value </em>(not shown). Then hover over Yolano and Yolo Bypass on the map in order to see the results. Note that Yolano has almost no field crops in this output, even though it <strong>does </strong>have field crops, according to the <em>Input Data Viewer </em>(not shown, but you can look at the data yourself by going to the <em>Input Data Viewer</em> from the menu). The model reduced field crops in Yolano when it had less water, which preserving many of the other crops in the region. Can you see which crops were increased in the Yolo Bypass by looking at the results and comparing to the <em style="background-color: rgb(255, 255, 255);">Input Data Viewer</em> values (hint: use the filters in the <em style="background-color: rgb(255, 255, 255);">Input Data Viewer</em> table view to see all crop data for the region).</p></div>
+                <div class="card-image"><img src="./steps-dap_tutorial/ae760m.png" class="img-responsive stepImage"/></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</body>
+</html>

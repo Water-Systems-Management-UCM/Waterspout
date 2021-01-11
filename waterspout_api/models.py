@@ -136,7 +136,25 @@ class ModelArea(models.Model):
 			"min_crop_area": self.min_crop_area,
 			"max_crop_area": self.max_crop_area,
 		}
-	
+
+	# elasticities code commented out because we don't run calibration
+	# ourselves right now
+	#@property
+	#def elasticities_as_dict(self):
+	#	return {item.crop.crop_code: float(item.value) for item in self.elasticities}
+
+
+#class Elasticity(models.Model):
+# elasticities code commented out because we don't run calibration
+# ourselves right now
+#	"""
+#		We store elasticities for Dapper as individual records here,
+#		but we'll access them on the ModelArea object to send to Dapper
+#	"""
+#	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE, related_name="elasticities")
+#	crop = models.ForeignKey("Crop", on_delete=models.CASCADE, related_name="elasticities")
+#	value = models.DecimalField(max_digits=6, decimal_places=4)
+
 
 class RegionGroup(models.Model):
 	name = models.CharField(max_length=255, null=False, blank=False)
@@ -337,10 +355,10 @@ class ModelItem(models.Model):
 	omegaland = models.DecimalField(max_digits=10, decimal_places=1)
 	omegasupply = models.DecimalField(max_digits=10, decimal_places=1)
 	omegalabor = models.DecimalField(max_digits=10, decimal_places=1)
-	omegaestablish = models.DecimalField(max_digits=10, decimal_places=1)
-	omegacash = models.DecimalField(max_digits=10, decimal_places=1)
-	omeganoncash = models.DecimalField(max_digits=10, decimal_places=1)
-	omegatotal = models.DecimalField(max_digits=10, decimal_places=1)
+	omegaestablish = models.DecimalField(max_digits=10, decimal_places=1, null=True, blank=True)
+	omegacash = models.DecimalField(max_digits=10, decimal_places=1, null=True, blank=True)
+	omeganoncash = models.DecimalField(max_digits=10, decimal_places=1, null=True, blank=True)
+	omegatotal = models.DecimalField(max_digits=10, decimal_places=1, null=True, blank=True)
 	xwater = models.DecimalField(max_digits=18, decimal_places=10)
 	p = models.DecimalField(max_digits=18, decimal_places=10)
 	y = models.DecimalField(max_digits=13, decimal_places=5)
@@ -566,26 +584,30 @@ class ModelRun(models.Model):
 		result_set = ResultSet(model_run=self, dapper_version=get_dapper_version())
 		result_set.save()
 
-		for record in results_df.itertuples():
-			# get the first tuple's fields, then exit the loop
-			# this should be faster than retrieving it every time in the next loop, but we need to do it once
-			fields = list(set(record._fields) - set(["id", "g", "i", "calibration_set"]))
-			break
+		try:
+			for record in results_df.itertuples():
+				# get the first tuple's fields, then exit the loop
+				# this should be faster than retrieving it every time in the next loop, but we need to do it once
+				fields = list(set(record._fields) - set(["id", "g", "i", "calibration_set"]))
+				break
 
-		for record in results_df.itertuples():  # returns named tuples
-			result = Result(result_set=result_set)
-			result.crop = Crop.objects.get(crop_code=record.i, model_area=self.calibration_set.model_area)
-			result.region = Region.objects.get(internal_id=record.g, model_area=self.calibration_set.model_area)
-			for column in fields:  # _fields isn't private - it's just preventing conflicts - see namedtuple docs
-				value = getattr(record, column)
+			for record in results_df.itertuples():  # returns named tuples
+				result = Result(result_set=result_set)
+				result.crop = Crop.objects.get(crop_code=record.i, model_area=self.calibration_set.model_area)
+				result.region = Region.objects.get(internal_id=record.g, model_area=self.calibration_set.model_area)
+				for column in fields:  # _fields isn't private - it's just preventing conflicts - see namedtuple docs
+					value = getattr(record, column)
 
-				if type(value) is not str and numpy.isnan(value):  # if we got NaN (such as with an infeasibility)
-					value = None  # then we need to skip it or it'll bork the whole table (seriously)
+					if value is not None and type(value) is not str and numpy.isnan(value):  # if we got NaN (such as with an infeasibility) - filter out None values because they make numpy.isnan fail
+						value = None  # then we need to skip it or it'll bork the whole table (seriously)
 
-				setattr(result, column, value)
-			result.save()
+					setattr(result, column, value)
+				result.save()
 
-		return result_set
+			return result_set
+		except:
+			result_set.delete()  # clean up if we fail while loading data
+			raise
 
 	def load_infeasibilities(self, scenario, result_set):
 		log.debug("Assessing infeasibilities")
