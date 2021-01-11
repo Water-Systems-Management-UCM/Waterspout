@@ -6,7 +6,7 @@ Markdown
 Pygments
 djangorestframework
 django-filter
-django-guardian
+django-guardian>=2.3.0
 drf-action-serializer
 waitress
 sentry-sdk

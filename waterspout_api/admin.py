@@ -1,9 +1,10 @@
 from django.contrib import admin
 from waterspout_api import models
+from guardian.admin import GuardedModelAdmin
 # Register your models here.
 
 admin.site.register(models.Organization)
-admin.site.register(models.UserProfile)
+admin.site.register(models.UserProfile, GuardedModelAdmin)
 admin.site.register(models.ModelArea)
 admin.site.register(models.RegionGroup)
 admin.site.register(models.Region)
