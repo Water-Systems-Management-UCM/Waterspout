@@ -4,6 +4,9 @@
     - name: Loading Configs
       include_vars: ansible-waterspout-variables.yml
 
+    - name: Loading secrets
+      include_vars: secrets.yml
+
     - name: Snap refresh
       become: true
       become_method: sudo
@@ -26,12 +29,15 @@
     - name: Link Snap Certbot to usr/bin
       become: true
       become_method: sudo
-      shell: ln -s /snap/bin/certbot /usr/bin/certbot
+      file:
+        src: /snap/bin/certbot
+        dest: /usr/bin/certbot
+        state: link
 
     - name: Enable HTTPS in nginx
       become: true
       become_method: sudo
-      shell: certbot --nginx
+      shell: "certbot --agree-tos -d {{ deploy_url }} --nginx -m {{ admin_address }}"
 
     - name: Test autorenewal
       become: true

@@ -1,5 +1,6 @@
 install_as_user: nsantos5
 region_to_deploy: dap
+deploy_url: "dap.ucmerced.edu"
 
 install_path: "/var/waterspout" # we'll move it to /srv once we set up a new user and group in this script
 account_name: "waterspout"

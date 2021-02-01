@@ -1,5 +1,13 @@
 # Waterspout
-Waterspout is a server-side system for managing, running, and viewing agricultural optimization models.
+Waterspout is a server-side system for managing, running, and viewing agricultural optimization models. It
+exposes an API and user management system for the model and manages model runs on the back end.
+
+Waterspout is a Django application, so the folder structure follows Django Model-View-Template patterns,
+though we do not use Django's templating engine. 
+
+## Deployment
+Deployment is only supported using the Ansible scripts in this repository's `deployment` folder, except for
+local development.
 
 ## Developing with Waterspout
 First, you'll need a copy of the Dapper repository installed - contact Nick about that since it's currently private.
@@ -20,3 +28,7 @@ From there, whenever you need to run a normal update, just pull changes from the
 python -m pip install -r requirements.txt
 python manage.py migrate
 ```
+
+## License
+Waterspout is currently copyright-protected by the Regents of the University of California, but may move
+to an OSI-approved open source license at some point in the future.
