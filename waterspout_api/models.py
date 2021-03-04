@@ -100,6 +100,10 @@ class ModelArea(models.Model):
 	"""
 	organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.SET_NULL, related_name="model_areas")
 	name = models.CharField(max_length=255, unique=True)
+
+	data_folder = models.CharField(max_length=255, default="dap")  # which folder did the data for this come from during loading? Can
+													# help us if we want to update some data later
+
 	description = models.TextField(null=True, blank=True)
 
 	map_center_latitude = models.DecimalField(max_digits=4, decimal_places=2)
@@ -404,10 +408,14 @@ class CalibratedParameter(ModelItem):
 	#difflandpct = models.DecimalField(max_digits=12, decimal_places=10, null=True, blank=True)
 	#diffwaterpct = models.DecimalField(max_digits=12, decimal_places=10, null=True, blank=True)
 
+	# this item helps us check on the front end whether or not modifications will send profits negative.
+	# we'll store it here since it comes out of the calibration and will be per region/crop combination
+	price_yield_correction_factor = models.DecimalField(max_digits=6, decimal_places=3, default=1)
+
 	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.CASCADE, related_name="calibration_set")
 	serializer_fields = ["crop", "region", "year", "omegaland", "omegawater",
 	                     "omegasupply", "omegalabor", "omegaestablish", "omegacash",
-	                     "omeganoncash", "omegatotal", "p", "y"]
+	                     "omeganoncash", "omegatotal", "p", "y", "price_yeild_correction_factor"]
 
 
 class ModelRun(models.Model):
@@ -711,6 +719,8 @@ class CropModification(models.Model):
 
 	crop = models.ForeignKey(Crop, on_delete=models.DO_NOTHING, related_name="modifications",
 	                            null=True, blank=True)
+	region = models.ForeignKey(Crop, on_delete=models.DO_NOTHING, related_name="crop_modifications",
+	                            null=True, blank=True)  # we'll be allowing region-tied crop modifications in a future update - as of 2021/March/02, there is no logic for handling this value yet - it'll all be null and won't go into the solver anywhere
 	crop_group = models.ForeignKey(CropGroup, on_delete=models.DO_NOTHING, related_name="modifications",
 	                               null=True, blank=True)
 

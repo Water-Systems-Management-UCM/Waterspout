@@ -11,6 +11,7 @@
       ufw:
         direction: incoming
         default: deny
+
     - name: Allow and limit SSH
       become: true
       become_method: sudo
@@ -18,6 +19,7 @@
         rule: limit
         port: ssh
         proto: tcp
+
     - name: Allow Port 80
       become: true
       become_method: sudo
@@ -25,6 +27,7 @@
         rule: allow
         port: '80'
         proto: tcp
+
     - name: Allow Port 443 (SSL/TLS)
       become: true
       become_method: sudo
@@ -32,6 +35,7 @@
         rule: allow
         port: '443'
         proto: tcp
+
     - name: Enable firewall
       become: true
       become_method: sudo
@@ -114,7 +118,7 @@
       become_method: sudo
       apt:
         update_cache: yes
-        name: ['acl', 'git', 'nodejs', 'nginx-full', '{{ python_executable }}','{{ python_executable }}-dev','python3-pip','virtualenv','postgresql' ,'gdal-bin','libgdal-dev']
+        name: ['acl', 'git', 'nodejs', 'fail2ban', 'nginx-full', '{{ python_executable }}','{{ python_executable }}-dev','python3-pip','virtualenv','postgresql' ,'gdal-bin','libgdal-dev']
         state: present
       # not sure if the python-pip here will install it for python 3.8 - I'm not sure it will based on experience
       # we may need to adjust how we get pip
@@ -238,6 +242,7 @@
       become_method: sudo
       service:
         name: nginx
+        enabled: yes
         state: restarted
 
     - name: Copy Service setup file for main waterspout service
@@ -279,6 +284,7 @@
       become_method: sudo
       service:
         name: waterspout
+        enabled: yes
         state: restarted
 
     - name: Copy Service setup file for Waterspout Run Processor
@@ -320,6 +326,7 @@
       become_method: sudo
       service:
         name: waterspoutmodels
+        enabled: yes
         state: restarted
 
 # now we're done with the standard setup, run the code that runs both the first time and for every update
@@ -327,8 +334,9 @@
 - import_playbook: ansible-configure-postgres.yml
 - import_playbook: ansible-update-waterspout.yml
 - import_playbook: ansible-update-stormchaser.yml
-
 - import_playbook: ansible-postdeploy-waterspout.yml
+- import_playbook: ansible-certbot.yml
+
 
     #     Can we generate and configure postgres user accounts and store them in variables
     #     to plug into local settings files? Do I need a separate script that dumps local_settings files?
@@ -336,4 +344,3 @@
     # TODO: Set permissions on application srv directory
     # TODO: Fail2ban and other services
     # TODO: Move SSH port?
-    # TODO: Make application update playbook
