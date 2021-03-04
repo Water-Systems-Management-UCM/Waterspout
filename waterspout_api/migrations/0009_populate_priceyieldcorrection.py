@@ -33,13 +33,13 @@ def populate_price_yield_correction(apps, schema_editor):
             for row in calib_rows:
                 # find the row that matches this calibration set, crop, and region
                 # print(row["i"], " ", row["g"])
-                #try:
-                db_row = CalibratedParameter.objects.get(calibration_set=calib_set,
+                try:
+                    db_row = CalibratedParameter.objects.get(calibration_set=calib_set,
                                                          crop__crop_code=row["i"],
                                                          region__internal_id=row["g"],
                                                          )
-                #except CalibratedParameter.DoesNotExist:
-                #    pass
+                except CalibratedParameter.DoesNotExist:
+                    pass
 
                 # set its new value, and save it
                 db_row.price_yield_correction_factor = row["price_yield_correction_param"]
