@@ -90,7 +90,7 @@ class ResultSetSerializer(serializers.ModelSerializer):
 	infeasibilities = InfeasibilitySerializer(allow_null=True, many=True, read_only=True)
 
 	class Meta:
-		fields = ["result_set", "dapper_version", "infeasibilities", "infeasibilities_text"]
+		fields = ["result_set", "in_calibration", "dapper_version", "infeasibilities", "infeasibilities_text"]
 		model = models.ResultSet
 
 
@@ -137,11 +137,11 @@ class CalibrationSetSerializer(serializers.ModelSerializer):
 		Provides access to the input data records for viewing the database, but is also how we'll
 		retrieve the list of model runs
 	"""
-	# calibration_set = CalibrationItemSerializer(read_only=True, many=True)
+	calibration_set = CalibrationItemSerializer(read_only=True, many=True)
 	#model_runs = ModelRunSerializer(read_only=True, many=True)
 
 	class Meta:
-		fields = ["id"] #, "model_runs"]
+		fields = ["id", "calibration_set"] #, "model_runs"]
 		model = models.CalibrationSet
 
 		depth = 0

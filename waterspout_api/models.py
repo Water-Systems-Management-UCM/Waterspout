@@ -334,6 +334,13 @@ class ResultSet(RecordSet):
 	# store the dapper version that the model ran with - that way we can detect if an updated version might provide different results
 	dapper_version = models.CharField(max_length=20)
 
+	# in_calibration indicates whether or not the results have any negative profits
+	# or have otherwise fallen outside of calibrated values.
+	in_calibration = models.BooleanField(default=True)
+	# not using in_calibration_text for now. We'll have the web app figure out
+	# which records are negative profits and show a table if in_calibration is false
+	#in_calibration_text = models.TextField(null=True, blank=True)
+
 	infeasibilities_text = models.TextField(null=True, blank=True)
 	# infeasibilities reverse relation
 
@@ -413,9 +420,11 @@ class CalibratedParameter(ModelItem):
 	price_yield_correction_factor = models.DecimalField(max_digits=6, decimal_places=3, default=1)
 
 	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.CASCADE, related_name="calibration_set")
-	serializer_fields = ["crop", "region", "year", "omegaland", "omegawater",
-	                     "omegasupply", "omegalabor", "omegaestablish", "omegacash",
-	                     "omeganoncash", "omegatotal", "p", "y", "price_yeild_correction_factor"]
+	serializer_fields = ["crop", "region", "price_yield_correction_factor"]
+
+						#["crop", "region", "year", "omegaland", "omegawater",
+	                    # "omegasupply", "omegalabor", "omegaestablish", "omegacash",
+	                    # "omeganoncash", "omegatotal", "p", "y", "price_yeild_correction_factor"]
 
 
 class ModelRun(models.Model):
@@ -434,6 +443,7 @@ class ModelRun(models.Model):
 	ready = models.BooleanField(default=False, null=False)  # marked after the web interface adds all modifications
 	running = models.BooleanField(default=False, null=False)  # marked while in processing
 	complete = models.BooleanField(default=False, null=False)  # tracks if the model has actually been run for this result yet
+
 	status_message = models.CharField(max_length=2048, default="", null=True, blank=True)  # for status info or error messages
 	result_values = models.TextField(default="", null=True, blank=True)
 	log_data = models.TextField(null=True, blank=True)  # we'll store log outputs from the model run here.
@@ -610,7 +620,14 @@ class ModelRun(models.Model):
 						value = None  # then we need to skip it or it'll bork the whole table (seriously)
 
 					setattr(result, column, value)
+
+				if result.net_revenue < 0:  # if any record has negative net revenues, we're out of bounds on calibration - mark it
+					result_set.in_calibration = False
+
 				result.save()
+
+			if result_set.in_calibration is False:  # if we changed the in_calibration value, save the result set - we check this here so we only trigger the save once
+				result_set.save()
 
 			return result_set
 		except:
