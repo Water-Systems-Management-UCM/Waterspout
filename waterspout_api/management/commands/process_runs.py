@@ -39,6 +39,8 @@ class Command(BaseCommand):
 			if settings.DEBUG:  # if we're in production, don't raise the error, we'll get it in email
 				raise
 
+			self.process_runs()
+
 	def _get_runs(self):
 		log.debug("Checking for new model runs")
 
