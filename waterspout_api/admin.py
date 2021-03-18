@@ -5,7 +5,16 @@ from guardian.admin import GuardedModelAdmin
 
 admin.site.register(models.Organization)
 admin.site.register(models.UserProfile, GuardedModelAdmin)
-admin.site.register(models.ModelArea)
+
+class ModelAreaPreferencesInline(admin.TabularInline):
+    model = models.ModelAreaPreferences
+
+class ModelAreaAdmin(admin.ModelAdmin):
+    inlines = [ModelAreaPreferencesInline]
+
+admin.site.register(models.ModelArea, ModelAreaAdmin)
+
+
 admin.site.register(models.RegionGroup)
 admin.site.register(models.Region)
 admin.site.register(models.RegionExtra)
