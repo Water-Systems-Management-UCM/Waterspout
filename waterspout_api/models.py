@@ -347,7 +347,7 @@ class ResultSet(RecordSet):
 	# infeasibilities reverse relation
 
 	def __str__(self):
-		return f"Results for Model Run {self.model_run.name}"
+		return f"Results for Model Run {self.model_run.name} from Dapper {self.dapper_version} at {self.date_run}"
 
 
 class ModelItem(models.Model):
