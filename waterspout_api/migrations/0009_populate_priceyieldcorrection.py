@@ -24,7 +24,7 @@ def populate_price_yield_correction(apps, schema_editor):
         # we're only going to really have DAP right now, but this helps us check and make sure
         # we don't mess anything up if there's something else loaded first
         if data_folder == "dap":
-            calibration_csv = os.path.join(BASE_DIR, "waterspout_api", "data", "dap", "dap_calibrated.csv")
+            calibration_csv = os.path.join(BASE_DIR, "waterspout_api", "data", "dap", "DAP_calibrated.csv")
         else:
             break
 
