@@ -15,10 +15,11 @@ log = logging.getLogger("waterspout.load")
 def reset_model_area(model_area_name, data_folder, organization, latitude, longitude, default_zoom):
 	# this could return more than one object, but if it does, we want the error to
 	# make sure we aren't clearing a bunch of things we don't want to clear
+
 	try:
 		model_area = models.ModelArea.objects.get(name=model_area_name, organization=organization)
 	except models.ModelArea.DoesNotExist:
-		model_area = models.ModelArea(name=model_area_name, data_folder=load_folder, organization=organization,
+		model_area = models.ModelArea(name=model_area_name, data_folder=data_folder, organization=organization,
 		                              map_center_latitude=latitude, map_center_longitude=longitude,
 		                              map_default_zoom=default_zoom)
 		model_area.save()

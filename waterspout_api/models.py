@@ -105,6 +105,7 @@ class ModelArea(models.Model):
 													# help us if we want to update some data later
 
 	description = models.TextField(null=True, blank=True)
+	# preferences reverse 1 to 1
 
 	map_center_latitude = models.DecimalField(max_digits=4, decimal_places=2)
 	map_center_longitude = models.DecimalField(max_digits=5, decimal_places=2)
@@ -146,6 +147,29 @@ class ModelArea(models.Model):
 	#@property
 	#def elasticities_as_dict(self):
 	#	return {item.crop.crop_code: float(item.value) for item in self.elasticities}
+
+
+class ModelAreaPreferences(models.Model):
+	"""
+		This model is so that we can group preferences and features for model areas
+		and keep them organized
+	"""
+	enforce_price_yield_constraints = models.BooleanField(default=True)
+	model_area = models.OneToOneField(ModelArea,
+	                                  on_delete=models.CASCADE,
+	                                  related_name="preferences"
+	                                  )
+
+
+# set up the signal receivers that get triggered after a model area is created so that everyone has a userprofile
+@receiver(post_save, sender=ModelArea)
+def create_model_area_preferences(sender, instance, created, **kwargs):
+	if created:
+		ModelAreaPreferences.objects.create(model_area=instance)
+
+@receiver(post_save, sender=ModelArea)
+def save_model_area(sender, instance, **kwargs):
+	instance.preferences.save()
 
 
 #class Elasticity(models.Model):

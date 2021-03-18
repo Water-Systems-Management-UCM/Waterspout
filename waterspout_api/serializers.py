@@ -182,16 +182,23 @@ class InputDataSetSerializer(serializers.ModelSerializer):
 		depth = 0
 
 
+class ModelAreaPreferencesSerializer(serializers.ModelSerializer):
+	class Meta:
+		fields = "__all__"
+		model = models.ModelAreaPreferences
+
+
 class ModelAreaSerializer(ModelActionSerializer):
 	calibration_data = CalibrationSetSerializer(read_only=True, many=True, allow_null=True)
 	input_data = InputDataSetSerializer(read_only=True, many=True, allow_null=True)
 	crop_set = CropSerializer(read_only=True, many=True, allow_null=True)
 	region_set = RegionSerializer(read_only=True, many=True, allow_null=True)
+	preferences = ModelAreaPreferencesSerializer(read_only=True)
 
 	class Meta:
 		model = models.ModelArea
 		_base_fields = ["id", "organization_id", "name", "description", "map_center_latitude",
-		                "map_center_longitude", "map_default_zoom", "model_defaults"]
+		                "map_center_longitude", "map_default_zoom", "model_defaults", "preferences"]
 		fields = _base_fields
 		action_fields = {  # only send model results in detail view - that way the listing doesn't send massive amount
 			"retrieve": {     # of data, but we only need to load the specific model run again to get the results
