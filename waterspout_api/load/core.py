@@ -190,7 +190,7 @@ def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_
 
 	add_system_user_to_org(org=organization)
 
-	model_area = reset_model_area(model_area_name=f"Load: {area_name}", organization=organization,
+	model_area = reset_model_area(model_area_name=f"Load: {area_name}", data_folder=data_name, organization=organization,
 	                                   latitude=latitude, longitude=longitude, default_zoom=default_zoom)
 
 	load_regions(json_file=get_data_file_path(data_name, regions),
