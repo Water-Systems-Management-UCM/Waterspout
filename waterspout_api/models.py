@@ -328,8 +328,10 @@ class ResultSet(RecordSet):
 	reverse_name = "result_set"
 	record_model_name = "Result"
 
-	model_run = models.OneToOneField("ModelRun", null=True, blank=True,
+	model_run = models.ForeignKey("ModelRun", null=True, blank=True,
 	                               on_delete=models.CASCADE, related_name="results")
+
+	date_run = models.DateTimeField(default=django.utils.timezone.now, null=True, blank=True)
 
 	# store the dapper version that the model ran with - that way we can detect if an updated version might provide different results
 	dapper_version = models.CharField(max_length=20)
@@ -621,7 +623,7 @@ class ModelRun(models.Model):
 
 					setattr(result, column, value)
 
-				if result.net_revenue < 0:  # if any record has negative net revenues, we're out of bounds on calibration - mark it
+				if not result.net_revenue or result.net_revenue < 0:  # if any record has negative net revenues, we're out of bounds on calibration - mark it
 					result_set.in_calibration = False
 
 				result.save()
@@ -648,7 +650,7 @@ class ModelRun(models.Model):
 		# now let's see if there are any crops that are common to the infeasibilities
 		#if total_infeasibilities > 2:  # if we have more than a handful, we'll assess which crops are common
 		for infeasibility in scenario.infeasibilities:
-			infeasible_region_results = Result.objects.filter(result_set=self.results,
+			infeasible_region_results = Result.objects.filter(result_set=result_set,
 					                                          region__internal_id=infeasibility.region,
 					                                          year=infeasibility.timeframe)
 

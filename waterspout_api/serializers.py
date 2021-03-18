@@ -90,14 +90,14 @@ class ResultSetSerializer(serializers.ModelSerializer):
 	infeasibilities = InfeasibilitySerializer(allow_null=True, many=True, read_only=True)
 
 	class Meta:
-		fields = ["result_set", "in_calibration", "dapper_version", "infeasibilities", "infeasibilities_text"]
+		fields = ["result_set", "in_calibration", "dapper_version", "date_run", "infeasibilities", "infeasibilities_text"]
 		model = models.ResultSet
 
 
 class ModelRunSerializer(ModelActionSerializer):
 	region_modifications = RegionModificationSerializer(allow_null=True, many=True)
 	crop_modifications = CropModificationSerializer(allow_null=True, many=True)
-	results = ResultSetSerializer(allow_null=True)
+	results = serializers.SerializerMethodField()  # forces it to get looked up below and lets us sort them by date
 
 	class Meta:
 		model = models.ModelRun
@@ -110,6 +110,18 @@ class ModelRunSerializer(ModelActionSerializer):
 		}
 		depth = 0  # will still show objects that are explicitly declared as nested objects (like region_modifications)
 					# this lets us say "I don't want region geometries here" while still getting the modifications in one request
+
+	def get_results(self, instance):
+		"""
+			We can have multiple result sets for each model run. This function retrieves the results sets
+			and orders them by date, descending. This ensures that the newest results for the model run are always
+			in position 0 in the web app so that it can start with index 0 and not need to examine which is newest itself.
+			Users will see the newest by default until we can add functionality for them to switch it.
+		:param instance:
+		:return:
+		"""
+		results = instance.results.all().order_by('-date_run')
+		return ResultSetSerializer(results, allow_null=True, many=True).data
 
 	def create(self, validated_data):
 		region_modification_data = validated_data.pop('region_modifications')
