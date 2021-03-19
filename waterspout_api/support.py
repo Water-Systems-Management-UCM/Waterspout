@@ -1,12 +1,49 @@
 import logging
+import os
+import csv
 
 import pandas
 
 from . import models
+from Waterspout.local_settings import BASE_DIR
 
 from rest_framework.authtoken.models import Token
 
 log = logging.getLogger(__name__)
+
+
+def load_price_yield_correction(CalibrationSet, CalibratedParameter):
+	existing_calibration_sets = CalibrationSet.objects.all()
+	for calib_set in existing_calibration_sets:
+		if load_single_calibset_price_yield_correction(calib_set, CalibratedParameter) is False:
+			continue
+
+def load_single_calibset_price_yield_correction(calib_set, CalibratedParameter):
+	data_folder = calib_set.model_area.data_folder
+	# we're only going to really have DAP right now, but this helps us check and make sure
+	# we don't mess anything up if there's something else loaded first
+	if data_folder == "dap":
+		calibration_csv = os.path.join(BASE_DIR, "waterspout_api", "data", "dap", "DAP_calibrated.csv")
+	else:
+		return False
+
+	with open(calibration_csv) as calib_data:
+		calib_rows = csv.DictReader(calib_data)
+		for row in calib_rows:
+			# find the row that matches this calibration set, crop, and region
+			# print(row["i"], " ", row["g"])
+			try:
+				db_row = CalibratedParameter.objects.get(calibration_set=calib_set,
+				                                         crop__crop_code=row["i"],
+				                                         region__internal_id=row["g"],
+				                                         )
+			except CalibratedParameter.DoesNotExist:
+				pass
+
+			# set its new value, and save it
+			db_row.price_yield_correction_factor = row["price_yield_correction_param"]
+			db_row.save()
+
 
 def refresh_token_for_user(user):
 	"""
