@@ -111,6 +111,12 @@ class ModelRunSerializer(ModelActionSerializer):
 		depth = 0  # will still show objects that are explicitly declared as nested objects (like region_modifications)
 					# this lets us say "I don't want region geometries here" while still getting the modifications in one request
 
+	def update(self, instance, validated_data):
+		instance.name = validated_data.get('name', instance.name)
+		instance.description = validated_data.get('description', instance.description)
+		instance.save()
+		return instance
+
 	def get_results(self, instance):
 		"""
 			We can have multiple result sets for each model run. This function retrieves the results sets
