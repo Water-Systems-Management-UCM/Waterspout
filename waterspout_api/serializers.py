@@ -208,7 +208,7 @@ class ModelAreaSerializer(ModelActionSerializer):
 		fields = _base_fields
 		action_fields = {  # only send model results in detail view - that way the listing doesn't send massive amount
 			"retrieve": {     # of data, but we only need to load the specific model run again to get the results
-				"fields": _base_fields + ["calibration_data", "input_data", "crop_set", "region_set"]
+				"fields": _base_fields + ["main_help_page_content", "calibration_data", "input_data", "crop_set", "region_set"]
 			}
 		}
 		depth = 0  # will still show objects that are explicitly declared as nested objects (like region_modifications)

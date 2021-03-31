@@ -123,6 +123,8 @@ class ModelArea(models.Model):
 	min_crop_area = models.PositiveSmallIntegerField(default=0)
 	max_crop_area = models.PositiveSmallIntegerField(default=200)
 
+	main_help_page_content = models.TextField(null=True, blank=True)
+
 	def __str__(self):
 		return self.name
 
