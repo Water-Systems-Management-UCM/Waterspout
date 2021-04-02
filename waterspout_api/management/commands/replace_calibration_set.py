@@ -47,7 +47,8 @@ class Command(BaseCommand):
 		# 3 update existing model runs to use the new calibration set
 		# and 5 force a rerun of all existing model runs
 		log.info("Setting new calibration set on model runs and scheduling model runs to rerun")
-		models.ModelRun.objects.all().update(calibration_set=new_calibration_set,
+		models.ModelRun.objects.filter(model_area=model_area)\
+								.update(calibration_set=new_calibration_set,
 		                                     complete=False,
 		                                     running=False)
 
