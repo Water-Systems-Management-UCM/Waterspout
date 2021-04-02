@@ -250,6 +250,7 @@ class Crop(models.Model):
 	def __str__(self):
 		return self.name
 
+
 class CropGroup(models.Model):
 	"""
 		A unit to group individual crops together - note that we need to crop groups are also by organization and

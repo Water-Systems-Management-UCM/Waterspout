@@ -37,12 +37,11 @@ def load_single_calibset_price_yield_correction(calib_set, CalibratedParameter):
 				                                         crop__crop_code=row["i"],
 				                                         region__internal_id=row["g"],
 				                                         )
+				# set its new value, and save it
+				db_row.price_yield_correction_factor = row["price_yield_correction_param"]
+				db_row.save()
 			except CalibratedParameter.DoesNotExist:
 				pass
-
-			# set its new value, and save it
-			db_row.price_yield_correction_factor = row["price_yield_correction_param"]
-			db_row.save()
 
 
 def refresh_token_for_user(user):
