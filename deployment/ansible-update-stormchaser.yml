@@ -4,32 +4,63 @@
     - name: Loading variables
       include_vars: ansible-waterspout-variables.yml
 
-    - name: Git Pull and Update
-      git:
-        clone: no
-        force: yes
-        update: yes
-        repo: "{{ front_end_repo_url }}"
+    - name: Install jq and unzip
+      become: true
+      become_method: sudo
+      apt:
+        update_cache: yes
+        name: ['jq', 'unzip']
+        state: present
+
+    - name: Get GitHub release URL
+      # pull from Github
+      # this slick and handy one liner to get the download URL adapted from https://www.starkandwayne.com/blog/how-to-download-the-latest-release-from-github/
+      shell:
+        cmd: curl -s https://api.github.com/repos/Water-Systems-Management-UCM/stormchaser/releases/latest | jq -r ".assets[] | select(.name | test(\"release-build.zip\")) | .browser_download_url"
+      register: release_url
+
+    - name: Download release ZIP file
+      become: true
+      become_method: sudo
+      get_url:
+        dest: "{{ front_end_application_folder }}"
+        url: "{{ release_url.stdout_lines[0] }}"
+        force: yes  # overwrite it if it exists already
+
+    - name: Unzip release ZIP file
+      become: true
+      become_method: sudo
+      unarchive:
+        remote_src: yes
+        src: "{{ front_end_application_folder }}/release-build.zip"
         dest: "{{ front_end_application_folder }}"
 
-    - name: Install NPM Packages
-      become: true
-      become_method: sudo
-      shell:
-        chdir: "{{ front_end_application_folder }}"
-        cmd: npm install
-
-    - name: Switch Code to Production Build
-      become: true
-      become_method: sudo
-      lineinfile:
-        path: "{{ front_end_application_folder }}/vue.config.js"
-        regexp: "mode: 'development'"
-        line: "mode: 'production',"
-
-    - name: Run build of distribution
-      become: true
-      become_method: sudo
-      shell:
-        chdir: "{{ front_end_application_folder }}"
-        cmd: npm run-script build
+#    - name: Git Pull and Update
+#      git:
+#        clone: no
+#        force: yes
+#        update: yes
+#        repo: "{{ front_end_repo_url }}"
+#        dest: "{{ front_end_application_folder }}"
+#
+#    - name: Install NPM Packages
+#      become: true
+#      become_method: sudo
+#      shell:
+#        chdir: "{{ front_end_application_folder }}"
+#        cmd: npm install
+#
+#    - name: Switch Code to Production Build
+#      become: true
+#      become_method: sudo
+#      lineinfile:
+#        path: "{{ front_end_application_folder }}/vue.config.js"
+#        regexp: "mode: 'development'"
+#        line: "mode: 'production',"
+#
+#    - name: Run build of distribution
+#      become: true
+#      become_method: sudo
+#      shell:
+#        chdir: "{{ front_end_application_folder }}"
+#        cmd: npm run-script build

@@ -13,6 +13,9 @@ python_executable: "python{{ python_version }}"
 pip_executable: "pip{{ python_version }}"
 back_end_application_folder: "{{ install_path }}/{{ folder_name }}"
 back_end_repo_url: "https://github.com/Water-Systems-Management-UCM/Waterspout"
+jq_search_string: ".assets[] | select(.name | test(\"release-build.zip\")) | .browser_download_url"
+
+
 front_end_application_folder: "{{ install_path }}/{{ front_end_folder_name }}"
 front_end_repo_url: "https://github.com/Water-Systems-Management-UCM/stormchaser"
 virtualenv_folder: "{{ install_path }}/{{ virtualenv_folder_name }}"

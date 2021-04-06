@@ -106,11 +106,11 @@
 
     # I really don't like doing this (the above commented out code was an attempt to avoid the download and execute
     # but I don't know why it's not working - we should refactor this out at some point
-    - name: Add the NodeJS PPA
-      become: yes
-      shell: curl -sL https://deb.nodesource.com/setup_current.x | sudo -E bash -
-      args:
-        warn: no
+    #- name: Add the NodeJS PPA
+    #  become: yes
+    #  shell: curl -sL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+    #  args:
+    #    warn: no
 
       # install some basic packages we'll want for this project
     - name: Install system apt packages
@@ -118,7 +118,7 @@
       become_method: sudo
       apt:
         update_cache: yes
-        name: ['acl', 'git', 'nodejs', 'fail2ban', 'nginx-full', '{{ python_executable }}','{{ python_executable }}-dev','python3-pip','virtualenv','postgresql' ,'gdal-bin','libgdal-dev']
+        name: ['acl', 'git', 'fail2ban', 'nginx-full', '{{ python_executable }}','{{ python_executable }}-dev','python3-pip','virtualenv','postgresql' ,'gdal-bin','libgdal-dev']
         state: present
       # not sure if the python-pip here will install it for python 3.8 - I'm not sure it will based on experience
       # we may need to adjust how we get pip
