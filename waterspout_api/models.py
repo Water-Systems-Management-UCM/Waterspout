@@ -166,6 +166,11 @@ class ModelAreaPreferences(models.Model):
 	# downward. If False, it's purely advisory
 	lock_price_yield_ratio = models.BooleanField(default=False)
 
+	# Should visualizations and downloads include net revenues for this model area? By default we
+	# don't want to - in most cases, it won't be something we want people to see - but we'll want
+	# it to be able to be accessed for debugging purposes
+	include_net_revenue = models.BooleanField(default=False)
+
 	model_area = models.OneToOneField(ModelArea,
 	                                  on_delete=models.CASCADE,
 	                                  related_name="preferences"
