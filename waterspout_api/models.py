@@ -156,7 +156,16 @@ class ModelAreaPreferences(models.Model):
 		This model is so that we can group preferences and features for model areas
 		and keep them organized
 	"""
+	# prevent users from reducing price/yield below the value that would make profits negative
+	# basically forces stormchaser to create cards for crops when All Crops
+	# goes to negative profits for the crop
 	enforce_price_yield_constraints = models.BooleanField(default=True)
+
+	# if True, and the user makes an adjustment that would create
+	# negative profits, it forces the slider they weren't using upward as they move the other
+	# downward. If False, it's purely advisory
+	lock_price_yield_ratio = models.BooleanField(default=False)
+
 	model_area = models.OneToOneField(ModelArea,
 	                                  on_delete=models.CASCADE,
 	                                  related_name="preferences"
