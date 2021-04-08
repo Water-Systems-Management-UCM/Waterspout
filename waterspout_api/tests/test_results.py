@@ -48,7 +48,7 @@ class ModelResultsTest(TransactionTestCase):  # Need to have a TransactionTestCa
 		self.model_run.run()
 
 		actual_results = pandas.read_csv(os.path.join(TEST_DATA_FOLDER, "DAP_v3_results.csv"))
-		calculated_results = self.model_run.results.as_data_frame()
+		calculated_results = self.model_run.results.first().as_data_frame()
 
 		# commented out for CD use where it was failing - useful for debug when run manually though
 		#os.makedirs(os.path.join(os.path.join(TEST_DATA_FOLDER, "results")))  # make sure the results folder exists
