@@ -171,6 +171,9 @@ class ModelAreaPreferences(models.Model):
 	# it to be able to be accessed for debugging purposes
 	include_net_revenue = models.BooleanField(default=False)
 
+	# should region-linking of crops be enabled?
+	region_linked_crops = models.BooleanField(default=True)
+
 	model_area = models.OneToOneField(ModelArea,
 	                                  on_delete=models.CASCADE,
 	                                  related_name="preferences"
@@ -336,12 +339,12 @@ class RecordSet(models.Model):
 
 		if kwargs.pop("waterspout_sort_columns", False) is True:
 			# match the column output to how Spencer has it so we can compare
-			column_order = ("region","crop","year","omegaland","omegasupply","omegalabor",
-			                "omegaestablish","omegacash","omeganoncash","omegatotal",
-			                "xwater","p","y","xland","omegawater","sigma","theta",
-			                "pimarginal","rho","betaland","betawater","betasupply",
-			                "betalabor","tau","gamma","delta","xlandsc","xwatersc",
-			                "xdiffland","xdifftotalland","xdiffwater","resource_flag")
+			column_order = ("region", "crop", "year", "omegaland", "omegasupply", "omegalabor",
+			                "omegaestablish", "omegacash", "omeganoncash", "omegatotal",
+			                "xwater", "p", "y", "xland", "omegawater", "sigma", "theta",
+			                "pimarginal", "rho", "betaland", "betawater", "betasupply",
+			                "betalabor", "tau", "gamma", "delta", "xlandsc", "xwatersc",
+			                "xdiffland", "xdifftotalland", "xdiffwater", "resource_flag")
 			df = df.reindex(columns=column_order)
 
 		if kwargs.pop("waterspout_limited", False) is True:
@@ -582,13 +585,33 @@ class ModelRun(models.Model):
 		scenario.perform_adjustment("land", land_modifications, default=float(default_region_modification.land_proportion))
 		scenario.perform_adjustment("water", water_modifications, default=float(default_region_modification.water_proportion))
 
+		region_linked_key = "region_linked"
 		# now attach the crop modifications - start by loading the data into a dict
-		price_modifications = {}
-		yield_modifications = {}
+		price_modifications = {region_linked_key: []}
+		yield_modifications = {region_linked_key: []}
 		crop_modifications = self.crop_modifications.filter(crop__isnull=False)
 		for modification in crop_modifications:  # get all the nondefault modifications
-			price_modifications[modification.crop.crop_code] = float(modification.price_proportion)
-			yield_modifications[modification.crop.crop_code] = float(modification.yield_proportion)
+
+			crop_code = modification.crop.crop_code
+
+			if modification.region is None:  # if it's not region-linked
+				price_modifications[crop_code] = float(modification.price_proportion)
+				yield_modifications[crop_code] = float(modification.yield_proportion)
+			else:   # if it is region-linked
+				region_id = modification.region.internal_id
+
+				# create dictionaries for both price and yield constraints that include
+				# the region ID, the crop code, and the value
+				price_modifications["region_linked"].append({
+					"region": region_id,
+					"crop": crop_code,
+					"value": float(modification.price_proportion),
+				})
+				yield_modifications["region_linked"].append({
+					"region": region_id,
+					"crop": crop_code,
+					"value": float(modification.yield_proportion),
+				})
 
 			# we can always add it, and it's OK if they're both None - that'll get checked later
 			scenario.add_crop_area_constraint(crop_code=modification.crop.crop_code,
