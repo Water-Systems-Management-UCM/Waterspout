@@ -172,7 +172,10 @@ class ModelAreaPreferences(models.Model):
 	include_net_revenue = models.BooleanField(default=False)
 
 	# should region-linking of crops be enabled?
-	region_linked_crops = models.BooleanField(default=True)
+	region_linked_crops = models.BooleanField(default=False)
+
+	# whether or not to show the ability to view model run creation code
+	allow_model_run_creation_code_view = models.BooleanField(default=False)
 
 	model_area = models.OneToOneField(ModelArea,
 	                                  on_delete=models.CASCADE,
@@ -597,6 +600,7 @@ class ModelRun(models.Model):
 			if modification.region is None:  # if it's not region-linked
 				price_modifications[crop_code] = float(modification.price_proportion)
 				yield_modifications[crop_code] = float(modification.yield_proportion)
+				region_id = None
 			else:   # if it is region-linked
 				region_id = modification.region.internal_id
 
@@ -616,7 +620,8 @@ class ModelRun(models.Model):
 			# we can always add it, and it's OK if they're both None - that'll get checked later
 			scenario.add_crop_area_constraint(crop_code=modification.crop.crop_code,
 			                                  min_proportion=modification.min_land_area_proportion,
-			                                  max_proportion=modification.max_land_area_proportion)
+			                                  max_proportion=modification.max_land_area_proportion,
+			                                  region=region_id)
 
 		default_crop_modification = self.crop_modifications.get(crop__isnull=True)
 		# then pass those dicts to the scenario code regardless if there are items (so defaults get set)
