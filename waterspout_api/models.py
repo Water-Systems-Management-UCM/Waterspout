@@ -617,10 +617,16 @@ class ModelRun(models.Model):
 					"value": float(modification.yield_proportion),
 				})
 
+			max_crop_area_constraint = modification.max_land_area_proportion
+			if max_crop_area_constraint and modification.min_land_area_proportion and not max_crop_area_constraint > modification.min_land_area_proportion:
+				# if the max and the min are both defined and the max is less than the min, skip adding the max -
+				# this is because stormchaser uses a value of -1 as its max value to indicate no upper limit
+				max_crop_area_constraint = None
+
 			# we can always add it, and it's OK if they're both None - that'll get checked later
 			scenario.add_crop_area_constraint(crop_code=modification.crop.crop_code,
 			                                  min_proportion=modification.min_land_area_proportion,
-			                                  max_proportion=modification.max_land_area_proportion,
+			                                  max_proportion=max_crop_area_constraint,
 			                                  region=region_id)
 
 		default_crop_modification = self.crop_modifications.get(crop__isnull=True)
