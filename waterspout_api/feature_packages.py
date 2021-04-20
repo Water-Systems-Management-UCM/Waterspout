@@ -16,6 +16,7 @@ DEFAULT = {'enforce_price_yield_constraints': True,
 # the public plan that supports all features
 FULL_PUBLIC = copy.deepcopy(DEFAULT)
 FULL_PUBLIC['allow_viz_multiple_comparisons'] = True
+FULL_PUBLIC['allow_viz_normalization'] = True
 
 # for internal use
 DEBUG = copy.deepcopy(FULL_PUBLIC)
@@ -41,6 +42,11 @@ def update_feature_package(model_area):
 
 
 def update_all_feature_packages():
+
+	# if we get a larger number of accounts, a better thing to do might be to
+	# run models.ModelArea.objects.filter(feature_package_name="some_feature_package_name").update(**the_feature_package_dict)
+	# which would keep most of the actions in the DB and run far fewer transactions
+
 	model_areas = models.ModelArea.objects.all()
 	for model_area in model_areas:
 		update_feature_package(model_area)
