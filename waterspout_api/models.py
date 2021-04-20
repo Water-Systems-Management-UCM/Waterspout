@@ -125,6 +125,8 @@ class ModelArea(models.Model):
 
 	main_help_page_content = models.TextField(null=True, blank=True)
 
+	feature_package_name = models.CharField(max_length=100, default="DEFAULT")
+
 	def __str__(self):
 		return self.name
 
@@ -176,6 +178,13 @@ class ModelAreaPreferences(models.Model):
 
 	# whether or not to show the ability to view model run creation code
 	allow_model_run_creation_code_view = models.BooleanField(default=False)
+
+	# flags to indicate an entire set of features in data visualization
+	# where they can choose additional model runs for comparison,
+	# can normalize to a base run, and can see worst case outcomes
+	allow_viz_multiple_comparisons = models.BooleanField(default=False)
+	allow_viz_normalization = models.BooleanField(default=False)
+	allow_viz_worst_case = models.BooleanField(default=False)
 
 	model_area = models.OneToOneField(ModelArea,
 	                                  on_delete=models.CASCADE,

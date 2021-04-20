@@ -31,7 +31,8 @@ def load_dap(regions="delta_islands_wDAP_simplified_0005.geojson",
 									("DLIS_ID", "external_id"),
 									("DeltaZone", "DeltaZone"),
 									("Suisun", "Suisun")
-								)
+								),
+	                            feature_package="DAP_DSC",
 	                           )
 
 def old_load_dap(

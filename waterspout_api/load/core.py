@@ -12,7 +12,7 @@ from Waterspout.settings import BASE_DIR
 log = logging.getLogger("waterspout.load")
 
 
-def reset_model_area(model_area_name, data_folder, organization, latitude, longitude, default_zoom):
+def reset_model_area(model_area_name, data_folder, organization, latitude, longitude, default_zoom, feature_package):
 	# this could return more than one object, but if it does, we want the error to
 	# make sure we aren't clearing a bunch of things we don't want to clear
 
@@ -21,7 +21,7 @@ def reset_model_area(model_area_name, data_folder, organization, latitude, longi
 	except models.ModelArea.DoesNotExist:
 		model_area = models.ModelArea(name=model_area_name, data_folder=data_folder, organization=organization,
 		                              map_center_latitude=latitude, map_center_longitude=longitude,
-		                              map_default_zoom=default_zoom)
+		                              map_default_zoom=default_zoom, feature_package_name=feature_package)
 		model_area.save()
 
 	# do any other cleanup here - regions will cascade delete
@@ -184,14 +184,14 @@ def load_crops(calibration_file, model_area):
 
 
 def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_file, crop_file,
-				years, latitude, longitude, default_zoom, region_field_map):
+				years, latitude, longitude, default_zoom, region_field_map, feature_package):
 
 	organization = reset_organization(org_name=area_name)
 
 	add_system_user_to_org(org=organization)
 
 	model_area = reset_model_area(model_area_name=f"Load: {area_name}", data_folder=data_name, organization=organization,
-	                                   latitude=latitude, longitude=longitude, default_zoom=default_zoom)
+	                                   latitude=latitude, longitude=longitude, default_zoom=default_zoom, feature_package=feature_package)
 
 	load_regions(json_file=get_data_file_path(data_name, regions),
 	             field_map=region_field_map,

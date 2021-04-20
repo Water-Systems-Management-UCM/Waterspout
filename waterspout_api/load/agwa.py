@@ -24,5 +24,6 @@ def load_agwa():
 								region_field_map=(
 									("WRIA_NM", "name"),
 									("WRIA_ID", "internal_id"),
-								)
+								),
+	                            feature_package="WSDA"
 	                           )
