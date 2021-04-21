@@ -184,6 +184,7 @@ class ModelAreaPreferences(models.Model):
 	# can normalize to a base run, and can see worst case outcomes
 	allow_viz_multiple_comparisons = models.BooleanField(default=False)
 	allow_viz_normalization = models.BooleanField(default=False)
+	allow_viz_region_filter = models.BooleanField(default=False)
 	allow_viz_worst_case = models.BooleanField(default=False)
 
 	model_area = models.OneToOneField(ModelArea,

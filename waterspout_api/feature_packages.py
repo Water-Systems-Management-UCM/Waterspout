@@ -10,12 +10,14 @@ DEFAULT = {'enforce_price_yield_constraints': True,
 		'allow_model_run_creation_code_view': False,
 		'allow_viz_multiple_comparisons': False,
 		'allow_viz_normalization': False,
+		'allow_viz_region_filter': False,
 		'allow_viz_worst_case': False,
 }
 
 # the public plan that supports all features
 FULL_PUBLIC = copy.deepcopy(DEFAULT)
 FULL_PUBLIC['allow_viz_multiple_comparisons'] = True
+FULL_PUBLIC['allow_viz_region_filter'] = True
 FULL_PUBLIC['allow_viz_normalization'] = True
 
 # for internal use
