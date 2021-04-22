@@ -339,7 +339,7 @@ class RecordSet(models.Model):
 		output = []
 		for record in data:
 			# if we were told to skip this region, don't add it - could also do this in pandas after conversion
-			if record.region.internal_id in exclude_regions:
+			if exclude_regions and record.region.internal_id in exclude_regions:
 				continue
 
 			output_dict = {}
