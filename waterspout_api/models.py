@@ -588,8 +588,11 @@ class ModelRun(models.Model):
 		# for removed regions, this is all we need to do - for static regions, we'll
 		# pull their base case results later when we process results
 		excludes = self.region_modifications.filter(Q(removed=True) | Q(hold_static=True))
-		exclude_ids = [mod.region.internal_id for mod in excludes]
-		log.info("Filtering IDs", exclude_ids)
+		if excludes:
+			exclude_ids = [mod.region.internal_id for mod in excludes]
+		else:
+			exclude_ids = None
+
 		# pull initial calibration dataset as it is
 		df = self.calibration_set.as_data_frame(exclude_regions=exclude_ids)
 
