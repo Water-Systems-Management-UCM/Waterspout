@@ -31,8 +31,7 @@ DEBUG['allow_model_run_creation_code_view'] = True
 
 # a few special plans - we'll copy them for now in case they have modifications later
 WSDA = copy.deepcopy(FULL_PUBLIC)
-DAP_DSC = copy.deepcopy(DEFAULT)
-DAP_DSC['allow_removed_regions'] = False
+DAP_DSC = copy.deepcopy(FULL_PUBLIC)
 
 
 def update_feature_package(model_area):
