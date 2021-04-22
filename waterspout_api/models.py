@@ -7,6 +7,7 @@ import numpy
 
 import django
 from django.db import models  # we're going to geodjango this one - might not need it, but could make some things nicer
+from django.db.models import Q
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 User = get_user_model()  # define user by this method rather than direct import - safer for the future
@@ -309,9 +310,11 @@ class RecordSet(models.Model):
 	years = models.TextField()  # yes, text. We'll concatenate text as a year lookup
 	# prices = model
 
-	def as_data_frame(self):
+	def as_data_frame(self, exclude_regions=None):
 		"""
 			Returns the data frame that needs to be run through the model itself
+			:param exclude_regions: list of region internal ids - regions in this list will not have their data
+						included in the output data frame
 		:return:
 		"""
 		# .values() makes a queryset into an iterable of dicts. Coerce that to a list of dicts
@@ -335,6 +338,10 @@ class RecordSet(models.Model):
 		data = getattr(self, self.reverse_name).all()  # get all the records for this set
 		output = []
 		for record in data:
+			# if we were told to skip this region, don't add it - could also do this in pandas after conversion
+			if record.region.internal_id in exclude_regions:
+				continue
+
 			output_dict = {}
 			for field in basic_fields:  # apply the basic fields directly into a dictionary and coerce to floats
 				field_value = getattr(record, field)
@@ -577,8 +584,14 @@ class ModelRun(models.Model):
 		:return:
 		"""
 
+		# we'll not send static or removed regions through the model, so drop them here
+		# for removed regions, this is all we need to do - for static regions, we'll
+		# pull their base case results later when we process results
+		excludes = self.region_modifications.filter(Q(removed=True) | Q(hold_static=True))
+		exclude_ids = [mod.region.internal_id for mod in excludes]
+		log.info("Filtering IDs", exclude_ids)
 		# pull initial calibration dataset as it is
-		df = self.calibration_set.as_data_frame()
+		df = self.calibration_set.as_data_frame(exclude_regions=exclude_ids)
 
 		# do any overrides or changes from the modifications
 
@@ -817,7 +830,8 @@ class RegionModification(models.Model):
 
 	model_run = models.ForeignKey(ModelRun, blank=True, on_delete=models.CASCADE, related_name="region_modifications")
 
-	serializer_fields = ["id", "region", "region_group", "water_proportion", "land_proportion"]
+	serializer_fields = ["id", "region", "region_group", "water_proportion", "land_proportion",
+	                     "hold_static", "removed"]
 
 
 class CropModification(models.Model):

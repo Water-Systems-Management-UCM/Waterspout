@@ -21,7 +21,7 @@ FULL_PUBLIC = copy.deepcopy(DEFAULT)
 FULL_PUBLIC['allow_viz_multiple_comparisons'] = True
 FULL_PUBLIC['allow_viz_region_filter'] = True
 FULL_PUBLIC['allow_viz_normalization'] = True
-FULL_PUBLIC['allow_static_regions'] = True
+FULL_PUBLIC['allow_static_regions'] = False
 FULL_PUBLIC['allow_removed_regions'] = True
 
 # for internal use
