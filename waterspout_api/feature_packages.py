@@ -12,6 +12,8 @@ DEFAULT = {'enforce_price_yield_constraints': True,
 		'allow_viz_normalization': False,
 		'allow_viz_region_filter': False,
 		'allow_viz_worst_case': False,
+		'allow_static_regions': False,
+		'allow_removed_regions': False,
 }
 
 # the public plan that supports all features
@@ -19,6 +21,8 @@ FULL_PUBLIC = copy.deepcopy(DEFAULT)
 FULL_PUBLIC['allow_viz_multiple_comparisons'] = True
 FULL_PUBLIC['allow_viz_region_filter'] = True
 FULL_PUBLIC['allow_viz_normalization'] = True
+FULL_PUBLIC['allow_static_regions'] = True
+FULL_PUBLIC['allow_removed_regions'] = True
 
 # for internal use
 DEBUG = copy.deepcopy(FULL_PUBLIC)
@@ -28,6 +32,7 @@ DEBUG['allow_model_run_creation_code_view'] = True
 # a few special plans - we'll copy them for now in case they have modifications later
 WSDA = copy.deepcopy(FULL_PUBLIC)
 DAP_DSC = copy.deepcopy(DEFAULT)
+DAP_DSC['allow_removed_regions'] = False
 
 
 def update_feature_package(model_area):

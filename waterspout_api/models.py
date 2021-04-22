@@ -187,6 +187,9 @@ class ModelAreaPreferences(models.Model):
 	allow_viz_region_filter = models.BooleanField(default=False)
 	allow_viz_worst_case = models.BooleanField(default=False)
 
+	allow_static_regions = models.BooleanField(default=False)
+	allow_removed_regions = models.BooleanField(default=False)
+
 	model_area = models.OneToOneField(ModelArea,
 	                                  on_delete=models.CASCADE,
 	                                  related_name="preferences"
@@ -243,6 +246,9 @@ class Region(models.Model):
 	group = models.ForeignKey(RegionGroup, null=True, blank=True, on_delete=models.CASCADE)  # there could be a reason to make it a many to many instead, but
 																	# I can't think of a use case right now, and it'd require some PITA
 																	# logic to tease apart specifications for regions in overlapping groups
+
+	supports_rainfall = models.BooleanField(default=False)  # whether or not this region has any rainfall/dryland components
+	supports_irrigation = models.BooleanField(default=True)  # whether or not this region has any irrigated components
 
 	def __str__(self):
 		return "Area {}: Region {}".format(self.model_area.name, self.name)
@@ -804,6 +810,10 @@ class RegionModification(models.Model):
 
 	water_proportion = models.FloatField(default=1.0, blank=True)  # the amount, relative to base values, to provide
 	land_proportion = models.FloatField(default=1.0, blank=True)
+
+	# extra flags on regions
+	hold_static = models.BooleanField(default=False)  # should this region be held static during modeling? If so, it's not passed to the model at all and results are pulled from the base case
+	removed = models.BooleanField(default=False)  # should this region be removed from the model entirely? If so, it's filtered from the dataset passed into the model and nothing additional is added
 
 	model_run = models.ForeignKey(ModelRun, blank=True, on_delete=models.CASCADE, related_name="region_modifications")
 
