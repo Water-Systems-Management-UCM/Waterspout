@@ -38,7 +38,13 @@ class IsInSameOrganization(permissions.BasePermission):
 			except item_class.DoesNotExist:
 				return PermissionError("Model Run doesn't exist")
 
-			organization = item.organization
+			if hasattr(item, "organization"):
+				organization = item.organization
+			elif hasattr(item, "model_area"):
+				organization = item.model_area.organization
+			elif hasattr(item, "model_run"):
+				organization = item.model_run.organization
+
 		else:  # we're creating an object - check what org they specify instead of the org of the object
 			if type(request_data) is not dict:
 				request_data = json.loads(request_data)

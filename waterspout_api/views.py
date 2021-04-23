@@ -97,7 +97,7 @@ class CropViewSet(viewsets.ModelViewSet):
 	"""
 	API endpoint that allows users to be viewed or edited.
 	"""
-	permission_classes = [IsAuthenticated]
+	permission_classes = [permissions.IsInSameOrganization]
 	serializer_class = serializers.CropSerializer
 
 	def get_queryset(self):
@@ -111,7 +111,7 @@ class RegionViewSet(viewsets.ModelViewSet):
 	"""
 	API endpoint that allows users to be viewed or edited.
 	"""
-	permission_classes = [IsAuthenticated]
+	permission_classes = [permissions.IsInSameOrganization]
 	serializer_class = serializers.RegionSerializer
 
 	def get_queryset(self):
@@ -122,7 +122,7 @@ class RegionModificationViewSet(viewsets.ModelViewSet):
 	"""
 	API endpoint that allows modifications to regions to be read and saved
 	"""
-	permission_classes = [IsAuthenticated]
+	permission_classes = [permissions.IsInSameOrganization]
 	serializer_class = serializers.RegionModificationSerializer
 
 	def get_queryset(self):
@@ -159,7 +159,7 @@ class CropModificationViewSet(viewsets.ModelViewSet):
 	"""
 	API endpoint that allows modifications to regions to be read and saved
 	"""
-	permission_classes = [IsAuthenticated]
+	permission_classes = [permissions.IsInSameOrganization]
 	serializer_class = serializers.CropModificationSerializer
 
 	def get_queryset(self):

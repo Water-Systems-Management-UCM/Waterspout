@@ -255,6 +255,16 @@ class Region(models.Model):
 		return "Area {}: Region {}".format(self.model_area.name, self.name)
 
 
+class RegionMultipliers(models.Model):
+	region = models.OneToOneField(Region, on_delete=models.CASCADE, related_name="multipliers")
+
+	total_revenue = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True)
+	direct_value_add = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True)
+	total_value_add = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True)
+	direct_jobs = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True)
+	total_jobs = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True)
+
+
 class RegionExtra(models.Model):
 	"""
 		Extra custom attributes that can be set per region instance, available by filtering
