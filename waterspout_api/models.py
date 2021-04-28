@@ -239,7 +239,9 @@ class Region(models.Model):
 	class Meta:
 		unique_together = ['name', 'model_area']
 		indexes = [
-			models.Index(fields=("internal_id",))
+			models.Index(fields=("internal_id",)),
+			models.Index(fields=("model_area_id", "supports_rainfall",)),  # we'll use these to set an attribute whenever someone loads a model area
+			models.Index(fields=("model_area_id", "supports_irrigation",))
 		]
 
 	name = models.CharField(max_length=255, null=False, blank=False)
@@ -648,8 +650,10 @@ class ModelRun(models.Model):
 		region_modifications = self.region_modifications.filter(region__isnull=False)
 		for modification in region_modifications:  # get all the nondefault modifications
 			land_modifications[modification.region.internal_id] = float(modification.land_proportion)
-			water_modifications[modification.region.internal_id] = float(modification.water_proportion)
-			rainfall_modifications[modification.region.internal_id] = float(modification.rainfall_proportion)
+			if modification.region.supports_irrigation:
+				water_modifications[modification.region.internal_id] = float(modification.water_proportion)
+			if modification.region.supports_rainfall:
+				rainfall_modifications[modification.region.internal_id] = float(modification.rainfall_proportion)
 
 		default_region_modification = self.region_modifications.get(region__isnull=True)
 
