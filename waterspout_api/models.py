@@ -153,6 +153,13 @@ class ModelArea(models.Model):
 	#def elasticities_as_dict(self):
 	#	return {item.crop.crop_code: float(item.value) for item in self.elasticities}
 
+	@property
+	def supports_rainfall(self):
+		return self.region_set.filter(supports_rainfall=True).exists()
+	@property
+	def supports_irrigation(self):
+		return self.region_set.filter(supports_irrigation=True).exists()
+
 
 class ModelAreaPreferences(models.Model):
 	"""
@@ -404,6 +411,12 @@ class CalibrationSet(RecordSet):
 	reverse_name = "calibration_set"
 
 
+class RainfallSet(RecordSet):
+	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE, related_name="rainfall_data")
+	reverse_name = "rainfall_set"
+	record_model_name = "RainfallParameter"
+
+
 class ResultSet(RecordSet):
 	reverse_name = "result_set"
 	record_model_name = "Result"
@@ -507,6 +520,17 @@ class CalibratedParameter(ModelItem):
 						#["crop", "region", "year", "omegaland", "omegawater",
 	                    # "omegasupply", "omegalabor", "omegaestablish", "omegacash",
 	                    # "omeganoncash", "omegatotal", "p", "y", "price_yeild_correction_factor"]
+
+
+class RainfallParameter(ModelItem):
+
+	coef_intercept = models.DecimalField(max_digits=10, decimal_places=5)
+	coef_tsum = models.DecimalField(max_digits=10, decimal_places=5)
+	coef_tspr = models.DecimalField(max_digits=10, decimal_places=5)
+	coef_twin = models.DecimalField(max_digits=10, decimal_places=5)
+	coef_pespr = models.DecimalField(max_digits=10, decimal_places=5)
+	coef_pewin = models.DecimalField(max_digits=10, decimal_places=5)
+	coef_pesum = models.DecimalField(max_digits=10, decimal_places=5)
 
 
 class ModelRun(models.Model):
@@ -619,16 +643,23 @@ class ModelRun(models.Model):
 	def attach_modifications(self, scenario):
 		land_modifications = {}
 		water_modifications = {}
+		rainfall_modifications = {}
 
 		region_modifications = self.region_modifications.filter(region__isnull=False)
 		for modification in region_modifications:  # get all the nondefault modifications
 			land_modifications[modification.region.internal_id] = float(modification.land_proportion)
 			water_modifications[modification.region.internal_id] = float(modification.water_proportion)
+			rainfall_modifications[modification.region.internal_id] = float(modification.rainfall_proportion)
 
 		default_region_modification = self.region_modifications.get(region__isnull=True)
 
 		scenario.perform_adjustment("land", land_modifications, default=float(default_region_modification.land_proportion))
-		scenario.perform_adjustment("water", water_modifications, default=float(default_region_modification.water_proportion))
+
+		# attach modifications for irrigation and rainfall depending on what the model area supports
+		if self.calibration_set.model_area.supports_irrigation:
+			scenario.perform_adjustment("water", water_modifications, default=float(default_region_modification.water_proportion))
+		if self.calibration_set.model_area.supports_rainfall:
+			scenario.perform_adjustment("rainfall", rainfall_modifications, default=float(default_region_modification.rainfall_proportion))
 
 		region_linked_key = "region_linked"
 		# now attach the crop modifications - start by loading the data into a dict
@@ -806,6 +837,20 @@ class Result(ModelItem):
 	water_per_acre = models.DecimalField(max_digits=18, decimal_places=5, null=True, blank=True)
 
 
+class RainfallResult(models.Model):
+	serializer_fields = ["region", "crop", "calc_y", "gross_revenue"]
+
+	result_set = models.ForeignKey(ResultSet, on_delete=models.CASCADE, related_name="rainfall_result_set")
+
+	region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="rainfall_resuls")
+	crop = models.ForeignKey(Crop, on_delete=models.CASCADE, related_name="rainfall_results")
+
+	# yield is the only real result from the rainfall statistical model, so that's what we're storing, but we'll also
+	# want to store some of the same main results as the Result items so we can merge them
+	calc_y = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
+	gross_revenue = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
+
+
 class Infeasibility(models.Model):
 	result_set = models.ForeignKey(ResultSet, on_delete=models.CASCADE, related_name="infeasibilities")
 	year = models.SmallIntegerField()
@@ -835,6 +880,7 @@ class RegionModification(models.Model):
 	                                 null=True, blank=True)
 
 	water_proportion = models.FloatField(default=1.0, blank=True)  # the amount, relative to base values, to provide
+	rainfall_proportion = models.FloatField(default=1.0, blank=True)  # the amount, relative to base values, to provide
 	land_proportion = models.FloatField(default=1.0, blank=True)
 
 	# extra flags on regions

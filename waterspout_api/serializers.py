@@ -74,6 +74,17 @@ class ResultSerializer(serializers.ModelSerializer):
 		model = models.Result
 
 
+class RainfallResultSerializer(serializers.ModelSerializer):
+	"""
+		For a single result - we'll basically never access this endpoint, but we'll use it to define the fields for the
+		full RunResultSerializer
+	"""
+
+	class Meta:
+		fields = models.RainfallResult.serializer_fields
+		model = models.RainfallResult
+
+
 class InfeasibilitySerializer(serializers.ModelSerializer):
 
 	class Meta:
@@ -87,10 +98,11 @@ class ResultSetSerializer(serializers.ModelSerializer):
 		full RunResultSerializer
 	"""
 	result_set = ResultSerializer(allow_null=True, many=True)
+	rainfall_result_set = RainfallResultSerializer(allow_null=True, many=True)
 	infeasibilities = InfeasibilitySerializer(allow_null=True, many=True, read_only=True)
 
 	class Meta:
-		fields = ["result_set", "in_calibration", "dapper_version", "date_run", "infeasibilities", "infeasibilities_text"]
+		fields = ["result_set", "rainfall_result_set", "in_calibration", "dapper_version", "date_run", "infeasibilities", "infeasibilities_text"]
 		model = models.ResultSet
 
 
@@ -204,7 +216,8 @@ class ModelAreaSerializer(ModelActionSerializer):
 	class Meta:
 		model = models.ModelArea
 		_base_fields = ["id", "organization_id", "name", "description", "map_center_latitude",
-		                "map_center_longitude", "map_default_zoom", "model_defaults", "preferences"]
+		                "map_center_longitude", "map_default_zoom", "model_defaults", "preferences",
+		                "supports_rainfall", "supports_irrigation"]
 		fields = _base_fields
 		action_fields = {  # only send model results in detail view - that way the listing doesn't send massive amount
 			"retrieve": {     # of data, but we only need to load the specific model run again to get the results
