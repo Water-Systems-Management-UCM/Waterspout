@@ -115,6 +115,8 @@ class ModelArea(models.Model):
 	# these values define the ranges available when creating a model run in this region
 	min_water = models.PositiveSmallIntegerField(default=50)
 	max_water = models.PositiveSmallIntegerField(default=120)
+	min_rainfall = models.PositiveSmallIntegerField(default=10)
+	max_rainfall = models.PositiveSmallIntegerField(default=200)
 	min_land = models.PositiveSmallIntegerField(default=50)
 	max_land = models.PositiveSmallIntegerField(default=100)
 	min_price = models.PositiveSmallIntegerField(default=80)
@@ -137,6 +139,8 @@ class ModelArea(models.Model):
 		return {
 			"min_water": self.min_water,
 			"max_water": self.max_water,
+			"min_rainfall": self.min_rainfall,
+			"max_rainfall": self.max_rainfall,
 			"min_land": self.min_land,
 			"max_land": self.max_land,
 			"min_price": self.min_price,
