@@ -15,7 +15,7 @@ def load_agwa():
 								data_name=data_name,
 								regions="WRIA/wrias.geojson",
 								calibration_file="WA_DAP_format_calibrated.csv",
-								data_file="WA_consolidated_inputs_DAP_format.csv",
+								data_file="OpenAgWA_consolidated_Annual_02152021.csv",
 								crop_file="crop_codes.csv",
 								years=list(range(2008, 2019)),
 								latitude=lat,
@@ -25,5 +25,6 @@ def load_agwa():
 									("WRIA_NM", "name"),
 									("WRIA_ID", "internal_id"),
 								),
-	                            feature_package="WSDA"
+	                            feature_package="WSDA",
+	                            rainfall_file="dryland_database.csv"
 	                           )

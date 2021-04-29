@@ -3,7 +3,7 @@ from Dapper import calibration
 
 def recalibrate():
 	current_folder = os.path.dirname(os.path.abspath(__file__))
-	input_data = os.path.join(current_folder, "WA_consolidated_inputs_DAP_format.csv")
+	input_data = os.path.join(current_folder, "OpenAgWA_consolidated_Annual_02152021.csv")
 
 	# use the most recent years
 	calibration_years = [2016, 2017, 2018]

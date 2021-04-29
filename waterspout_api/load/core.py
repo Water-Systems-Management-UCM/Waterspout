@@ -142,6 +142,60 @@ def load_input_data_set(csv_file, model_area, years,
 	return item_set
 
 
+def detect_rainfall_and_irrigation(model_area, rainfall_year=None):
+	"""
+		After we load irrigation and rainfall input datasets, we need to detect which regions have data for each item.
+		For each record, xland contains the amount of area, and we only support each of these items if
+		1) It has a record and
+		2) That record is more than 5% of the combined irrigated/rainfall ag for at least one crop in the area
+	:param model_area:
+	:return:
+	"""
+
+	regions = model_area.region_set.all()
+	for region in regions:
+		# set some defaults so we don't have to worry about complex logic - we can set it to true as many times as we like later
+		region.supports_rainfall = False
+		region.supports_irrigation = False
+
+		for crop in model_area.crop_set.all():
+			try:
+				kwargs = {}
+				if rainfall_year:
+					kwargs["year"] = rainfall_year
+				rainfall_record = models.RainfallParameter.objects.get(crop=crop, region=region, **kwargs)
+			except models.RainfallParameter.DoesNotExist:
+				rainfall_record = None
+
+			try:
+				irrigation_record = models.CalibratedParameter.objects.get(crop=crop, region=region)
+			except models.CalibratedParameter.DoesNotExist:
+				irrigation_record = None
+
+			# handle the case for the crop isn't in the region
+			if rainfall_record is None and irrigation_record is None:
+				continue
+			# handle the case where it's only irrigated in this region
+			elif rainfall_record is None:
+				region.supports_irrigation = True
+				continue
+			# handle the case where it's only rainfall in this region
+			elif irrigation_record is None:
+				region.supports_rainfal = True
+				continue
+
+			# Now handle it having records for both - we'll only use both
+			# if they're each more than 5% of the total land area (per Alvar)
+			total_land = rainfall_record.xland + irrigation_record.xland
+			if rainfall_record.xland / total_land > 0.05:
+				region.supports_rainfall = True
+			if irrigation_record.xland / total_land > 0.05:
+				region.supports_irrigation = True
+
+		region.save()
+
+
+
 def get_or_create_system_user():
 	return models.User.objects.get_or_create(username="system")[0]
 
@@ -166,7 +220,7 @@ def create_base_case(organization, calibration_set):
 	models.CropModification.objects.create(model_run=mr)
 
 
-def load_crops(calibration_file, model_area):
+def load_crops(crop_file, model_area):
 	"""
 		This is a temporary hack, mostly, because this isn't a crop file - we should replace
 		this later
@@ -174,9 +228,9 @@ def load_crops(calibration_file, model_area):
 	:param organization:
 	:return:
 	"""
-	with open(calibration_file, 'r') as calib_data:
-		calib_csv = csv.DictReader(calib_data)
-		for row in calib_csv:
+	with open(crop_file, 'r') as crop_data:
+		crop_csv = csv.DictReader(crop_data)
+		for row in crop_csv:
 			try:
 				models.Crop(crop_code=row["code"], name=row["name"], model_area=model_area).save()
 			except django.db.utils.IntegrityError:
@@ -184,7 +238,7 @@ def load_crops(calibration_file, model_area):
 
 
 def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_file, crop_file,
-				years, latitude, longitude, default_zoom, region_field_map, feature_package):
+				years, latitude, longitude, default_zoom, region_field_map, feature_package, rainfall_file=None):
 
 	organization = reset_organization(org_name=area_name)
 
@@ -201,12 +255,22 @@ def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_
 	                          model_area=model_area,
 	                          years=years)
 
+	if rainfall_file is not None:
+		rainfall_set = load_input_data_set(csv_file=get_data_file_path(data_name, rainfall_file),
+	                                    model_area=model_area,
+	                                    years=years,
+	                                    item_model=models.RainfallParameter,
+	                                    set_model=models.RainfallSet,
+	                                    set_lookup="rainfall_set")
+
 	input_data_set = load_input_data_set(csv_file=get_data_file_path(data_name, data_file),
 									model_area=model_area,
 									years=years,
 									item_model=models.InputDataItem,
 									set_model=models.InputDataSet,
 	                                set_lookup="dataset")
+
+	detect_rainfall_and_irrigation(model_area)
 
 	create_base_case(calibration_set=calibration_set,
 	                  organization=organization)

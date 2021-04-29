@@ -471,14 +471,18 @@ class ModelItem(models.Model):
 	omegacash = models.DecimalField(max_digits=10, decimal_places=1, null=True, blank=True)
 	omeganoncash = models.DecimalField(max_digits=10, decimal_places=1, null=True, blank=True)
 	omegatotal = models.DecimalField(max_digits=10, decimal_places=1, null=True, blank=True)
-	xwater = models.DecimalField(max_digits=18, decimal_places=10)
 	p = models.DecimalField(max_digits=18, decimal_places=10)
 	y = models.DecimalField(max_digits=13, decimal_places=5)
 	xland = models.DecimalField(max_digits=18, decimal_places=10)
 
 
 class InputDataItem(ModelItem):
+	class Meta:
+		unique_together = ['crop', 'region', 'year']
+
 	dataset = models.ForeignKey(InputDataSet, on_delete=models.CASCADE, related_name="input_data_set")
+
+	xwater = models.DecimalField(max_digits=18, decimal_places=10)
 
 	serializer_fields = ["crop", "region", "year", "omegaland",
 	                     "omegasupply", "omegalabor", "omegaestablish", "omegacash",
@@ -492,6 +496,10 @@ class CalibratedParameter(ModelItem):
 		parameters, and model results
 	"""
 
+	class Meta:
+		unique_together = ['crop', 'region', 'year']
+
+	xwater = models.DecimalField(max_digits=18, decimal_places=10)
 	omegawater = models.DecimalField(max_digits=10, decimal_places=2)
 	pc = models.DecimalField(max_digits=10, decimal_places=3)
 	sigma = models.DecimalField(max_digits=5, decimal_places=4)
@@ -529,6 +537,10 @@ class CalibratedParameter(ModelItem):
 
 
 class RainfallParameter(ModelItem):
+	class Meta:
+		unique_together = ['crop', 'region', 'year']
+
+	rainfall_set = models.ForeignKey(RainfallSet, on_delete=models.CASCADE, related_name="rainfall_set")
 
 	coef_intercept = models.DecimalField(max_digits=10, decimal_places=5)
 	coef_tsum = models.DecimalField(max_digits=10, decimal_places=5)
