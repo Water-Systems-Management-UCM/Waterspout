@@ -189,8 +189,15 @@ def detect_rainfall_and_irrigation(model_area, rainfall_year=None):
 			total_land = rainfall_record.xland + irrigation_record.xland
 			if rainfall_record.xland / total_land > 0.05:
 				region.supports_rainfall = True
+			else:  # if it's less than 5%, merge the rainfall land area for the crop into the irrigated area
+				irrigation_record.xland += rainfall_record.xland
+				irrigation_record.save()
+
 			if irrigation_record.xland / total_land > 0.05:
 				region.supports_irrigation = True
+			else:  # if it's less than 5%, merge the irrigated area into the rainfall-ag area for the region.
+				rainfall_record.xland += irrigation_record.xland
+				rainfall_record.save()
 
 		region.save()
 
@@ -205,12 +212,13 @@ def add_system_user_to_org(org):
 	system_user.save()
 
 
-def create_base_case(organization, calibration_set):
+def create_base_case(organization, calibration_set, rainfall_set):
 	mr = models.ModelRun(name="Base Case",
 	                               organization=organization,
 	                               user=get_or_create_system_user(),
 	                               is_base=True,
 	                               calibration_set=calibration_set,
+	                               rainfall_set=rainfall_set,
 	                               ready=True
 	                               )
 	mr.save()
@@ -236,25 +244,61 @@ def load_crops(crop_file, model_area):
 				pass  # if it already exists, skip it
 
 
-def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_file, crop_file,
-				years, latitude, longitude, default_zoom, region_field_map, feature_package, rainfall_file=None):
+def load_multipliers(multipliers_file, model_area):
+	"""
+		Creates or updates the multipliers for the regions in the given model area
+	:param multipliers_file: should have a key "internal_id" for the region ID that matches the region's internal ID (WRIA, DAP, etc)
+	:param model_area:
+	:return:
+	"""
 
+	with open(multipliers_file, 'r') as multipliers_data:
+		multipliers_csv = csv.DictReader(multipliers_data)
+		for row in multipliers_csv:
+			# get the existing RegionMultipliers object that the row corresponds to. If it doesn't exist, create it
+			try:
+				region_mults = models.RegionMultipliers.objects.get(region__internal_id=row["internal_id"], region__model_area=model_area)
+			except models.RegionMultipliers.DoesNotExist:
+				region = models.Region.objects.get(internal_id=row["internal_id"], model_area=model_area)
+				region_mults = models.RegionMultipliers.objects.create(region=region)
+
+			# apply the multipliers from the spreadsheet
+			for mult in ("total_revenue", "direct_value_add", "total_value_add", "direct_jobs", "total_jobs"):
+				setattr(region_mults, mult, row[mult])
+
+			region_mults.save()
+
+
+def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_file, crop_file,
+				years, latitude, longitude, default_zoom, region_field_map, feature_package, rainfall_file=None,
+                          multipliers_file=None):
+
+	log.info("Creating organization")
 	organization = reset_organization(org_name=area_name)
 
 	add_system_user_to_org(org=organization)
 
+	log.info("Creating model area")
 	model_area = reset_model_area(model_area_name=f"Load: {area_name}", data_folder=data_name, organization=organization,
 	                                   latitude=latitude, longitude=longitude, default_zoom=default_zoom, feature_package=feature_package)
 
+
+	log.info("Loading Regions")
 	load_regions(json_file=get_data_file_path(data_name, regions),
 	             field_map=region_field_map,
 	             model_area=model_area)
+
+	log.info("Loading Crops")
 	load_crops(get_data_file_path(data_name, crop_file), model_area)
+
+
+	log.info("Loading Calibration Set")
 	calibration_set = load_input_data_set(csv_file=get_data_file_path(data_name, calibration_file),
 	                          model_area=model_area,
 	                          years=years)
 
 	if rainfall_file is not None:
+		log.info("Loading Rainfall Data")
 		rainfall_set = load_input_data_set(csv_file=get_data_file_path(data_name, rainfall_file),
 	                                    model_area=model_area,
 	                                    years=years,
@@ -262,6 +306,13 @@ def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_
 	                                    set_model=models.RainfallSet,
 	                                    set_lookup="rainfall_set")
 
+	if multipliers_file is not None:
+		log.info("Loading Multipliers")
+		load_multipliers(multipliers_file=get_data_file_path(data_name, multipliers_file),
+		                               model_area=model_area)
+
+
+	log.info("Loading Input Data")
 	input_data_set = load_input_data_set(csv_file=get_data_file_path(data_name, data_file),
 									model_area=model_area,
 									years=years,
@@ -269,7 +320,10 @@ def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_
 									set_model=models.InputDataSet,
 	                                set_lookup="dataset")
 
+	log.info("Detecting Rainfall and Irrigation Split")
 	detect_rainfall_and_irrigation(model_area)
 
+	log.info("Creating Base Case")
 	create_base_case(calibration_set=calibration_set,
+	                 rainfall_set=rainfall_set,
 	                  organization=organization)

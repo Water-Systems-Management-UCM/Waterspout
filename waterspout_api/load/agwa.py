@@ -13,7 +13,7 @@ def load_agwa():
 
 	core.load_dap_style_inputs(area_name=area_name,
 								data_name=data_name,
-								regions="WRIA/wrias.geojson",
+								regions="WRIA/wrias_updated_simplified.geojson",
 								calibration_file="WA_DAP_format_calibrated.csv",
 								data_file="OpenAgWA_consolidated_Annual_02152021.csv",
 								crop_file="crop_codes.csv",
@@ -23,8 +23,9 @@ def load_agwa():
 								default_zoom=zoom,
 								region_field_map=(
 									("WRIA_NM", "name"),
-									("WRIA_ID", "internal_id"),
+									("WRIA_NR_New", "internal_id"),
 								),
 	                            feature_package="WSDA",
-	                            rainfall_file="dryland_database.csv"
+	                            rainfall_file="dryland_database.csv",
+	                            multipliers_file="newwria_with_regions_and_multipliers.csv"
 	                           )

@@ -271,11 +271,11 @@ class Region(models.Model):
 class RegionMultipliers(models.Model):
 	region = models.OneToOneField(Region, on_delete=models.CASCADE, related_name="multipliers")
 
-	total_revenue = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True)
-	direct_value_add = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True)
-	total_value_add = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True)
-	direct_jobs = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True)
-	total_jobs = models.DecimalField(max_digits=10, decimal_places=5, null=True, blank=True)
+	total_revenue = models.DecimalField(max_digits=10, decimal_places=8, null=True, blank=True)
+	direct_value_add = models.DecimalField(max_digits=10, decimal_places=8, null=True, blank=True)
+	total_value_add = models.DecimalField(max_digits=10, decimal_places=8, null=True, blank=True)
+	direct_jobs = models.DecimalField(max_digits=10, decimal_places=8, null=True, blank=True)
+	total_jobs = models.DecimalField(max_digits=10, decimal_places=8, null=True, blank=True)
 
 
 class RegionExtra(models.Model):
@@ -584,7 +584,7 @@ class ModelRun(models.Model):
 												# as a CSV. This way, if people eidt the calibration data for future runs,
 												# we still know what inputs ran this version of the model.
 
-	rainfall_set = models.ForeignKey(RainfallSet, on_delete=models.CASCADE, related_name="model_runs")
+	rainfall_set = models.ForeignKey(RainfallSet, on_delete=models.CASCADE, related_name="model_runs", null=True, blank=True)
 
 	user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="model_runs")
 	organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="model_runs")
