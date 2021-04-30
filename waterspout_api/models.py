@@ -578,11 +578,13 @@ class ModelRun(models.Model):
 	base_model_run = models.ForeignKey("ModelRun", null=True, blank=True, on_delete=models.DO_NOTHING)
 	is_base = models.BooleanField(default=False)  # is this a base model run (True), or a normal model run (False)
 
+	# model_area relation is through calibration_set
 	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.DO_NOTHING, related_name="model_runs")
 	calibrated_parameters_text = models.TextField(null=True, blank=True)  # we'll put a snapshot of the calibration parameters in here, probably
 												# as a CSV. This way, if people eidt the calibration data for future runs,
 												# we still know what inputs ran this version of the model.
-	# model_area relation is through calibration_set
+
+	rainfall_set = models.ForeignKey(RainfallSet, on_delete=models.CASCADE, related_name="model_runs")
 
 	user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="model_runs")
 	organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="model_runs")
@@ -591,8 +593,8 @@ class ModelRun(models.Model):
 	# crop_modifications - back-reference from related content
 
 	serializer_fields = ['id', 'name', 'description', 'ready', 'running', 'complete', 'status_message',
-		                'date_submitted', 'date_completed', "calibration_set", "user_id", "organization",
-	                     "base_model_run_id", "is_base",
+		                'date_submitted', 'date_completed', "calibration_set", "rainfall_set",
+						 "user_id", "organization", "base_model_run_id", "is_base",
 	                     "land_modifications_average", "water_modifications_average",
 	                     "price_modifications_average", "yield_modifications_average"]
 
@@ -631,6 +633,21 @@ class ModelRun(models.Model):
 
 	@property
 	def scenario_df(self):
+		df = self.get_df(self.calibration_set)
+		# save the calibration data with any modifications as a text string to the DB - will exclude scenario
+		# level constraints though!
+		self.calibrated_parameters_text = df.to_csv()  # if we don't provide a path to to_csv, it returns a string
+		self.save()
+		return df
+
+	@property
+	def rainfall_df(self):
+		if self.rainfall_set:
+			return self.get_df(self.rainfall_set)
+		else:
+			return None
+
+	def get_df(self, base_model):
 		"""
 			Given the currently attached modifications, etc, returns a complete calibration DF
 		:return:
@@ -646,16 +663,10 @@ class ModelRun(models.Model):
 			exclude_ids = None
 
 		# pull initial calibration dataset as it is
-		df = self.calibration_set.as_data_frame(exclude_regions=exclude_ids)
+		df = base_model.as_data_frame(exclude_regions=exclude_ids)
 
 		# do any overrides or changes from the modifications
 
-		# TODO: Need to do much more than this, but for now, just return the existing calib set
-
-		# save the calibration data with any modifications as a text string to the DB - will exclude scenario
-		# level constraints though!
-		self.calibrated_parameters_text = df.to_csv()  # if we don't provide a path to to_csv, it returns a string
-		self.save()
 		return df
 
 	def attach_modifications(self, scenario):
@@ -738,7 +749,7 @@ class ModelRun(models.Model):
 		self.running = True
 		self.save()  # mark it as running and save it so the API updates the status
 		try:
-			scenario_runner = scenarios.Scenario(calibration_df=self.scenario_df)
+			scenario_runner = scenarios.Scenario(calibration_df=self.scenario_df, rainfall_df=self.rainfall_df)
 			self.attach_modifications(scenario=scenario_runner)
 			results = scenario_runner.run()
 
@@ -909,7 +920,7 @@ class RegionModification(models.Model):
 
 	model_run = models.ForeignKey(ModelRun, blank=True, on_delete=models.CASCADE, related_name="region_modifications")
 
-	serializer_fields = ["id", "region", "region_group", "water_proportion", "land_proportion",
+	serializer_fields = ["id", "region", "region_group", "water_proportion", "land_proportion", "rainfall_proportion",
 	                     "hold_static", "removed"]
 
 

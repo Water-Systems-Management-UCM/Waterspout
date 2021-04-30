@@ -195,7 +195,6 @@ def detect_rainfall_and_irrigation(model_area, rainfall_year=None):
 		region.save()
 
 
-
 def get_or_create_system_user():
 	return models.User.objects.get_or_create(username="system")[0]
 

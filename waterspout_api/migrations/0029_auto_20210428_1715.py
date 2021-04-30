@@ -10,18 +10,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveIndex(
-            model_name='calibratedparameter',
-            name='waterspout__year_3ccc43_idx',
-        ),
-        migrations.RemoveIndex(
-            model_name='inputdataitem',
-            name='waterspout__year_56ef53_idx',
-        ),
-        migrations.RemoveIndex(
-            model_name='rainfallparameter',
-            name='waterspout__year_e37c47_idx',
-        ),
         migrations.AlterUniqueTogether(
             name='calibratedparameter',
             unique_together={('crop', 'region', 'year')},

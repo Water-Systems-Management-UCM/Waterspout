@@ -84,6 +84,29 @@ class RainfallResultSerializer(serializers.ModelSerializer):
 		fields = models.RainfallResult.serializer_fields
 		model = models.RainfallResult
 
+class RainfallItemSerializer(serializers.ModelSerializer):
+	"""
+		For a single result - we'll basically never access this endpoint, but we'll use it to define the fields for the
+		full RunResultSerializer
+	"""
+
+	class Meta:
+		fields = "__all__"
+		model = models.RainfallParameter
+
+
+class RainfallSetSerializer(serializers.ModelSerializer):
+	"""
+		Provides access to the input data records for viewing the database, but is also how we'll
+		retrieve the list of model runs
+	"""
+	rainfall_set = RainfallItemSerializer(read_only=True, many=True)
+
+	class Meta:
+		fields = ["id", "rainfall_set"] #, "model_runs"]
+		model = models.RainfallSet
+
+		depth = 0
 
 class InfeasibilitySerializer(serializers.ModelSerializer):
 
@@ -208,6 +231,7 @@ class ModelAreaPreferencesSerializer(serializers.ModelSerializer):
 
 class ModelAreaSerializer(ModelActionSerializer):
 	calibration_data = CalibrationSetSerializer(read_only=True, many=True, allow_null=True)
+	rainfall_data = RainfallSetSerializer(read_only=True, many=True, allow_null=True)
 	input_data = InputDataSetSerializer(read_only=True, many=True, allow_null=True)
 	crop_set = CropSerializer(read_only=True, many=True, allow_null=True)
 	region_set = RegionSerializer(read_only=True, many=True, allow_null=True)
@@ -220,7 +244,7 @@ class ModelAreaSerializer(ModelActionSerializer):
 		fields = _base_fields
 		action_fields = {  # only send model results in detail view - that way the listing doesn't send massive amount
 			"retrieve": {     # of data, but we only need to load the specific model run again to get the results
-				"fields": _base_fields + ["main_help_page_content", "calibration_data", "input_data",
+				"fields": _base_fields + ["main_help_page_content", "calibration_data", "rainfall_data", "input_data",
 				                          "crop_set", "region_set", "preferences",
 		                                    "supports_rainfall", "supports_irrigation",]
 			}
