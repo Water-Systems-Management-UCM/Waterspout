@@ -264,6 +264,9 @@ class Region(models.Model):
 	supports_rainfall = models.BooleanField(default=False)  # whether or not this region has any rainfall/dryland components
 	supports_irrigation = models.BooleanField(default=True)  # whether or not this region has any irrigated components
 
+	serializer_fields = ("id", "name", "internal_id", "description", "geometry", "model_area", "group",
+	                     "supports_rainfall", "supports_irrigation", "multipliers")
+
 	def __str__(self):
 		return "Area {}: Region {}".format(self.model_area.name, self.name)
 
@@ -351,7 +354,7 @@ class RecordSet(models.Model):
 		# dropping any excess fields would be better. Going to leave that for another
 		# day right now.
 
-		foreign_keys = ["region", "crop"]
+		foreign_keys = ["region", "crop", "rainfall_set"]
 
 		record_model = globals()[self.record_model_name]
 		fields = [f.name for f in record_model._meta.get_fields()]  # get all the fields for calibrated parameters
@@ -543,12 +546,57 @@ class RainfallParameter(ModelItem):
 	rainfall_set = models.ForeignKey(RainfallSet, on_delete=models.CASCADE, related_name="rainfall_set")
 
 	coef_intercept = models.DecimalField(max_digits=10, decimal_places=5)
+	twin = models.DecimalField(max_digits=10, decimal_places=5)
+	tspr = models.DecimalField(max_digits=10, decimal_places=5)
+	tsum = models.DecimalField(max_digits=10, decimal_places=5)
 	coef_tsum = models.DecimalField(max_digits=10, decimal_places=5)
 	coef_tspr = models.DecimalField(max_digits=10, decimal_places=5)
 	coef_twin = models.DecimalField(max_digits=10, decimal_places=5)
+	pespr = models.DecimalField(max_digits=10, decimal_places=5)
+	pewin = models.DecimalField(max_digits=10, decimal_places=5)
+	pesum = models.DecimalField(max_digits=10, decimal_places=5)
 	coef_pespr = models.DecimalField(max_digits=10, decimal_places=5)
 	coef_pewin = models.DecimalField(max_digits=10, decimal_places=5)
 	coef_pesum = models.DecimalField(max_digits=10, decimal_places=5)
+
+
+class Result(ModelItem):
+	"""
+		Holds the results for a single region/crop
+	"""
+
+	omegawater = models.DecimalField(max_digits=10, decimal_places=2)
+	resource_flag = models.CharField(max_length=5, null=True, blank=True)
+	# we may be able to drop these fields later, but they help us while we're comparing to the original DAP and our validation
+	xlandsc = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+	xwatersc = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+	xdiffland = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+	xdifftotalland = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+	xdiffwater = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+
+	result_set = models.ForeignKey(ResultSet, on_delete=models.CASCADE, related_name="result_set")
+
+	net_revenue = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
+	gross_revenue = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
+	water_per_acre = models.DecimalField(max_digits=18, decimal_places=5, null=True, blank=True)
+
+
+class RainfallResult(models.Model):
+	serializer_fields = ["region", "crop", "calc_yield", "gross_revenue"]
+
+	result_set = models.ForeignKey(ResultSet, on_delete=models.CASCADE, related_name="rainfall_result_set")
+
+	region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="rainfall_resuls")
+	crop = models.ForeignKey(Crop, on_delete=models.CASCADE, related_name="rainfall_results")
+
+	# yield is the only real result from the rainfall statistical model, so that's what we're storing, but we'll also
+	# want to store some of the same main results as the Result items so we can merge them
+	calc_yield = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
+	gross_revenue = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
+
+	# these aren't yet really outputs, but we need to include them for the viz to work correctly
+	xlandsc = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
+	xwatersc = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
 
 
 class ModelRun(models.Model):
@@ -763,7 +811,7 @@ class ModelRun(models.Model):
 				return
 
 			# now we need to load the resulting df back into the DB
-			result_set = self.load_records(results_df=results)
+			result_set = self.load_records(results_df=results, rainfall_df=scenario_runner.rainfall_df)
 			self.load_infeasibilities(scenario_runner, result_set)
 
 			self.complete = True
@@ -772,7 +820,7 @@ class ModelRun(models.Model):
 			self.running = False
 			self.save()
 
-	def load_records(self, results_df):
+	def load_records(self, results_df, rainfall_df=None):
 		"""
 			Given a set of model results, loads the results to the database
 		:param results_df:
@@ -783,6 +831,13 @@ class ModelRun(models.Model):
 		result_set = ResultSet(model_run=self, dapper_version=get_dapper_version())
 		result_set.save()
 
+		# load the PMP results first
+		self._load_df(results_df=results_df, result_set=result_set, record_model=Result)
+		# now load the rainfall data if it applies
+		if rainfall_df is not None:
+			self._load_df(results_df=rainfall_df, result_set=result_set, record_model=RainfallResult)
+
+	def _load_df(self, results_df, result_set, record_model=Result):
 		try:
 			for record in results_df.itertuples():
 				# get the first tuple's fields, then exit the loop
@@ -791,7 +846,7 @@ class ModelRun(models.Model):
 				break
 
 			for record in results_df.itertuples():  # returns named tuples
-				result = Result(result_set=result_set)
+				result = record_model(result_set=result_set)
 				result.crop = Crop.objects.get(crop_code=record.i, model_area=self.calibration_set.model_area)
 				result.region = Region.objects.get(internal_id=record.g, model_area=self.calibration_set.model_area)
 				for column in fields:  # _fields isn't private - it's just preventing conflicts - see namedtuple docs
@@ -845,41 +900,6 @@ class ModelRun(models.Model):
 			sorted_by_appearance = {k:v for k,v in sorted(crops.items(), key=lambda item: item[1], reverse=True)}
 			infeasibility_items = ["{} ({})".format(crop, value) for crop, value in sorted_by_appearance.items()]
 			self.infeasibilities_text = ", ".join(infeasibility_items)
-
-
-class Result(ModelItem):
-	"""
-		Holds the results for a single region/crop
-	"""
-
-	omegawater = models.DecimalField(max_digits=10, decimal_places=2)
-	resource_flag = models.CharField(max_length=5, null=True, blank=True)
-	# we may be able to drop these fields later, but they help us while we're comparing to the original DAP and our validation
-	xlandsc = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
-	xwatersc = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
-	xdiffland = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
-	xdifftotalland = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
-	xdiffwater = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)
-
-	result_set = models.ForeignKey(ResultSet, on_delete=models.CASCADE, related_name="result_set")
-
-	net_revenue = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
-	gross_revenue = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
-	water_per_acre = models.DecimalField(max_digits=18, decimal_places=5, null=True, blank=True)
-
-
-class RainfallResult(models.Model):
-	serializer_fields = ["region", "crop", "calc_y", "gross_revenue"]
-
-	result_set = models.ForeignKey(ResultSet, on_delete=models.CASCADE, related_name="rainfall_result_set")
-
-	region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="rainfall_resuls")
-	crop = models.ForeignKey(Crop, on_delete=models.CASCADE, related_name="rainfall_results")
-
-	# yield is the only real result from the rainfall statistical model, so that's what we're storing, but we'll also
-	# want to store some of the same main results as the Result items so we can merge them
-	calc_y = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
-	gross_revenue = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
 
 
 class Infeasibility(models.Model):

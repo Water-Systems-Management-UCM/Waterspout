@@ -16,12 +16,19 @@ class CropSerializer(serializers.ModelSerializer):
 		fields = '__all__'
 
 
+class RegionMultipliersSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = models.RegionMultipliers
+		fields = "__all__"
+
+
 class RegionSerializer(serializers.ModelSerializer):
 	geometry = serializers.JSONField(read_only=True, binary=False)
+	multipliers = RegionMultipliersSerializer(read_only=True)
 
 	class Meta:
 		model = models.Region
-		fields = '__all__'
+		fields = models.Region.serializer_fields
 
 
 class RegionModificationSerializer(serializers.ModelSerializer):
