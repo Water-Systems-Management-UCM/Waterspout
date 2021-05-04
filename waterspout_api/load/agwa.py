@@ -3,7 +3,7 @@
 from . import core
 
 
-def load_agwa():
+def load_agwa(organization=None):
 	area_name = "WA"
 	data_name = "washington"
 
@@ -27,5 +27,6 @@ def load_agwa():
 								),
 	                            feature_package="WSDA",
 	                            rainfall_file="dryland_database.csv",
-	                            multipliers_file="newwria_with_regions_and_multipliers.csv"
+	                            multipliers_file="newwria_with_regions_and_multipliers.csv",
+	                            organization=organization,
 	                           )

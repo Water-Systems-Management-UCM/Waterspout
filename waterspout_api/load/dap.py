@@ -14,7 +14,8 @@ def load_dap(regions="delta_islands_wDAP_simplified_0005.geojson",
              calibration_file="DAP_calibrated.csv",
              data_file="DAP_input.csv",
              crop_file="crop_codes.csv",
-             years=(2014, 2015, 2016, 2017),):
+             years=(2014, 2015, 2016, 2017),
+             organization=None):
 	core.load_dap_style_inputs(area_name=area_name,
 								data_name=data_name,
 								regions="delta_islands_wDAP_simplified_0005.geojson",
@@ -33,6 +34,7 @@ def load_dap(regions="delta_islands_wDAP_simplified_0005.geojson",
 									("Suisun", "Suisun")
 								),
 	                            feature_package="DAP_DSC",
+	                            organization=organization
 	                           )
 
 def old_load_dap(

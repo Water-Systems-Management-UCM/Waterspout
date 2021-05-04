@@ -627,7 +627,7 @@ class ModelRun(models.Model):
 	is_base = models.BooleanField(default=False)  # is this a base model run (True), or a normal model run (False)
 
 	# model_area relation is through calibration_set
-	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.DO_NOTHING, related_name="model_runs")
+	calibration_set = models.ForeignKey(CalibrationSet, on_delete=models.CASCADE, related_name="model_runs")
 	calibrated_parameters_text = models.TextField(null=True, blank=True)  # we'll put a snapshot of the calibration parameters in here, probably
 												# as a CSV. This way, if people eidt the calibration data for future runs,
 												# we still know what inputs ran this version of the model.
@@ -922,11 +922,11 @@ class RegionModification(models.Model):
 	# it to the individual regions). It's possible that the group->individual application will occur in the JS because
 	# we'll want to display it all in a map, but we might want to do it here so that API calls can use the groups too
 	region = models.ForeignKey(Region,
-	                           on_delete=models.DO_NOTHING,
+	                           on_delete=models.CASCADE,
 	                           related_name="modifications",
 	                           null=True, blank=True)
 	region_group = models.ForeignKey(RegionGroup,
-	                                 on_delete=models.DO_NOTHING,
+	                                 on_delete=models.CASCADE,
 	                                 related_name="modifications",
 	                                 null=True, blank=True)
 
@@ -955,11 +955,11 @@ class CropModification(models.Model):
 	serializer_fields = ["id", "crop", "crop_group", "price_proportion", "yield_proportion",
 	                     "min_land_area_proportion", "max_land_area_proportion"]
 
-	crop = models.ForeignKey(Crop, on_delete=models.DO_NOTHING, related_name="modifications",
+	crop = models.ForeignKey(Crop, on_delete=models.CASCADE, related_name="modifications",
 	                            null=True, blank=True)
-	region = models.ForeignKey(Crop, on_delete=models.DO_NOTHING, related_name="crop_modifications",
+	region = models.ForeignKey(Crop, on_delete=models.CASCADE, related_name="crop_modifications",
 	                            null=True, blank=True)  # we'll be allowing region-tied crop modifications in a future update - as of 2021/March/02, there is no logic for handling this value yet - it'll all be null and won't go into the solver anywhere
-	crop_group = models.ForeignKey(CropGroup, on_delete=models.DO_NOTHING, related_name="modifications",
+	crop_group = models.ForeignKey(CropGroup, on_delete=models.CASCADE, related_name="modifications",
 	                               null=True, blank=True)
 
 	price_proportion = models.FloatField(default=1.0, blank=True)  # the amount, relative to base values, to provide

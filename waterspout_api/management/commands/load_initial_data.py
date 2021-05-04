@@ -11,18 +11,18 @@ class Command(BaseCommand):
 	help = 'Loads default data into the database. Provide the region name to load (dap, agwa) as the --region argument'
 
 	def add_arguments(self, parser):
-		parser.add_argument('--region', nargs='+', type=str, dest="region", default=None,)
+		parser.add_argument('--area', nargs='+', type=str, dest="area", default=None,)
 
 	def handle(self, *args, **options):
 		log.info("Loading data to database")
 
-		if not options["region"] or not options["region"][0] or options["region"][0] == "":
-			raise ValueError("Can't proceed - no region name to load")
+		if not options["area"] or not options["area"][0] or options["area"][0] == "":
+			raise ValueError("Can't proceed - no area name to load")
 
-		region_name = options["region"][0]
-		log.info(f"Region {region_name}")
+		area_name = options["area"][0]
+		log.info(f"Area {area_name}")
 
-		region_module = getattr(load, region_name)
-		loader_name = f"load_{region_name}"
-		loader = getattr(region_module, loader_name)
+		area_module = getattr(load, area_name)
+		loader_name = f"load_{area_name}"
+		loader = getattr(area_module, loader_name)
 		loader()

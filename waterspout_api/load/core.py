@@ -5,7 +5,7 @@ import logging
 
 import django
 
-from waterspout_api import models
+from waterspout_api import models, load
 
 from Waterspout.settings import BASE_DIR
 
@@ -271,12 +271,32 @@ def load_multipliers(multipliers_file, model_area):
 
 def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_file, crop_file,
 				years, latitude, longitude, default_zoom, region_field_map, feature_package, rainfall_file=None,
-                          multipliers_file=None):
+                          multipliers_file=None, organization=None):
+	"""
 
-	log.info("Creating organization")
-	organization = reset_organization(org_name=area_name)
+	:param area_name:
+	:param data_name:
+	:param regions:
+	:param calibration_file:
+	:param data_file:
+	:param crop_file:
+	:param years:
+	:param latitude:
+	:param longitude:
+	:param default_zoom:
+	:param region_field_map:
+	:param feature_package:
+	:param rainfall_file:
+	:param multipliers_file:
+	:param organization: If an organization is provided, it will be used for the model area
+	:return:
+	"""
 
-	add_system_user_to_org(org=organization)
+	if organization is None:
+		log.info("Creating organization")
+		organization = reset_organization(org_name=area_name)
+
+		add_system_user_to_org(org=organization)
 
 	log.info("Creating model area")
 	model_area = reset_model_area(model_area_name=f"Load: {area_name}", data_folder=data_name, organization=organization,
@@ -327,3 +347,26 @@ def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_
 	create_base_case(calibration_set=calibration_set,
 	                 rainfall_set=rainfall_set,
 	                  organization=organization)
+
+
+def reset_organization_for_reload(model_area, area_name):
+	"""
+		Basically removes the model area and recreates it, but keeps the same organization. This is a full cleanout, meant
+		for situations where we're actually replacing regions, crops, etc - replacing inputs aside from just the calibration
+		data.
+	:param model_area: the ModelArea object to reset - we'll keep the organization attached to it intact
+	:param area_name - which module loads the organization again?
+	:return:
+	"""
+
+	# get the organization off the model area
+	organization = model_area.organization
+
+	# delete the model area - if we set everything up correctly, the deletion will correctly cascade
+	model_area.delete()
+
+	# trigger the specified loader
+	area_module = getattr(load, area_name)
+	loader_name = f"load_{area_name}"
+	loader = getattr(area_module, loader_name)
+	loader(organization=organization)
