@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='modelrun',
             name='rainfall_set',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='model_runs', to='waterspout_api.rainfallset'),
+            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, related_name='model_runs', to='waterspout_api.rainfallset'),
             preserve_default=False,
         ),
     ]
