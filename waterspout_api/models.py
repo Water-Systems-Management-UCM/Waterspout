@@ -586,7 +586,7 @@ class RainfallResult(models.Model):
 
 	result_set = models.ForeignKey(ResultSet, on_delete=models.CASCADE, related_name="rainfall_result_set")
 
-	region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="rainfall_resuls")
+	region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="rainfall_results")
 	crop = models.ForeignKey(Crop, on_delete=models.CASCADE, related_name="rainfall_results")
 
 	# yield is the only real result from the rainfall statistical model, so that's what we're storing, but we'll also
