@@ -13,7 +13,7 @@ def load_agwa():
 
 	core.load_dap_style_inputs(area_name=area_name,
 								data_name=data_name,
-								regions="WRIA/wrias_updated_simplified.geojson",
+								regions="WRIA/new_WRIA_300m_alt.geojsonl.json",
 								calibration_file="WA_DAP_format_calibrated.csv",
 								data_file="OpenAgWA_consolidated_Annual_02152021.csv",
 								crop_file="crop_codes.csv",
