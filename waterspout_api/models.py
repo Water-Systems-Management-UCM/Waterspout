@@ -552,12 +552,13 @@ class RainfallParameter(ModelItem):
 	coef_tsum = models.DecimalField(max_digits=10, decimal_places=5)
 	coef_tspr = models.DecimalField(max_digits=10, decimal_places=5)
 	coef_twin = models.DecimalField(max_digits=10, decimal_places=5)
-	pespr = models.DecimalField(max_digits=10, decimal_places=5)
-	pewin = models.DecimalField(max_digits=10, decimal_places=5)
-	pesum = models.DecimalField(max_digits=10, decimal_places=5)
-	coef_pespr = models.DecimalField(max_digits=10, decimal_places=5)
-	coef_pewin = models.DecimalField(max_digits=10, decimal_places=5)
-	coef_pesum = models.DecimalField(max_digits=10, decimal_places=5)
+	ptspr = models.DecimalField(max_digits=10, decimal_places=5)
+	ptwin = models.DecimalField(max_digits=10, decimal_places=5)
+	ptsum = models.DecimalField(max_digits=10, decimal_places=5)
+	coef_ptspr = models.DecimalField(max_digits=10, decimal_places=5)
+	coef_ptwin = models.DecimalField(max_digits=10, decimal_places=5)
+	coef_ptsum = models.DecimalField(max_digits=10, decimal_places=5)
+	coef_crop = models.DecimalField(max_digits=10, decimal_places=5)
 
 
 class Result(ModelItem):

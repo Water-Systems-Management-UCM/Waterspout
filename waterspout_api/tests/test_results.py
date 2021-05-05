@@ -58,7 +58,7 @@ class ModelResultsTest(TransactionTestCase):  # Need to have a TransactionTestCa
 
 		# assert_frame_equal returns None if two DFs are effectively equal
 		# compare them to 2 decimal places - ignore data type differences since some is inferred from CSV
-		self.assertIsNone(support.compare_runs(actual_results, calculated_results, compare_digits=3, keep_fields=["xland", "xwater", "xlandsc", "xwatersc"]), None)
+		self.assertIsNone(support.compare_runs(actual_results, calculated_results, compare_digits=3, keep_fields=["xland", "xlandsc", "xwatersc"]), None)
 
 	def test_no_infeasibilities_with_single_crop_modification(self):
 
@@ -80,5 +80,5 @@ class ModelResultsTest(TransactionTestCase):  # Need to have a TransactionTestCa
 		# assert_frame_equal returns None if two DFs are effectively equal
 		# compare them to 2 decimal places - ignore data type differences since some is inferred from CSV
 		self.assertIsNone(support.compare_runs(actual_results, calculated_results, compare_digits=3,
-		                                       keep_fields=["xland", "xwater", "xlandsc", "xwatersc"]), None)
+		                                       keep_fields=["xland", "xlandsc", "xwatersc"]), None)
 

@@ -26,7 +26,7 @@ def load_agwa(organization=None):
 									("WRIA_NR_New", "internal_id"),
 								),
 	                            feature_package="WSDA",
-	                            rainfall_file="dryland_database.csv",
+	                            rainfall_file="dryland_database3.csv",
 	                            multipliers_file="newwria_with_regions_and_multipliers.csv",
 	                            organization=organization,
 	                           )

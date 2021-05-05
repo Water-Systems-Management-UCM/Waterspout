@@ -325,6 +325,8 @@ def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_
 	                                    item_model=models.RainfallParameter,
 	                                    set_model=models.RainfallSet,
 	                                    set_lookup="rainfall_set")
+	else:
+		rainfall_set = None
 
 	if multipliers_file is not None:
 		log.info("Loading Multipliers")
