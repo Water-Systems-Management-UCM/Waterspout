@@ -467,6 +467,15 @@ class ModelItem(models.Model):
 	crop = models.ForeignKey(Crop, on_delete=models.CASCADE)
 	region = models.ForeignKey(Region, on_delete=models.CASCADE)
 	year = models.IntegerField(null=True, blank=True)  # inputs will have this, but calibrated items and results may not
+	p = models.DecimalField(max_digits=18, decimal_places=10)
+	y = models.DecimalField(max_digits=13, decimal_places=5)
+	xland = models.DecimalField(max_digits=18, decimal_places=10)
+
+
+class InputModelItem(ModelItem):
+	class Meta:
+		abstract = True
+
 	omegaland = models.DecimalField(max_digits=10, decimal_places=1)
 	omegasupply = models.DecimalField(max_digits=10, decimal_places=1)
 	omegalabor = models.DecimalField(max_digits=10, decimal_places=1)
@@ -474,27 +483,23 @@ class ModelItem(models.Model):
 	omegacash = models.DecimalField(max_digits=10, decimal_places=1, null=True, blank=True)
 	omeganoncash = models.DecimalField(max_digits=10, decimal_places=1, null=True, blank=True)
 	omegatotal = models.DecimalField(max_digits=10, decimal_places=1, null=True, blank=True)
-	p = models.DecimalField(max_digits=18, decimal_places=10)
-	y = models.DecimalField(max_digits=13, decimal_places=5)
-	xland = models.DecimalField(max_digits=18, decimal_places=10)
+	xwater = models.DecimalField(max_digits=18, decimal_places=10)
 
 
-class InputDataItem(ModelItem):
+class InputDataItem(InputModelItem):
 	class Meta:
 		unique_together = ['crop', 'region', 'year']
 
 	dataset = models.ForeignKey(InputDataSet, on_delete=models.CASCADE, related_name="input_data_set")
-
-	xwater = models.DecimalField(max_digits=18, decimal_places=10)
 
 	serializer_fields = ["crop", "region", "year", "omegaland",
 	                     "omegasupply", "omegalabor", "omegaestablish", "omegacash",
 	                     "omeganoncash", "omegatotal", "p", "y", "xland", "xwater"]
 
 
-class CalibratedParameter(ModelItem):
+class CalibratedParameter(InputModelItem):
 	"""
-		Note that it's of class ModelItem - ModelItems define the various input
+		Note that it's of class InputDataItem, which is of class ModelItem - ModelItems define the various input
 		parameters and results that we use for calibration inputs, calibrated
 		parameters, and model results
 	"""
@@ -502,7 +507,6 @@ class CalibratedParameter(ModelItem):
 	class Meta:
 		unique_together = ['crop', 'region', 'year']
 
-	xwater = models.DecimalField(max_digits=18, decimal_places=10)
 	omegawater = models.DecimalField(max_digits=10, decimal_places=2)
 	pc = models.DecimalField(max_digits=10, decimal_places=3)
 	sigma = models.DecimalField(max_digits=5, decimal_places=4)
