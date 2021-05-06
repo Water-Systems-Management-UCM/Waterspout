@@ -133,6 +133,8 @@ def load_input_data_set(csv_file, model_area, years,
 				elif key == "year":
 					if "." in row["year"]:
 						param.year = 1  # set year = 1 for calibration data sets
+					else:
+						param.year = row["year"]
 				else:
 					setattr(param, key, row[key])
 
