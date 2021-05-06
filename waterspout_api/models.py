@@ -587,7 +587,7 @@ class Result(ModelItem):
 
 
 class RainfallResult(models.Model):
-	serializer_fields = ["region", "crop", "calc_yield", "gross_revenue"]
+	serializer_fields = ["region", "crop", "calc_yield", "gross_revenue", "xlandsc", "xwatersc"]
 
 	result_set = models.ForeignKey(ResultSet, on_delete=models.CASCADE, related_name="rainfall_result_set")
 
