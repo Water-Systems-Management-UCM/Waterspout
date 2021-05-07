@@ -164,6 +164,12 @@ class ModelArea(models.Model):
 	def supports_irrigation(self):
 		return self.region_set.filter(supports_irrigation=True).exists()
 
+	@property
+	def background_code(self):
+		# this is a bit of a hack, but we're using the folder
+		# names as a class to set the backgrounds temporarily
+		return self.data_folder
+
 
 class ModelAreaPreferences(models.Model):
 	"""

@@ -253,7 +253,7 @@ class ModelAreaSerializer(ModelActionSerializer):
 			"retrieve": {     # of data, but we only need to load the specific model run again to get the results
 				"fields": _base_fields + ["main_help_page_content", "calibration_data", "rainfall_data", "input_data",
 				                          "crop_set", "region_set", "preferences",
-		                                    "supports_rainfall", "supports_irrigation",]
+		                                    "supports_rainfall", "supports_irrigation", "background_code"]
 			}
 		}
 		depth = 0  # will still show objects that are explicitly declared as nested objects (like region_modifications)
