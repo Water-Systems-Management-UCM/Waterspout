@@ -81,12 +81,15 @@ class GetApplicationVariables(APIView):
 class UserProfileObjectOnlyPermissions(DjangoObjectPermissions):
 
 	def has_permission(self, request, view):
-		userprofile = models.UserProfile.objects.get(request.user) ## DON'T DO THIS THIS WAY!
+		if request.method in SAFE_METHODS:  # this will get filtered correctly automatically in get_queryset
+			return True
+
+		userprofile = models.UserProfile.objects.get(id=request.data['id'])
 		return request.user.has_perm('change_userprofile', userprofile)
 
 
 class UserProfileViewSet(viewsets.ModelViewSet):
-	permission_classes = [DjangoObjectPermissions,]  # handles locking it to a particular user
+	permission_classes = [UserProfileObjectOnlyPermissions,]  # handles locking it to a particular user
 	serializer_class = serializers.UserProfileSerializer
 
 	def get_queryset(self):

@@ -45,7 +45,8 @@ class UserProfile(models.Model):
 
 	user = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE)
 
-	_serializer_fields = ["id", "user", "show_organization_model_runs", "show_organization_model_runs_tooltip"]
+	_serializer_fields = ["id", "user", "show_organization_model_runs", "show_organization_model_runs_tooltip",
+	                      "dense_tables", "dense_tables_tooltip"]
 	# basic settings
 	show_organization_model_runs = models.BooleanField(default=True)
 	show_organization_model_runs_tooltip = "By default, the application shows all model runs from within your organization" \
@@ -53,6 +54,9 @@ class UserProfile(models.Model):
 	                                       " This setting changes that behavior so that, by default, you only see model runs" \
 	                                       " that you created yourself and then you can temporarily change the listing to" \
 	                                       " see all model runs in your organization."
+
+	dense_tables = models.BooleanField(default=False)
+	dense_tables_tooltip = "Use less spacing in tables to see more data on screen at the same time"
 
 
 # set up the signal receivers that get triggered after a user is created so that everyone has a userprofile
