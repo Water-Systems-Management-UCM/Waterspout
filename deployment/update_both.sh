@@ -1,1 +1,0 @@
-ansible-playbook -l webservers -i ansible-ucm-inventory.ini -u nsantos5 -k -K --vault-password-file /mnt/c/Users/dsx/ansible-secrets-access-file.txt ansible-update-both.yml

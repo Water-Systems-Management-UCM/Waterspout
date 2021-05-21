@@ -1,6 +1,0 @@
----
-- hosts: webservers
-  remote_user: nsantos5
-
-- import_playbook: ansible-update-waterspout.yml
-- import_playbook: ansible-update-stormchaser.yml

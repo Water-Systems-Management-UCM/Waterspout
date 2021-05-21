@@ -1,8 +1,0 @@
----
-- hosts: webservers
-  tasks:
-    - name: Loading variables
-      include_vars: ansible-waterspout-variables.yml
-
-    - name: Load starting data into application
-      command: "{{ virtualenv_python_executable }} {{ back_end_application_folder }}/manage.py load_initial_data --area {{ region_to_deploy }}"
