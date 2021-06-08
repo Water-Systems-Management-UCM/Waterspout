@@ -20,7 +20,7 @@ from django.dispatch import receiver
 from Waterspout import settings
 
 import pandas
-from Dapper import scenarios, get_version as get_dapper_version
+from Dapper import scenarios, get_version as get_dapper_version, worst_case
 
 log = logging.getLogger("waterspout.models")
 
@@ -815,6 +815,7 @@ class ModelRun(models.Model):
 			scenario_runner = scenarios.Scenario(calibration_df=self.scenario_df, rainfall_df=self.rainfall_df)
 			self.attach_modifications(scenario=scenario_runner)
 			results = scenario_runner.run()
+			results = worst_case.default_worst_case_scaling_function(results)  # add the worst case scenario values
 
 			if csv_output is not None:
 				results.to_csv(csv_output)
@@ -968,11 +969,11 @@ class CropModification(models.Model):
 		unique_together = ['model_run', 'crop']
 
 	serializer_fields = ["id", "crop", "crop_group", "price_proportion", "yield_proportion",
-	                     "min_land_area_proportion", "max_land_area_proportion"]
+	                     "min_land_area_proportion", "max_land_area_proportion", "region"]
 
 	crop = models.ForeignKey(Crop, on_delete=models.CASCADE, related_name="modifications",
 	                            null=True, blank=True)
-	region = models.ForeignKey(Crop, on_delete=models.CASCADE, related_name="crop_modifications",
+	region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="crop_modifications",
 	                            null=True, blank=True)  # we'll be allowing region-tied crop modifications in a future update - as of 2021/March/02, there is no logic for handling this value yet - it'll all be null and won't go into the solver anywhere
 	crop_group = models.ForeignKey(CropGroup, on_delete=models.CASCADE, related_name="modifications",
 	                               null=True, blank=True)
