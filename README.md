@@ -18,7 +18,7 @@ go to the repository root, activate your conda environment, and run:
 ```
 del db.sqlite3
 python -m pip install -r requirements.txt
-python manage.py migrate && python manage.py load_initial_data --region dap && python manage.py createsuperuser && python manage.py add_user_to_org --user=yourusername --organization=DAP
+python manage.py migrate && python manage.py load_initial_data --area agwa && python manage.py createsuperuser && python manage.py add_user_to_org --user=yourusername --organization=WA && python manage.py update_feature_packages
 ```
 
 replacing "yourusername" in the final command with the name of the user you plan to create in the createsuperuser step.

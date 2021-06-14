@@ -232,7 +232,7 @@ LOGGING = {
             'level': 'DEBUG'
         },
         'waterspout_service_run_processor': {
-            'handlers': ['file_model_run_processor', 'email_warn', 'email_error'],
+            'handlers': ['console', 'file_model_run_processor', 'email_warn', 'email_error'],
             'level': 'DEBUG'
         },
 
