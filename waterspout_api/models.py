@@ -815,7 +815,7 @@ class ModelRun(models.Model):
 			scenario_runner = scenarios.Scenario(calibration_df=self.scenario_df, rainfall_df=self.rainfall_df)
 			self.attach_modifications(scenario=scenario_runner)
 			results = scenario_runner.run()
-			results = worst_case.default_worst_case_scaling_function(results)  # add the worst case scenario values
+			# worst_case_results = worst_case.default_worst_case_scaling_function(results)  # add the worst case scenario values
 
 			if csv_output is not None:
 				results.to_csv(csv_output)
@@ -852,6 +852,8 @@ class ModelRun(models.Model):
 		# now load the rainfall data if it applies
 		if rainfall_df is not None:
 			self._load_df(results_df=rainfall_df, result_set=result_set, record_model=RainfallResult)
+
+		return result_set
 
 	def _load_df(self, results_df, result_set, record_model=Result):
 		try:
@@ -966,7 +968,7 @@ class CropModification(models.Model):
 		from these based on the code inputs and the model adjustments
 	"""
 	class Meta:
-		unique_together = ['model_run', 'crop']
+		unique_together = ['model_run', 'crop', 'region']
 
 	serializer_fields = ["id", "crop", "crop_group", "price_proportion", "yield_proportion",
 	                     "min_land_area_proportion", "max_land_area_proportion", "region"]
