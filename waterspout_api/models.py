@@ -250,6 +250,18 @@ class RegionGroup(models.Model):
 
 
 class Region(models.Model):
+	MODELED = 0
+	REMOVED = 1
+	FIXED = 2
+	LINEAR_SCALED = 3
+
+	REGION_DEFAULT_MODELING_CHOICES = (
+		(MODELED, "Modeled"),
+		(REMOVED, "Removed"),
+		(FIXED, "Fixed"),
+		(LINEAR_SCALED, "Linear Scaled"),
+	)
+
 	class Meta:
 		unique_together = ['name', 'model_area']
 		indexes = [
@@ -264,6 +276,8 @@ class Region(models.Model):
 	description = models.TextField(null=True, blank=True)
 	# .extra_attributes reverse lookup
 
+	default_behavior = models.SmallIntegerField(default=MODELED, choices=REGION_DEFAULT_MODELING_CHOICES)
+
 	geometry = models.JSONField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
 
 	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE)
@@ -275,7 +289,8 @@ class Region(models.Model):
 	supports_irrigation = models.BooleanField(default=True)  # whether or not this region has any irrigated components
 
 	serializer_fields = ("id", "name", "internal_id", "description", "geometry", "model_area", "group",
-	                     "supports_rainfall", "supports_irrigation", "multipliers")
+	                     "supports_rainfall", "supports_irrigation", "multipliers", "default_behavior",
+	                     "MODELED", "FIXED", "REMOVED", "LINEAR_SCALED")
 
 	def __str__(self):
 		return "Area {}: Region {}".format(self.model_area.name, self.name)
@@ -719,7 +734,7 @@ class ModelRun(models.Model):
 		# we'll not send static or removed regions through the model, so drop them here
 		# for removed regions, this is all we need to do - for static regions, we'll
 		# pull their base case results later when we process results
-		excludes = self.region_modifications.filter(Q(removed=True) | Q(hold_static=True))
+		excludes = self.region_modifications.filter(Q(modeled_type=Region.FIXED) | Q(modeled_type=Region.REMOVED))
 		if excludes:
 			exclude_ids = [mod.region.internal_id for mod in excludes]
 		else:
@@ -815,7 +830,9 @@ class ModelRun(models.Model):
 			scenario_runner = scenarios.Scenario(calibration_df=self.scenario_df, rainfall_df=self.rainfall_df)
 			self.attach_modifications(scenario=scenario_runner)
 			results = scenario_runner.run()
-			# worst_case_results = worst_case.default_worst_case_scaling_function(results)  # add the worst case scenario values
+
+			# add the worst case scenario values to the same data frame
+			# results = worst_case.default_worst_case_scaling_function(results)
 
 			if csv_output is not None:
 				results.to_csv(csv_output)
@@ -953,13 +970,12 @@ class RegionModification(models.Model):
 	land_proportion = models.FloatField(default=1.0, blank=True)
 
 	# extra flags on regions
-	hold_static = models.BooleanField(default=False)  # should this region be held static during modeling? If so, it's not passed to the model at all and results are pulled from the base case
-	removed = models.BooleanField(default=False)  # should this region be removed from the model entirely? If so, it's filtered from the dataset passed into the model and nothing additional is added
+	modeled_type = models.SmallIntegerField(default=Region.MODELED, choices=Region.REGION_DEFAULT_MODELING_CHOICES)
 
 	model_run = models.ForeignKey(ModelRun, blank=True, on_delete=models.CASCADE, related_name="region_modifications")
 
 	serializer_fields = ["id", "region", "region_group", "water_proportion", "land_proportion", "rainfall_proportion",
-	                     "hold_static", "removed"]
+	                     "modeled_type"]
 
 
 class CropModification(models.Model):
