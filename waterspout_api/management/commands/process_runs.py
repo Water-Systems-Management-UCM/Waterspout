@@ -33,7 +33,7 @@ class Command(BaseCommand):
 				for run in self._waiting_runs:
 					log.info(f"Running model run {run.id}")
 
-					run.run()
+					run.run(csv_output=f"C:/Users/dsx/Downloads/{run.id}.csv",worst_case_csv_output=f"C:/Users/dsx/Downloads/{run.id}_worst_case.csv",)
 		except:
 			log.error(traceback.format_exc())
 			if settings.DEBUG:  # if we're in production, don't raise the error, we'll get it in email
