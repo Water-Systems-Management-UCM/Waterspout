@@ -26,6 +26,7 @@ FULL_PUBLIC['allow_static_regions'] = False
 FULL_PUBLIC['allow_linear_scaled_regions'] = True
 FULL_PUBLIC['allow_removed_regions'] = True
 FULL_PUBLIC['region_linked_crops'] = True
+FULL_PUBLIC['use_default_region_behaviors'] = True
 
 # for internal use
 DEBUG = copy.deepcopy(FULL_PUBLIC)

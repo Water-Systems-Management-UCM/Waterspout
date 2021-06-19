@@ -213,6 +213,8 @@ class ModelAreaPreferences(models.Model):
 	allow_removed_regions = models.BooleanField(default=False)
 	allow_linear_scaled_regions = models.BooleanField(default=False)
 
+	use_default_region_behaviors = models.BooleanField(default=True)
+
 	model_area = models.OneToOneField(ModelArea,
 	                                  on_delete=models.CASCADE,
 	                                  related_name="preferences"
@@ -769,11 +771,12 @@ class ModelRun(models.Model):
 		else:
 			ids = []
 
-		# figure out which regions didn't have modifications in the current model run - we'll pull the defaults for these
-		regions_to_use_defaults_from = self.calibration_set.model_area.region_set.filter(default_behavior_includes)\
-			.difference(Region.objects.filter(modifications__in=self.region_modifications.all()))
-		if regions_to_use_defaults_from:
-			ids.extend([region.internal_id for region in regions_to_use_defaults_from])
+		if self.calibration_set.model_area.preferences.use_default_region_behaviors:
+			# figure out which regions didn't have modifications in the current model run - we'll pull the defaults for these
+			regions_to_use_defaults_from = self.calibration_set.model_area.region_set.filter(default_behavior_includes)\
+				.difference(Region.objects.filter(modifications__in=self.region_modifications.all()))
+			if regions_to_use_defaults_from:
+				ids.extend([region.internal_id for region in regions_to_use_defaults_from])
 
 		return ids
 
