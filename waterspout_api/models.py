@@ -211,6 +211,9 @@ class ModelAreaPreferences(models.Model):
 
 	allow_static_regions = models.BooleanField(default=False)
 	allow_removed_regions = models.BooleanField(default=False)
+	allow_linear_scaled_regions = models.BooleanField(default=False)
+
+	use_default_region_behaviors = models.BooleanField(default=True)
 
 	model_area = models.OneToOneField(ModelArea,
 	                                  on_delete=models.CASCADE,
@@ -275,6 +278,7 @@ class Region(models.Model):
 	external_id = models.CharField(max_length=100, null=True, blank=True)  # a common external identifier of some kind
 	description = models.TextField(null=True, blank=True)
 	# .extra_attributes reverse lookup
+	# .modifications reverse lookup
 
 	default_behavior = models.SmallIntegerField(default=MODELED, choices=REGION_DEFAULT_MODELING_CHOICES)
 
@@ -734,11 +738,7 @@ class ModelRun(models.Model):
 		# we'll not send static or removed regions through the model, so drop them here
 		# for removed regions, this is all we need to do - for static regions, we'll
 		# pull their base case results later when we process results
-		excludes = self.region_modifications.filter(Q(modeled_type=Region.FIXED) | Q(modeled_type=Region.REMOVED))
-		if excludes:
-			exclude_ids = [mod.region.internal_id for mod in excludes]
-		else:
-			exclude_ids = None
+		exclude_ids = self.get_regions_for_behaviors([Region.FIXED, Region.REMOVED])
 
 		# pull initial calibration dataset as it is
 		df = base_model.as_data_frame(exclude_regions=exclude_ids)
@@ -746,6 +746,39 @@ class ModelRun(models.Model):
 		# do any overrides or changes from the modifications
 
 		return df
+
+	def get_regions_for_behaviors(self, behaviors):
+		"""
+			Given one or more behaviors in an interable, returns the region IDs that the behaviors apply to as a list.
+			This isn't straightforward, because we need to see if the region modification applies a behavior, then
+			also check all the regions that *didn't* have a modification in the current model run (which will have
+			the behavior specified there) for their default behaviors
+		:param behavior:
+		:return:
+		"""
+
+		# compose the query portions for each section here in one loop
+		region_filter_includes = Q()
+		default_behavior_includes = Q()
+		for behavior in behaviors:
+			region_filter_includes = region_filter_includes | Q(modeled_type=behavior)
+			default_behavior_includes = default_behavior_includes | Q(default_behavior=behavior)
+
+		# get the regions to explicitly include from modifications
+		modifications = self.region_modifications.filter(region_filter_includes)
+		if modifications:
+			ids = [mod.region.internal_id for mod in modifications]
+		else:
+			ids = []
+
+		if self.calibration_set.model_area.preferences.use_default_region_behaviors:
+			# figure out which regions didn't have modifications in the current model run - we'll pull the defaults for these
+			regions_to_use_defaults_from = self.calibration_set.model_area.region_set.filter(default_behavior_includes)\
+				.difference(Region.objects.filter(modifications__in=self.region_modifications.all()))
+			if regions_to_use_defaults_from:
+				ids.extend([region.internal_id for region in regions_to_use_defaults_from])
+
+		return ids
 
 	def attach_modifications(self, scenario):
 		land_modifications = {}
@@ -816,7 +849,7 @@ class ModelRun(models.Model):
 		scenario.perform_adjustment("price", price_modifications, default=float(default_crop_modification.price_proportion))
 		scenario.perform_adjustment("yield", yield_modifications, default=float(default_crop_modification.yield_proportion))
 
-	def run(self, csv_output=None):
+	def run(self, csv_output=None, worst_case_csv_output=None):
 		# initially, we won't support calibrating the data here - we'll
 		# just use an initial calibration set and then make our modifications
 		# before running the scenarios
@@ -831,16 +864,17 @@ class ModelRun(models.Model):
 			self.attach_modifications(scenario=scenario_runner)
 			results = scenario_runner.run()
 
-			# add the worst case scenario values to the same data frame
-			# results = worst_case.default_worst_case_scaling_function(results)
-
 			if csv_output is not None:
 				results.to_csv(csv_output)
 
+			# add the worst case scenario values to the same data frame
+			results = self.add_worst_case_and_linear_scaled_values(results)
+
+			if worst_case_csv_output is not None:
+				results.to_csv(worst_case_csv_output)
+
 			# before loading results, make sure we weren't deleted in the app between starting the run and now
-			try:
-				ModelRun.objects.get(pk=self.id)
-			except ModelRun.DoesNotExist:
+			if not ModelRun.objects.filter(id=self.id).exists():
 				return
 
 			# now we need to load the resulting df back into the DB
@@ -852,6 +886,19 @@ class ModelRun(models.Model):
 		finally:  # make sure to mark it as not running regardless of its status or if it crashes
 			self.running = False
 			self.save()
+
+	def add_worst_case_and_linear_scaled_values(self, results):
+		results = worst_case.default_worst_case_scaling_function(results)
+
+		linear_scaled_regions = self.get_regions_for_behaviors([Region.LINEAR_SCALED,])
+		# just straight up overwrite the values for revenue, land, and water for linear scaled regions using the worst case values (linear scaled)
+		for region in linear_scaled_regions:
+			results.loc[(results.g == region), "gross_revenue"] = results.loc[(results.g == region), "worst_case_gross_revenue"]
+			results.loc[(results.g == region), "xlandsc"] = results.loc[(results.g == region), "worst_case_land"]
+			results.loc[(results.g == region), "xwatersc"] = results.loc[(results.g == region), "worst_case_water"]
+			results.loc[(results.g == region), "net_revenue"] = 0  # null out the net revenue field since it's invalid now.
+
+		return results
 
 	def load_records(self, results_df, rainfall_df=None):
 		"""

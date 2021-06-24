@@ -85,7 +85,7 @@ def load_regions(json_file, field_map, model_area):
 		region.save()  # save it immediately because we'll need to set foreign keys to it on key failures below
 
 		for fm in field_map:  # apply all the attributes to the region based on the field map
-			value = python_data["properties"][fm[0]]
+			value = python_data["properties"][fm[0]]  # fm[0] is the file's field name and fm[1] is the name in our model.
 			if hasattr(region, fm[1]):  # we need to check if that attribute exists first
 				setattr(region, fm[1], value)  # if it does, set it on the region object
 			else:  # if it doesn't have that attribute, then we'll create an Extra and relate it
