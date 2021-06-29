@@ -5,13 +5,14 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse, HttpResponse
+from django.contrib.auth import get_user_model
 
 from rest_framework import viewsets, renderers, authentication
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import BasePermission, DjangoObjectPermissions, IsAuthenticated, IsAdminUser, SAFE_METHODS
+from rest_framework.permissions import BasePermission, DjangoObjectPermissions, IsAuthenticated, IsAdminUser, SAFE_METHODS, AllowAny
 from rest_framework.views import APIView
 
 from Waterspout import settings
@@ -21,6 +22,17 @@ from waterspout_api import support
 from waterspout_api import permissions
 
 log = logging.getLogger("waterspout.views")
+
+
+def get_user_info_dict(user, token):
+	return {
+			'token': token,
+			'user_id': user.pk,
+			'username': user.username,
+			'is_staff': user.is_staff,
+			'is_superuser': user.is_superuser,
+			'email': user.email
+		}
 
 
 class CustomAuthToken(ObtainAuthToken):
@@ -35,22 +47,14 @@ class CustomAuthToken(ObtainAuthToken):
 		user = serializer.validated_data['user']
 		token, created = Token.objects.get_or_create(user=user)
 
-		return Response({
-			'token': token.key,
-			'user_id': user.pk,
-			'username': user.username,
-			'is_staff': user.is_staff,
-			'is_superuser': user.is_superuser,
-			'email': user.email
-		})
+		return Response(get_user_info_dict(user, token.key))
 
 
 class GetApplicationVariables(APIView):
 	"""
-	View to list all users in the system.
-
+	Get the core variables (basically, dump the URLs that stormchaser should use to e
 	* Requires token authentication.
-	* Only admin users are able to access this view.
+	* Only authenticated users can access
 	"""
 	authentication_classes = [authentication.TokenAuthentication]
 	permission_classes = [IsAuthenticated]
@@ -76,6 +80,36 @@ class GetApplicationVariables(APIView):
 			application_variables[f"api_url_{url}"] = settings.API_URLS[url]['full']
 
 		return Response(application_variables)
+
+
+class AutoLogin(APIView):
+	"""
+	Returns information about the auto-login ("user-less") system
+
+	"""
+	authentication_classes = []
+	permission_classes = [AllowAny]
+
+	def get(self, request, format=None):
+		"""
+		Get the auto login information
+		"""
+
+		auto_login_token = None
+		user = None
+		if settings.AUTO_LOGIN_ENABLED:
+			user = get_user_model().objects.get(username=settings.AUTO_LOGIN_USER)
+			auto_login_token = f"{support.get_or_create_token(user)}"
+
+		auto_login_info = {
+			"auto_login_allowed": settings.AUTO_LOGIN_ENABLED,
+			"auto_login_token": auto_login_token,
+		}
+
+		if user:
+			auto_login_info["user_info"] = get_user_info_dict(user, auto_login_token)
+
+		return Response(auto_login_info)
 
 
 class UserProfileObjectOnlyPermissions(DjangoObjectPermissions):

@@ -17,6 +17,9 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost", "192.168.1.21"]
 # Need this for emails
 ADMINS = []
 
+AUTO_LOGIN_ENABLED = False
+AUTO_LOGIN_USER = None
+
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
