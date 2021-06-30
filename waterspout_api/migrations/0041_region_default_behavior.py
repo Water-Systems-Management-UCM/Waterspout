@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='region',
             name='default_behavior',
-            field=models.SmallIntegerField(choices=[(1, 'Modeled'), (2, 'Removed'), (3, 'Fixed')], default=1),
+            field=models.SmallIntegerField(choices=[(0, 'Modeled'), (1, 'Removed'), (2, 'Fixed'), (3, 'Linear Scaled')],  default=0),
         ),
     ]

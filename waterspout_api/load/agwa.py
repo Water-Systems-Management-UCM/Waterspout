@@ -30,4 +30,5 @@ def load_agwa(organization=None):
 	                            rainfall_file="dryland_database3.csv",
 	                            multipliers_file="newwria_with_regions_and_multipliers.csv",
 	                            organization=organization,
+	                            help_page_content_file="help_content.html"
 	                           )

@@ -32,11 +32,6 @@ class Migration(migrations.Migration):
             name='modeled_type',
             field=models.SmallIntegerField(choices=[(0, 'Modeled'), (1, 'Removed'), (2, 'Fixed'), (3, 'Linear Scaled')], default=0),
         ),
-        migrations.AlterField(
-            model_name='region',
-            name='default_behavior',
-            field=models.SmallIntegerField(choices=[(0, 'Modeled'), (1, 'Removed'), (2, 'Fixed'), (3, 'Linear Scaled')], default=0),
-        ),
         migrations.RunPython(migrate_modeling_behaviors),
         migrations.RemoveField(
             model_name='regionmodification',

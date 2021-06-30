@@ -12,7 +12,7 @@ from Waterspout.settings import BASE_DIR
 log = logging.getLogger("waterspout.load")
 
 
-def reset_model_area(model_area_name, data_folder, organization, latitude, longitude, default_zoom, feature_package):
+def reset_model_area(model_area_name, data_folder, organization, latitude, longitude, default_zoom, feature_package, help_page_content=None):
 	# this could return more than one object, but if it does, we want the error to
 	# make sure we aren't clearing a bunch of things we don't want to clear
 
@@ -21,7 +21,8 @@ def reset_model_area(model_area_name, data_folder, organization, latitude, longi
 	except models.ModelArea.DoesNotExist:
 		model_area = models.ModelArea(name=model_area_name, data_folder=data_folder, organization=organization,
 		                              map_center_latitude=latitude, map_center_longitude=longitude,
-		                              map_default_zoom=default_zoom, feature_package_name=feature_package)
+		                              map_default_zoom=default_zoom, feature_package_name=feature_package,
+		                              main_help_page_content=help_page_content)
 		model_area.save()
 
 	# do any other cleanup here - regions will cascade delete
@@ -273,7 +274,7 @@ def load_multipliers(multipliers_file, model_area):
 
 def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_file, crop_file,
 				years, latitude, longitude, default_zoom, region_field_map, feature_package, rainfall_file=None,
-                          multipliers_file=None, organization=None):
+                          multipliers_file=None, organization=None, help_page_content_file=None):
 	"""
 
 	:param area_name:
@@ -300,9 +301,16 @@ def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_
 
 		add_system_user_to_org(org=organization)
 
+	if help_page_content_file is not None:
+		with open(help_page_content_file, 'r') as help_file:
+			help_page_content = help_file.readlines()
+	else:
+		help_page_content = None
+
 	log.info("Creating model area")
 	model_area = reset_model_area(model_area_name=f"Load: {area_name}", data_folder=data_name, organization=organization,
-	                                   latitude=latitude, longitude=longitude, default_zoom=default_zoom, feature_package=feature_package)
+	                                   latitude=latitude, longitude=longitude, default_zoom=default_zoom, feature_package=feature_package,
+	                                    help_page_content=help_page_content)
 
 
 	log.info("Loading Regions")
