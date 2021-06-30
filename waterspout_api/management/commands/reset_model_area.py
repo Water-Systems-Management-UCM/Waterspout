@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand
 from waterspout_api.models import ModelArea
 from waterspout_api.load.core import reset_organization_for_reload
 
-log = logging.getLogger("__name__")
+log = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
