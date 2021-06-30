@@ -303,7 +303,7 @@ def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_
 
 	if help_page_content_file is not None:
 		with open(get_data_file_path(data_name, help_page_content_file), 'r') as help_file:
-			help_page_content = help_file.readlines()
+			help_page_content = " ".join(help_file.readlines())
 	else:
 		help_page_content = None
 

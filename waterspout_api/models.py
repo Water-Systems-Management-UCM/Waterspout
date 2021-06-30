@@ -718,8 +718,11 @@ class ModelRun(models.Model):
 		df = self.get_df(self.calibration_set)
 		# save the calibration data with any modifications as a text string to the DB - will exclude scenario
 		# level constraints though!
-		self.calibrated_parameters_text = df.to_csv()  # if we don't provide a path to to_csv, it returns a string
-		self.save()
+
+		# saving the text version hasn't helped us and slows things down. Stop doing that for now
+		#self.calibrated_parameters_text = df.to_csv()  # if we don't provide a path to to_csv, it returns a string
+		#self.save()
+		
 		return df
 
 	@property
