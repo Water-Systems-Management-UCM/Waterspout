@@ -1,4 +1,3 @@
-import json
 import logging
 
 from django.shortcuts import render
@@ -6,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 
 from rest_framework import viewsets, renderers, authentication
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -174,6 +174,9 @@ class RegionModificationViewSet(viewsets.ModelViewSet):
 class UsersViewSet(viewsets.ModelViewSet):
 	"""
 	Returns Users in the same organizations as the current user
+
+	TODO: WARNING - this leaks username information in organizations (such as demo organizations) where user accounts
+	are supposed to be isolated. It doesn't leak anything m ore than usernames/ids though
 	"""
 	permission_classes = [IsAuthenticated]
 	serializer_class = serializers.UsersSerializer
@@ -232,6 +235,9 @@ class ModelAreaViewSet(viewsets.ModelViewSet):
 			organization__in=support.get_organizations_for_user(self.request.user)
 		).order_by('id')
 
+		if models.ModelArea.objects.get(pk=pk).preferences.shared_model_runs is False:  # if they're not supposed to share model runs, then filter to only the user's model runs
+			mrs = mrs.filter(Q(user=request.user) | Q(user=models.User.objects.get(username="system")))
+
 		serializer = serializers.ModelRunSerializer(mrs, many=True)
 		return Response(serializer.data)
 
@@ -250,7 +256,10 @@ class ModelRunViewSet(viewsets.ModelViewSet):
 	def get_queryset(self):
 		# right now, this will only show the user's model runs, not the organization's,
 		# but permissions should be saying "
-		return models.ModelRun.objects.filter(organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
+		return models.ModelRun.objects.filter(Q(user=self.request.user) | Q(user=models.User.objects.get(username="system"))).order_by('id')
+		# changed 7/23/2021 by Nick from all in organization (below) to only for this user (above). They can get a per-model area
+		# view of model runs they're authorized to view in the model area's model run endpoint
+		# return models.ModelRun.objects.filter(organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
 
 	# Commented out 11/28/2020 - no longer using back end to generate CSVs through stormchaser
 	#@action(detail=True, url_name="model_run_csv", renderer_classes=(PassthroughRenderer,))

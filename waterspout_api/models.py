@@ -180,6 +180,10 @@ class ModelAreaPreferences(models.Model):
 		This model is so that we can group preferences and features for model areas
 		and keep them organized
 	"""
+
+	# should all users of this model area be able to see the model runs of all other users?
+	shared_model_runs = models.BooleanField(default=True)
+
 	# prevent users from reducing price/yield below the value that would make profits negative
 	# basically forces stormchaser to create cards for crops when All Crops
 	# goes to negative profits for the crop
@@ -722,7 +726,7 @@ class ModelRun(models.Model):
 		# saving the text version hasn't helped us and slows things down. Stop doing that for now
 		#self.calibrated_parameters_text = df.to_csv()  # if we don't provide a path to to_csv, it returns a string
 		#self.save()
-		
+
 		return df
 
 	@property

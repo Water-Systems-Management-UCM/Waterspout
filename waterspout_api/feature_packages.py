@@ -15,6 +15,7 @@ DEFAULT = {'enforce_price_yield_constraints': True,
 		'allow_static_regions': False,
 		'allow_removed_regions': False,
 		'allow_linear_scaled_regions': False,
+		'shared_model_runs': True,  # should model runs be visible to all organization members?
 }
 
 # the public plan that supports all features
@@ -27,6 +28,9 @@ FULL_PUBLIC['allow_linear_scaled_regions'] = True
 FULL_PUBLIC['allow_removed_regions'] = True
 FULL_PUBLIC['region_linked_crops'] = True
 FULL_PUBLIC['use_default_region_behaviors'] = True
+
+ISOLATED_PUBLIC = copy.deepcopy(FULL_PUBLIC)
+ISOLATED_PUBLIC['shared_model_runs'] = False
 
 # for internal use
 DEBUG = copy.deepcopy(FULL_PUBLIC)
