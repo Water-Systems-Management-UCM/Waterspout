@@ -19,9 +19,9 @@ from sentry_sdk.integrations.django import DjangoIntegration
 from Waterspout.local_settings import *
 
 # sentry config - only run if DEBUG is False (basically, in production)
-if not DEBUG:
+if not DEBUG and USE_SENTRY:
     sentry_sdk.init(
-        dsn="https://a39545e9b4c940c18e62629856dedaed@o462396.ingest.sentry.io/5465746",
+        dsn=SENTRY_DSN,
         integrations=[DjangoIntegration()],
         traces_sample_rate=1.0,
 
@@ -195,20 +195,19 @@ LOGGING = {
         'file_debug': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'debug.log') if DEBUG else os.path.join(BASE_DIR, "..", "logs", "waterspout_debug.log"),
+            'filename': os.path.join(BASE_DIR, 'debug.log') if DEBUG else os.path.join(LOG_FOLDER, "waterspout_debug.log"),
             'formatter': 'verbose'
         },
         'file_error': {
             'level': 'WARNING',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'warnings.log') if DEBUG else os.path.join(BASE_DIR, "..", "logs",
-                                                                                       "waterspout_error.log"),
+            'filename': os.path.join(BASE_DIR, 'warnings.log') if DEBUG else os.path.join(LOG_FOLDER, "waterspout_error.log"),
             'formatter': 'verbose'
         },
         'file_model_run_processor': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'waterspout_process_runs.log') if DEBUG else os.path.join(BASE_DIR, "..", "logs",
+            'filename': os.path.join(BASE_DIR, 'waterspout_process_runs.log') if DEBUG else os.path.join(LOG_FOLDER,
                                                                                           "waterspout_process_runs.log"),
             'formatter': 'verbose'
         },
