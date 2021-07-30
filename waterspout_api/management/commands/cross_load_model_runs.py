@@ -19,6 +19,7 @@ class Command(BaseCommand):
 		parser.add_argument('--user_id_map', nargs='*', type=str, dest="user_id_map", default=None,)
 		parser.add_argument('--system_user_id', type=int, dest="system_user_id", default=None,)
 		parser.add_argument('--ignore_run_ids', nargs='*', type=int, dest="ignore_run_ids", help="A space separated list of run IDs on the remote server to ignore - recommended to include the base case here since it'll already be loaded", default=None,)
+		parser.add_argument('--include_run_ids', nargs='*', type=int, dest="include_run_ids", help="A space separated list of run IDs on the remote server to include - defaults to including all runs if this is not specified. When specified, only the specified runs will be migrated", default=None,)
 		parser.add_argument('--dry_run', type=bool, dest="dry_run", required=False)
 
 	def get_user_id_dict(self, user_id_data):
@@ -41,6 +42,7 @@ class Command(BaseCommand):
 		log.info("Options")
 		log.info(f"Dry Run: {options['dry_run']}")
 		log.info(f"Ignore Run IDs: {options['ignore_run_ids']}")
+		log.info(f"Include Run IDs: {options['include_run_ids']}")
 		log.info(f"User ID Map: {options['user_id_map']}")
 
 		user_id_lookup_dict = self.get_user_id_dict(options["user_id_map"])
@@ -91,6 +93,10 @@ class Command(BaseCommand):
 		for remote_run in model_runs:
 			if remote_run["id"] in options["ignore_run_ids"]:
 				log.info(f"skipping run {remote_run['id']} because it is in 'ignore_run_ids'")
+				continue
+
+			if options["include_run_ids"] is not None and remote_run["id"] not in options["include_run_ids"]:
+				log.info(f"skipping run {remote_run['id']} because it is not in 'include_run_ids' but 'include_run_ids' was specified.")
 				continue
 
 			new_run = models.ModelRun()
