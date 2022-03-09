@@ -1,6 +1,6 @@
 import logging
 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse, HttpResponse
@@ -261,6 +261,24 @@ class ModelRunViewSet(viewsets.ModelViewSet):
 		# view of model runs they're authorized to view in the model area's model run endpoint
 		# return models.ModelRun.objects.filter(organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
 
+	def get_object(self):
+		"""
+			When we filtered the queryset to *just* the user's or systems's runs, we also locked users out of accessing
+			other people's model runs in their organization (oops), because the queryset is used as a base filter when
+			retrieving individual items (oops). So, we recreate some of the logic from DRF docs below for filtering
+			and checking permissions, but we explicitly start with a broader queryset that includes all model runs in
+			the organization and that way we should be able to find model runs when appropriate.
+		:return:
+		"""
+		available_model_runs = models.ModelRun.objects.filter(
+			organization__in=support.get_organizations_for_user(self.request.user))
+
+		filter = {}
+		filter[self.lookup_field] = self.kwargs[self.lookup_field]
+
+		obj = get_object_or_404(available_model_runs, **filter)
+		self.check_object_permissions(self.request, obj)
+		return obj
 	# Commented out 11/28/2020 - no longer using back end to generate CSVs through stormchaser
 	#@action(detail=True, url_name="model_run_csv", renderer_classes=(PassthroughRenderer,))
 	#def csv(self, request, pk):
