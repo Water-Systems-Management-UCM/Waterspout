@@ -615,6 +615,8 @@ class Result(ModelItem):
 	result_set = models.ForeignKey(ResultSet, on_delete=models.CASCADE, related_name="result_set")
 
 	net_revenue = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
+	net_revenue_red_costs = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
+	net_revenue_pmp_yield = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
 	gross_revenue = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
 	water_per_acre = models.DecimalField(max_digits=18, decimal_places=5, null=True, blank=True)
 
