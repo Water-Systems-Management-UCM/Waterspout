@@ -31,6 +31,22 @@ class RegionSerializer(serializers.ModelSerializer):
 		fields = models.Region.serializer_fields
 
 
+class RegionGroupSerializer(serializers.ModelSerializer):
+	geometry = serializers.JSONField(read_only=True, binary=False)
+
+	class Meta:
+		model = models.RegionGroup
+		fields = models.RegionGroup.serializer_fields
+
+
+class RegionGroupSetSerializer(serializers.ModelSerializer):
+	groups = RegionGroupSerializer(read_only=True, many=True, allow_null=True)
+
+	class Meta:
+		model = models.RegionGroupSet
+		fields = models.RegionGroupSet.serializer_fields
+
+
 class RegionModificationSerializer(serializers.ModelSerializer):
 
 	class Meta:
@@ -242,6 +258,7 @@ class ModelAreaSerializer(ModelActionSerializer):
 	input_data = InputDataSetSerializer(read_only=True, many=True, allow_null=True)
 	crop_set = CropSerializer(read_only=True, many=True, allow_null=True)
 	region_set = RegionSerializer(read_only=True, many=True, allow_null=True)
+	region_group_sets = RegionGroupSetSerializer(read_only=True, many=True, allow_null=True)
 	preferences = ModelAreaPreferencesSerializer(read_only=True)
 
 	class Meta:
@@ -252,7 +269,7 @@ class ModelAreaSerializer(ModelActionSerializer):
 		action_fields = {  # only send model results in detail view - that way the listing doesn't send massive amount
 			"retrieve": {     # of data, but we only need to load the specific model run again to get the results
 				"fields": _base_fields + ["main_help_page_content", "calibration_data", "rainfall_data", "input_data",
-				                          "crop_set", "region_set", "preferences",
+				                          "crop_set", "region_set", "region_group_sets", "preferences",
 		                                    "supports_rainfall", "supports_irrigation", "background_code"]
 			}
 		}

@@ -46,7 +46,7 @@ class UserProfile(models.Model):
 	user = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE)
 
 	_serializer_fields = ["id", "user", "show_organization_model_runs", "show_organization_model_runs_tooltip",
-	                      "dense_tables", "dense_tables_tooltip"]
+	                      "dense_tables", "dense_tables_tooltip", "show_net_revenues", "show_net_revenues_tooltip"]
 	# basic settings
 	show_organization_model_runs = models.BooleanField(default=True)
 	show_organization_model_runs_tooltip = "By default, the application shows all model runs from within your organization" \
@@ -57,6 +57,11 @@ class UserProfile(models.Model):
 
 	dense_tables = models.BooleanField(default=False)
 	dense_tables_tooltip = "Use less spacing in tables to see more data on screen at the same time"
+
+	show_net_revenues = models.BooleanField(default=False)
+	show_net_revenues_tooltip = "Display net revenues in model results when available for a model. Net revenues" \
+								"are difficult to interpret correctly. See documentation for more before using " \
+								"net revenue data."
 
 
 # set up the signal receivers that get triggered after a user is created so that everyone has a userprofile
@@ -248,14 +253,6 @@ def save_model_area(sender, instance, **kwargs):
 #	value = models.DecimalField(max_digits=6, decimal_places=4)
 
 
-class RegionGroup(models.Model):
-	name = models.CharField(max_length=255, null=False, blank=False)
-	internal_id = models.CharField(max_length=100, null=False, blank=False)  # typically we have some kind of known ID to feed to a model that means something to people
-	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE)
-
-	geometry = models.JSONField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
-
-
 class Region(models.Model):
 	MODELED = 0
 	REMOVED = 1
@@ -289,14 +286,11 @@ class Region(models.Model):
 	geometry = models.JSONField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
 
 	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE)
-	group = models.ForeignKey(RegionGroup, null=True, blank=True, on_delete=models.CASCADE)  # there could be a reason to make it a many to many instead, but
-																	# I can't think of a use case right now, and it'd require some PITA
-																	# logic to tease apart specifications for regions in overlapping groups
 
 	supports_rainfall = models.BooleanField(default=False)  # whether or not this region has any rainfall/dryland components
 	supports_irrigation = models.BooleanField(default=True)  # whether or not this region has any irrigated components
 
-	serializer_fields = ("id", "name", "internal_id", "description", "geometry", "model_area", "group",
+	serializer_fields = ("id", "name", "internal_id", "description", "geometry", "model_area",
 	                     "supports_rainfall", "supports_irrigation", "multipliers", "default_behavior",
 	                     "MODELED", "FIXED", "REMOVED", "LINEAR_SCALED")
 
@@ -323,6 +317,23 @@ class RegionExtra(models.Model):
 	name = models.CharField(max_length=255, null=False, blank=False)
 	value = models.TextField(null=True, blank=True)
 	data_type = models.CharField(max_length=5)  # indicates the Python data type to cast it to if it's not a string
+
+
+class RegionGroupSet(models.Model):
+	name = models.CharField(max_length=255, null=False, blank=False)
+	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE, related_name="region_group_sets")
+
+	serializer_fields = ["name", "groups"]
+
+
+class RegionGroup(models.Model):
+	name = models.CharField(max_length=255, null=False, blank=False)
+	group_set = models.ForeignKey(RegionGroupSet, on_delete=models.CASCADE, related_name="groups")
+	regions = models.ManyToManyField(Region)
+
+	geometry = models.JSONField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
+
+	serializer_fields = ["name", "regions", "geometry"]
 
 
 class Crop(models.Model):
@@ -615,8 +626,7 @@ class Result(ModelItem):
 	result_set = models.ForeignKey(ResultSet, on_delete=models.CASCADE, related_name="result_set")
 
 	net_revenue = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
-	net_revenue_red_costs = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
-	net_revenue_pmp_yield = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
+	net_revenue_flag = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
 	gross_revenue = models.DecimalField(max_digits=18, decimal_places=3, null=True, blank=True)
 	water_per_acre = models.DecimalField(max_digits=18, decimal_places=5, null=True, blank=True)
 
@@ -906,6 +916,7 @@ class ModelRun(models.Model):
 			results.loc[(results.g == region), "xlandsc"] = results.loc[(results.g == region), "worst_case_land"]
 			results.loc[(results.g == region), "xwatersc"] = results.loc[(results.g == region), "worst_case_water"]
 			results.loc[(results.g == region), "net_revenue"] = 0  # null out the net revenue field since it's invalid now.
+			results.loc[(results.g == region), "net_revenue_flag"] = 0  # null out the net revenue field since it's invalid now.
 
 		return results
 
@@ -948,7 +959,7 @@ class ModelRun(models.Model):
 
 					setattr(result, column, value)
 
-				if not result.net_revenue or result.net_revenue < 0:  # if any record has negative net revenues, we're out of bounds on calibration - mark it
+				if not result.net_revenue_flag or result.net_revenue_flag < 0:  # if any record has negative net revenues, we're out of bounds on calibration - mark it
 					result_set.in_calibration = False
 
 				result.save()

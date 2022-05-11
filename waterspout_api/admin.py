@@ -16,6 +16,7 @@ admin.site.register(models.ModelArea, ModelAreaAdmin)
 
 
 admin.site.register(models.RegionGroup)
+admin.site.register(models.RegionGroupSet)
 admin.site.register(models.Region)
 admin.site.register(models.RegionExtra)
 admin.site.register(models.CropGroup)
