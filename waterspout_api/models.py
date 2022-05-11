@@ -959,7 +959,7 @@ class ModelRun(models.Model):
 
 					setattr(result, column, value)
 
-				if not result.net_revenue_flag or result.net_revenue_flag < 0:  # if any record has negative net revenues, we're out of bounds on calibration - mark it
+				if hasattr(result, "net_revenue_flag") and (not result.net_revenue_flag or result.net_revenue_flag < 0):  # if any record has negative net revenues, we're out of bounds on calibration - mark it
 					result_set.in_calibration = False
 
 				result.save()
