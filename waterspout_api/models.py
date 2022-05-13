@@ -333,7 +333,7 @@ class RegionGroup(models.Model):
 
 	geometry = models.JSONField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
 
-	serializer_fields = ["name", "regions", "geometry"]
+	serializer_fields = ["id", "name", "regions", "geometry"]
 
 
 class Crop(models.Model):
@@ -804,7 +804,8 @@ class ModelRun(models.Model):
 		water_modifications = {}
 		rainfall_modifications = {}
 
-		region_modifications = self.region_modifications.filter(region__isnull=False)
+		region_modifications = self.region_modifications.filter(region__isnull=False, region_group__isnull=True)
+
 		for modification in region_modifications:  # get all the nondefault modifications
 			land_modifications[modification.region.internal_id] = float(modification.land_proportion)
 			if modification.region.supports_irrigation:
@@ -812,7 +813,7 @@ class ModelRun(models.Model):
 			if modification.region.supports_rainfall:
 				rainfall_modifications[modification.region.internal_id] = float(modification.rainfall_proportion)
 
-		default_region_modification = self.region_modifications.get(region__isnull=True)
+		default_region_modification = self.region_modifications.get(region__isnull=True, region_group__isnull=True)
 
 		scenario.perform_adjustment("land", land_modifications, default=float(default_region_modification.land_proportion))
 
@@ -868,6 +869,38 @@ class ModelRun(models.Model):
 		scenario.perform_adjustment("price", price_modifications, default=float(default_crop_modification.price_proportion))
 		scenario.perform_adjustment("yield", yield_modifications, default=float(default_crop_modification.yield_proportion))
 
+	def convert_region_group_modifications(self):
+		"""
+		HANDLE GROUP MODIFICATIONS FIRST
+		I think what would be most efficient here for region groups, instead of messing with all the logic below,
+		would be to find all the modifications with groups, create region modification objects for them,
+		then include that in the set of region_modifications to process.
+		originally, we planned to *not* save the objects, but now think we should because other items (such as the
+		modeled behavior code) use Django's ORM to do some work. We'll add a hidden keyword that prevents these items
+		from going out over the API
+		:return:
+		"""
+		region_group_modifications = self.region_modifications.filter(region_group__isnull=False, region__isnull=True)
+		for group_mod in region_group_modifications:
+			group = group_mod.region_group
+			for region in group.regions.all():
+
+				# check if there's a region modification object for the region already
+				if self.region_modifications.filter(region=region).exists():
+					# if there is, go to the next region - don't create a modification for it - that's a more specific override
+					# this has the added bonus of skipping creation if this code is run a second time (a rerun, or after a failure)
+					continue
+
+				RegionModification.objects.create(
+					region=region,
+					water_proportion=group_mod.water_proportion,
+					rainfall_proportion=group_mod.rainfall_proportion,
+					land_proportion=group_mod.land_proportion,
+					modeled_type=group_mod.modeled_type,
+					created_from_group=True,
+					model_run=self
+				)
+
 	def run(self, csv_output=None, worst_case_csv_output=None):
 		# initially, we won't support calibrating the data here - we'll
 		# just use an initial calibration set and then make our modifications
@@ -879,6 +912,9 @@ class ModelRun(models.Model):
 		self.running = True
 		self.save()  # mark it as running and save it so the API updates the status
 		try:
+			# need to do this first - it modifies the set of modifications, which in turn modifies the scenario_df we pull because of region behaviors
+			self.convert_region_group_modifications()
+
 			scenario_runner = scenarios.Scenario(calibration_df=self.scenario_df, rainfall_df=self.rainfall_df)
 			self.attach_modifications(scenario=scenario_runner)
 			results = scenario_runner.run()
@@ -1017,7 +1053,7 @@ class RegionModification(models.Model):
 		from these based on the code inputs and the model adjustments
 	"""
 	class Meta:
-		unique_together = ['model_run', 'region']
+		unique_together = ['model_run', 'region', 'region_group']
 
 	# we have two nullable foreign keys here. If both are new, then the rule applies to the whole model area as the default.
 	# if only one is active, then it applies to either the region, or the group (and then we need something that applies
@@ -1038,6 +1074,9 @@ class RegionModification(models.Model):
 
 	# extra flags on regions
 	modeled_type = models.SmallIntegerField(default=Region.MODELED, choices=Region.REGION_DEFAULT_MODELING_CHOICES)
+
+	# was this created by the system from a group modification? If so, we'll hide this from the API, but we'll need it for model runs
+	created_from_group = models.BooleanField(default=False)
 
 	model_run = models.ForeignKey(ModelRun, blank=True, on_delete=models.CASCADE, related_name="region_modifications")
 

@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import get_user_model
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 
 from rest_framework import viewsets, renderers, authentication
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -150,14 +150,21 @@ class CropViewSet(viewsets.ModelViewSet):
 
 
 class RegionViewSet(viewsets.ModelViewSet):
-	"""
-	API endpoint that allows users to be viewed or edited.
-	"""
 	permission_classes = [permissions.IsInSameOrganization]
 	serializer_class = serializers.RegionSerializer
 
 	def get_queryset(self):
 		return models.Region.objects.filter(model_area__organization__in=support.get_organizations_for_user(self.request.user)).order_by("internal_id")
+
+"""
+class RegionGroupViewSet(viewsets.ModelViewSet):
+	permission_classes = [permissions.IsInSameOrganization]
+	serializer_class = serializers.RegionGroupSetSerializer
+
+	# we don't have an API endpoint for reading these directly yet, so we won't make this correct, but it'll need to be
+	#def get_queryset(self):
+	#	return models.RegionGroupSet.objects.filter(model_area__organization__in=support.get_organizations_for_user(self.request.user)).order_by("internal_id")
+"""
 
 
 class RegionModificationViewSet(viewsets.ModelViewSet):
@@ -168,7 +175,7 @@ class RegionModificationViewSet(viewsets.ModelViewSet):
 	serializer_class = serializers.RegionModificationSerializer
 
 	def get_queryset(self):
-		return models.RegionModification.objects.filter(model_run__organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
+		return models.RegionModification.objects.filter(created_from_group=False, model_run__organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
 
 
 class UsersViewSet(viewsets.ModelViewSet):
@@ -256,7 +263,8 @@ class ModelRunViewSet(viewsets.ModelViewSet):
 	def get_queryset(self):
 		# right now, this will only show the user's model runs, not the organization's,
 		# but permissions should be saying "
-		return models.ModelRun.objects.filter(Q(user=self.request.user) | Q(user=models.User.objects.get(username="system"))).order_by('id')
+		return models.ModelRun.objects.filter(Q(user=self.request.user) | Q(user=models.User.objects.get(username="system")))\
+			.order_by('id')
 		# changed 7/23/2021 by Nick from all in organization (below) to only for this user (above). They can get a per-model area
 		# view of model runs they're authorized to view in the model area's model run endpoint
 		# return models.ModelRun.objects.filter(organization__in=support.get_organizations_for_user(self.request.user)).order_by('id')
@@ -271,7 +279,8 @@ class ModelRunViewSet(viewsets.ModelViewSet):
 		:return:
 		"""
 		available_model_runs = models.ModelRun.objects.filter(
-			organization__in=support.get_organizations_for_user(self.request.user))
+			organization__in=support.get_organizations_for_user(self.request.user))\
+			.prefetch_related(Prefetch('region_modifications', queryset=models.RegionModification.objects.filter(created_from_group=False)))
 
 		filter = {}
 		filter[self.lookup_field] = self.kwargs[self.lookup_field]

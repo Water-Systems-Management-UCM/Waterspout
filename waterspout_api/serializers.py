@@ -153,9 +153,15 @@ class ResultSetSerializer(serializers.ModelSerializer):
 
 
 class ModelRunSerializer(ModelActionSerializer):
+	#region_modifications = serializers.SerializerMethodField()
 	region_modifications = RegionModificationSerializer(allow_null=True, many=True)
 	crop_modifications = CropModificationSerializer(allow_null=True, many=True)
 	results = serializers.SerializerMethodField()  # forces it to get looked up below and lets us sort them by date
+
+	"""def get_region_modifications(self, model_run):
+		queryset = model_run.region_modifications.filter(created_from_group=False)
+		region_modifications = RegionModificationSerializer(instance=queryset, allow_null=True, many=True)
+		return region_modifications.data"""
 
 	class Meta:
 		model = models.ModelRun
