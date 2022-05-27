@@ -59,7 +59,7 @@ class UserProfile(models.Model):
 	dense_tables_tooltip = "Use less spacing in tables to see more data on screen at the same time"
 
 	show_net_revenues = models.BooleanField(default=False)
-	show_net_revenues_tooltip = "Display net revenues in model results when available for a model. Net revenues" \
+	show_net_revenues_tooltip = "Display net revenues in model results when available for a model. Net revenues " \
 								"are difficult to interpret correctly. See documentation for more before using " \
 								"net revenue data."
 
@@ -320,6 +320,9 @@ class RegionExtra(models.Model):
 
 
 class RegionGroupSet(models.Model):
+	class Meta:
+		unique_together = ['name', 'model_area']
+
 	name = models.CharField(max_length=255, null=False, blank=False)
 	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE, related_name="region_group_sets")
 

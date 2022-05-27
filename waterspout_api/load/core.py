@@ -360,6 +360,8 @@ def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_
 	                 rainfall_set=rainfall_set,
 	                  organization=organization)
 
+	return model_area
+
 
 def reset_organization_for_reload(model_area, area_name):
 	"""
@@ -382,3 +384,73 @@ def reset_organization_for_reload(model_area, area_name):
 	loader_name = f"load_{area_name}"
 	loader = getattr(area_module, loader_name)
 	loader(organization=organization)
+
+
+
+def load_region_group_file(group_file_path, member_file_path, config_path, model_area,
+						   RegionGroupSetModel=models.RegionGroupSet,
+						   RegionGroupModel=models.RegionGroup,
+						   RegionModel=models.Region):
+	"""
+		Includes definition of models to use because it's used in a migration and we'll need to pass
+		in the migration's version of the model
+	"""
+
+	with open(config_path, 'r') as config_data:
+		config = json.load(config_data)
+
+	# we already have a unique constraint on these, but if we check here it'd be good so we don't end up
+	# applying a failed migration
+	if RegionGroupSetModel.objects.filter(name=config["group_set_name"], model_area=model_area).exists():
+		log.warning(f"Group Set {config['group_set_name']} already exists. Will not create again.")
+		return False
+
+	# then make the group set and the objects
+	group_set = RegionGroupSetModel(name=config["group_set_name"], model_area=model_area)
+	group_set.save()
+
+	# some checks below fail to detect the first group set is an instance of RegionGroupSet when this is run as a migration
+	# so we'll get it straight from the DB now that it's created, based on the PK. We won't modify it now, so I think
+	# this should be safe
+	#group_set = models.RegionGroupSet.objects.get(pk=group_set.id)
+
+	# now create the groups in the geojson file
+	with open(group_file_path, 'r') as group_info_file:
+		for line in group_info_file.readlines():
+			RegionGroupModel.objects.create(
+				name=json.loads(line)["properties"][config["group_name_field"]],
+				group_set=group_set,
+				geometry=line
+			)
+
+	# then add the null group for all other regions
+	if "null_group_name" in config:
+		RegionGroupModel.objects.create(name=config["null_group_name"], group_set=group_set)
+
+	with open(member_file_path, 'r') as group_members_file:
+		groups = list(csv.DictReader(group_members_file))  # read it all in - we're going to go through it twice
+
+	# get the distinct list of group names - this was how we originally figured out which groups to make. Now do it with
+	# the GeoJSON file so we can add geometries
+	#group_names = list(set([region_group[config["group_name"]] for region_group in groups]))
+	#group_names.append(config["null_group_name"])
+
+	for region_group in group_set.groups.all():
+		# now add the regions to the group - seems most efficient to iterate through the group data while we already have
+		# this object in hand - we'll go through the data multiple times, but we'll do far fewer DB retrievals for group objects
+		for region_group_info in groups:
+			if region_group_info[config["group_name_field"]] == region_group.name or (
+				region_group.name == config["null_group_name"] and (region_group_info[config["group_name_field"]] is None or region_group_info[config["group_name_field"]] == "")):
+
+				region_filter = {}
+				# we have variable names for the fields involved, so we'll need to use dictionary expansion for this
+				region_filter[config["region_key"]] = region_group_info[config["region_match_key"]]
+				try:
+					region = RegionModel.objects.get(**region_filter)
+				except RegionModel.DoesNotExist:
+					log.info(f"Failed to retrieve region with ID {config['region_key']}={region_group_info[config['region_match_key']]} with region data {region_group_info}")
+					raise
+
+				region_group.regions.add(region)
+
+	# function should check that group set name doesn't already exist in model area and gracefully exit if it does
