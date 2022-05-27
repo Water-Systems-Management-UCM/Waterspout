@@ -59,7 +59,7 @@ class UserProfile(models.Model):
 	dense_tables_tooltip = "Use less spacing in tables to see more data on screen at the same time"
 
 	show_net_revenues = models.BooleanField(default=False)
-	show_net_revenues_tooltip = "Display net revenues in model results when available for a model. Net revenues" \
+	show_net_revenues_tooltip = "Display net revenues in model results when available for a model. Net revenues " \
 								"are difficult to interpret correctly. See documentation for more before using " \
 								"net revenue data."
 
@@ -320,6 +320,9 @@ class RegionExtra(models.Model):
 
 
 class RegionGroupSet(models.Model):
+	class Meta:
+		unique_together = ['name', 'model_area']
+
 	name = models.CharField(max_length=255, null=False, blank=False)
 	model_area = models.ForeignKey(ModelArea, on_delete=models.CASCADE, related_name="region_group_sets")
 
@@ -333,7 +336,7 @@ class RegionGroup(models.Model):
 
 	geometry = models.JSONField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
 
-	serializer_fields = ["name", "regions", "geometry"]
+	serializer_fields = ["id", "name", "regions", "geometry"]
 
 
 class Crop(models.Model):
@@ -784,7 +787,7 @@ class ModelRun(models.Model):
 			default_behavior_includes = default_behavior_includes | Q(default_behavior=behavior)
 
 		# get the regions to explicitly include from modifications
-		modifications = self.region_modifications.filter(region_filter_includes)
+		modifications = self.region_modifications.filter(region_filter_includes & Q(region__isnull=False, region_group__isnull=True))
 		if modifications:
 			ids = [mod.region.internal_id for mod in modifications]
 		else:
@@ -793,7 +796,7 @@ class ModelRun(models.Model):
 		if self.calibration_set.model_area.preferences.use_default_region_behaviors:
 			# figure out which regions didn't have modifications in the current model run - we'll pull the defaults for these
 			regions_to_use_defaults_from = self.calibration_set.model_area.region_set.filter(default_behavior_includes)\
-				.difference(Region.objects.filter(modifications__in=self.region_modifications.all()))
+				.difference(Region.objects.filter(modifications__in=self.region_modifications.filter(region__isnull=False, region_group__isnull=True)))
 			if regions_to_use_defaults_from:
 				ids.extend([region.internal_id for region in regions_to_use_defaults_from])
 
@@ -804,7 +807,9 @@ class ModelRun(models.Model):
 		water_modifications = {}
 		rainfall_modifications = {}
 
-		region_modifications = self.region_modifications.filter(region__isnull=False)
+		# get only the region modifications that are specific to a region, not the group settings
+		region_modifications = self.region_modifications.filter(region__isnull=False, region_group__isnull=True)
+
 		for modification in region_modifications:  # get all the nondefault modifications
 			land_modifications[modification.region.internal_id] = float(modification.land_proportion)
 			if modification.region.supports_irrigation:
@@ -812,7 +817,7 @@ class ModelRun(models.Model):
 			if modification.region.supports_rainfall:
 				rainfall_modifications[modification.region.internal_id] = float(modification.rainfall_proportion)
 
-		default_region_modification = self.region_modifications.get(region__isnull=True)
+		default_region_modification = self.region_modifications.get(region__isnull=True, region_group__isnull=True)
 
 		scenario.perform_adjustment("land", land_modifications, default=float(default_region_modification.land_proportion))
 
@@ -868,6 +873,38 @@ class ModelRun(models.Model):
 		scenario.perform_adjustment("price", price_modifications, default=float(default_crop_modification.price_proportion))
 		scenario.perform_adjustment("yield", yield_modifications, default=float(default_crop_modification.yield_proportion))
 
+	def convert_region_group_modifications(self):
+		"""
+		HANDLE GROUP MODIFICATIONS FIRST
+		I think what would be most efficient here for region groups, instead of messing with all the logic below,
+		would be to find all the modifications with groups, create region modification objects for them,
+		then include that in the set of region_modifications to process.
+		originally, we planned to *not* save the objects, but now think we should because other items (such as the
+		modeled behavior code) use Django's ORM to do some work. We'll add a hidden keyword that prevents these items
+		from going out over the API
+		:return:
+		"""
+		region_group_modifications = self.region_modifications.filter(region_group__isnull=False, region__isnull=True)
+		for group_mod in region_group_modifications:
+			group = group_mod.region_group
+			for region in group.regions.all():
+
+				# check if there's a region modification object for the region already
+				if self.region_modifications.filter(region=region).exists():
+					# if there is, go to the next region - don't create a modification for it - that's a more specific override
+					# this has the added bonus of skipping creation if this code is run a second time (a rerun, or after a failure)
+					continue
+
+				RegionModification.objects.create(
+					region=region,
+					water_proportion=group_mod.water_proportion,
+					rainfall_proportion=group_mod.rainfall_proportion,
+					land_proportion=group_mod.land_proportion,
+					modeled_type=group_mod.modeled_type,
+					created_from_group=True,
+					model_run=self
+				)
+
 	def run(self, csv_output=None, worst_case_csv_output=None):
 		# initially, we won't support calibrating the data here - we'll
 		# just use an initial calibration set and then make our modifications
@@ -879,6 +916,9 @@ class ModelRun(models.Model):
 		self.running = True
 		self.save()  # mark it as running and save it so the API updates the status
 		try:
+			# need to do this first - it modifies the set of modifications, which in turn modifies the scenario_df we pull because of region behaviors
+			self.convert_region_group_modifications()
+
 			scenario_runner = scenarios.Scenario(calibration_df=self.scenario_df, rainfall_df=self.rainfall_df)
 			self.attach_modifications(scenario=scenario_runner)
 			results = scenario_runner.run()
@@ -886,15 +926,16 @@ class ModelRun(models.Model):
 			if csv_output is not None:
 				results.to_csv(csv_output)
 
-			# add the worst case scenario values to the same data frame
-			results = self.add_worst_case_and_linear_scaled_values(results)
+			if results is not None:  # we can get a result set of None from Dapper *if* all regions are removed (so an empty input DF is provided)
+				# add the worst case scenario values to the same data frame
+				results = self.add_worst_case_and_linear_scaled_values(results)
 
-			if worst_case_csv_output is not None:
-				results.to_csv(worst_case_csv_output)
+				if worst_case_csv_output is not None:
+					results.to_csv(worst_case_csv_output)
 
-			# before loading results, make sure we weren't deleted in the app between starting the run and now
-			if not ModelRun.objects.filter(id=self.id).exists():
-				return
+				# before loading results, make sure we weren't deleted in the app between starting the run and now
+				if not ModelRun.objects.filter(id=self.id).exists():
+					return
 
 			# now we need to load the resulting df back into the DB
 			result_set = self.load_records(results_df=results, rainfall_df=scenario_runner.rainfall_df)
@@ -932,7 +973,9 @@ class ModelRun(models.Model):
 		result_set.save()
 
 		# load the PMP results first
-		self._load_df(results_df=results_df, result_set=result_set, record_model=Result)
+		if results_df is not None:
+			self._load_df(results_df=results_df, result_set=result_set, record_model=Result)
+
 		# now load the rainfall data if it applies
 		if rainfall_df is not None:
 			self._load_df(results_df=rainfall_df, result_set=result_set, record_model=RainfallResult)
@@ -1017,7 +1060,7 @@ class RegionModification(models.Model):
 		from these based on the code inputs and the model adjustments
 	"""
 	class Meta:
-		unique_together = ['model_run', 'region']
+		unique_together = ['model_run', 'region', 'region_group']
 
 	# we have two nullable foreign keys here. If both are new, then the rule applies to the whole model area as the default.
 	# if only one is active, then it applies to either the region, or the group (and then we need something that applies
@@ -1038,6 +1081,9 @@ class RegionModification(models.Model):
 
 	# extra flags on regions
 	modeled_type = models.SmallIntegerField(default=Region.MODELED, choices=Region.REGION_DEFAULT_MODELING_CHOICES)
+
+	# was this created by the system from a group modification? If so, we'll hide this from the API, but we'll need it for model runs
+	created_from_group = models.BooleanField(default=False)
 
 	model_run = models.ForeignKey(ModelRun, blank=True, on_delete=models.CASCADE, related_name="region_modifications")
 

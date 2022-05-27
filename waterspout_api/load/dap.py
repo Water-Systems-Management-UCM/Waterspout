@@ -1,7 +1,5 @@
 # DAP Loading Code
-import csv
-
-import django
+import os
 
 from waterspout_api import models
 from . import core
@@ -16,7 +14,7 @@ def load_dap(regions="delta_islands_wDAP_simplified_0005.geojson",
              crop_file="crop_codes.csv",
              years=(2014, 2015, 2016, 2017),
              organization=None):
-	core.load_dap_style_inputs(area_name=area_name,
+	model_area = core.load_dap_style_inputs(area_name=area_name,
 								data_name=data_name,
 								regions="delta_islands_wDAP_simplified_0005.geojson",
 								calibration_file="DAP_calibrated.csv",
@@ -37,6 +35,8 @@ def load_dap(regions="delta_islands_wDAP_simplified_0005.geojson",
 	                            organization=organization,
 	                            help_page_content_file="help_content.html"
 	                           )
+
+	load_water_agency_groups(model_area)
 
 def old_load_dap(
 			regions="delta_islands_wDAP_simplified_0005.geojson",
@@ -94,3 +94,32 @@ def load_input_data(data_file, model_area, years):
 
 def load_initial_runs(calibration_set, organization):
 	core.create_base_case(organization=organization, calibration_set=calibration_set)
+
+
+def load_water_agency_groups(model_area,
+							group_definition_file=core.get_data_file_path(data_name, os.path.join("region_groups", "Water Agencies.geojsonl")),
+							group_membership_file=core.get_data_file_path(data_name, os.path.join("region_groups", "Water Agencies.csv")),
+							group_config_file=core.get_data_file_path(data_name, os.path.join("region_groups", "Water Agencies.json")),
+							RegionGroupSetModel=models.RegionGroupSet,
+							RegionGroupModel=models.RegionGroup,
+							RegionModel=models.Region):
+
+	# first, add negative external_ids for the delta aggregate areas so we can match them with group membership
+	correct_dlis_ids(RegionModel)
+
+	core.load_region_group_file(group_file_path=group_definition_file,
+								member_file_path=group_membership_file,
+								config_path=group_config_file,
+								model_area=model_area,
+								RegionGroupSetModel=RegionGroupSetModel,
+								RegionGroupModel=RegionGroupModel,
+								RegionModel=RegionModel
+							)
+
+
+def correct_dlis_ids(RegionModel=models.Region):
+	# do it with a filter/update because we might have multiple regions that meet this criteria
+	# also only do it if the external ID is already null so we don't mess with anything else
+	RegionModel.objects.filter(external_id=None, name="NORTH DELTA AGGREGATE AREA").update(external_id=-1)
+	RegionModel.objects.filter(external_id=None, name="CENTRAL DELTA AGGREGATE AREA").update(external_id=-2)
+	RegionModel.objects.filter(external_id=None, name="SOUTH DELTA AGGREGATE AREA").update(external_id=-3)

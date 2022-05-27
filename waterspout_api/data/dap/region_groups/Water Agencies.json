@@ -1,0 +1,7 @@
+{
+	"group_set_name": "Water Agencies",
+	"region_key": "external_id",
+	"region_match_key": "DLIS_ID",
+	"group_name_field": "AGENCYNAME",
+	"null_group_name": "All Other Regions"
+}

@@ -44,6 +44,8 @@ class IsInSameOrganization(permissions.BasePermission):
 				organization = item.model_area.organization
 			elif hasattr(item, "model_run"):
 				organization = item.model_run.organization
+			elif hasattr(item, "calibration_set"):
+				organization = item.calibration_set.model_area.organization
 
 		else:  # we're creating an object - check what org they specify instead of the org of the object
 			if type(request_data) is not dict:
