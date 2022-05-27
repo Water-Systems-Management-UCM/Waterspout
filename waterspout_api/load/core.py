@@ -442,7 +442,7 @@ def load_region_group_file(group_file_path, member_file_path, config_path, model
 			if region_group_info[config["group_name_field"]] == region_group.name or (
 				region_group.name == config["null_group_name"] and (region_group_info[config["group_name_field"]] is None or region_group_info[config["group_name_field"]] == "")):
 
-				region_filter = {}
+				region_filter = {'model_area': model_area}
 				# we have variable names for the fields involved, so we'll need to use dictionary expansion for this
 				region_filter[config["region_key"]] = region_group_info[config["region_match_key"]]
 				try:
