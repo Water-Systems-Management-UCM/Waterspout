@@ -787,7 +787,7 @@ class ModelRun(models.Model):
 			default_behavior_includes = default_behavior_includes | Q(default_behavior=behavior)
 
 		# get the regions to explicitly include from modifications
-		modifications = self.region_modifications.filter(region_filter_includes)
+		modifications = self.region_modifications.filter(region_filter_includes & Q(region__isnull=False, region_group__isnull=True))
 		if modifications:
 			ids = [mod.region.internal_id for mod in modifications]
 		else:
@@ -796,7 +796,7 @@ class ModelRun(models.Model):
 		if self.calibration_set.model_area.preferences.use_default_region_behaviors:
 			# figure out which regions didn't have modifications in the current model run - we'll pull the defaults for these
 			regions_to_use_defaults_from = self.calibration_set.model_area.region_set.filter(default_behavior_includes)\
-				.difference(Region.objects.filter(modifications__in=self.region_modifications.all()))
+				.difference(Region.objects.filter(modifications__in=self.region_modifications.filter(region__isnull=False, region_group__isnull=True)))
 			if regions_to_use_defaults_from:
 				ids.extend([region.internal_id for region in regions_to_use_defaults_from])
 
@@ -807,6 +807,7 @@ class ModelRun(models.Model):
 		water_modifications = {}
 		rainfall_modifications = {}
 
+		# get only the region modifications that are specific to a region, not the group settings
 		region_modifications = self.region_modifications.filter(region__isnull=False, region_group__isnull=True)
 
 		for modification in region_modifications:  # get all the nondefault modifications
@@ -925,15 +926,16 @@ class ModelRun(models.Model):
 			if csv_output is not None:
 				results.to_csv(csv_output)
 
-			# add the worst case scenario values to the same data frame
-			results = self.add_worst_case_and_linear_scaled_values(results)
+			if results is not None:  # we can get a result set of None from Dapper *if* all regions are removed (so an empty input DF is provided)
+				# add the worst case scenario values to the same data frame
+				results = self.add_worst_case_and_linear_scaled_values(results)
 
-			if worst_case_csv_output is not None:
-				results.to_csv(worst_case_csv_output)
+				if worst_case_csv_output is not None:
+					results.to_csv(worst_case_csv_output)
 
-			# before loading results, make sure we weren't deleted in the app between starting the run and now
-			if not ModelRun.objects.filter(id=self.id).exists():
-				return
+				# before loading results, make sure we weren't deleted in the app between starting the run and now
+				if not ModelRun.objects.filter(id=self.id).exists():
+					return
 
 			# now we need to load the resulting df back into the DB
 			result_set = self.load_records(results_df=results, rainfall_df=scenario_runner.rainfall_df)
@@ -971,7 +973,9 @@ class ModelRun(models.Model):
 		result_set.save()
 
 		# load the PMP results first
-		self._load_df(results_df=results_df, result_set=result_set, record_model=Result)
+		if results_df is not None:
+			self._load_df(results_df=results_df, result_set=result_set, record_model=Result)
+
 		# now load the rainfall data if it applies
 		if rainfall_df is not None:
 			self._load_df(results_df=rainfall_df, result_set=result_set, record_model=RainfallResult)
