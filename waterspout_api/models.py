@@ -298,16 +298,6 @@ class Region(models.Model):
 		return "Area {}: Region {}".format(self.model_area.name, self.name)
 
 
-class RegionMultipliers(models.Model):
-	region = models.OneToOneField(Region, on_delete=models.CASCADE, related_name="multipliers")
-
-	total_revenue = models.DecimalField(max_digits=10, decimal_places=8, null=True, blank=True)
-	direct_value_add = models.DecimalField(max_digits=10, decimal_places=8, null=True, blank=True)
-	total_value_add = models.DecimalField(max_digits=10, decimal_places=8, null=True, blank=True)
-	direct_jobs = models.DecimalField(max_digits=10, decimal_places=8, null=True, blank=True)
-	total_jobs = models.DecimalField(max_digits=10, decimal_places=8, null=True, blank=True)
-
-
 class RegionExtra(models.Model):
 	"""
 		Extra custom attributes that can be set per region instance, available by filtering
@@ -368,6 +358,17 @@ class CropGroup(models.Model):
 	"""
 	name = models.CharField(max_length=255, null=False, blank=False)
 	crops = models.ManyToManyField(Crop)  # Each crop can be in many groups
+
+
+class EmploymentMultipliers(models.Model):
+	region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="multipliers")
+	crop = models.ForeignKey(Crop, on_delete=models.CASCADE, related_name="multipliers", null=True)
+
+	total_revenue = models.DecimalField(max_digits=10, decimal_places=8, null=True, blank=True)
+	direct_value_add = models.DecimalField(max_digits=10, decimal_places=8, null=True, blank=True)
+	total_value_add = models.DecimalField(max_digits=10, decimal_places=8, null=True, blank=True)
+	direct_jobs = models.DecimalField(max_digits=10, decimal_places=8, null=True, blank=True)
+	total_jobs = models.DecimalField(max_digits=10, decimal_places=8, null=True, blank=True)
 
 
 class RecordSet(models.Model):

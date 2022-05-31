@@ -247,7 +247,12 @@ def load_crops(crop_file, model_area):
 				pass  # if it already exists, skip it
 
 
-def load_multipliers(multipliers_file, model_area):
+def load_multipliers(multipliers_file,
+					 model_area,
+					 RegionModel=models.Region,
+					 CropModel=models.Crop,
+					 MultipliersModel=models.EmploymentMultipliers,
+					 ):
 	"""
 		Creates or updates the multipliers for the regions in the given model area
 	:param multipliers_file: should have a key "internal_id" for the region ID that matches the region's internal ID (WRIA, DAP, etc)
@@ -259,17 +264,25 @@ def load_multipliers(multipliers_file, model_area):
 		multipliers_csv = csv.DictReader(multipliers_data)
 		for row in multipliers_csv:
 			# get the existing RegionMultipliers object that the row corresponds to. If it doesn't exist, create it
+			if "crop_code" in row:
+				crop_code = row["crop_code"]
+			else:
+				crop_code = None
 			try:
-				region_mults = models.RegionMultipliers.objects.get(region__internal_id=row["internal_id"], region__model_area=model_area)
-			except models.RegionMultipliers.DoesNotExist:
-				region = models.Region.objects.get(internal_id=row["internal_id"], model_area=model_area)
-				region_mults = models.RegionMultipliers.objects.create(region=region)
+				mults = MultipliersModel.objects.get(region__internal_id=row["internal_id"], crop__crop_code=crop_code, region__model_area=model_area)
+			except MultipliersModel.DoesNotExist:
+				region = RegionModel.objects.get(internal_id=row["internal_id"], model_area=model_area)
+				if crop_code:
+					crop = CropModel.objects.get(crop_code=crop_code, model_area=model_area)
+				else:
+					crop = None
+				mults = MultipliersModel.objects.create(region=region, crop=crop)
 
 			# apply the multipliers from the spreadsheet
 			for mult in ("total_revenue", "direct_value_add", "total_value_add", "direct_jobs", "total_jobs"):
-				setattr(region_mults, mult, row[mult])
+				setattr(mults, mult, row[mult])
 
-			region_mults.save()
+			mults.save()
 
 
 def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_file, crop_file,

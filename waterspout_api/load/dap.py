@@ -37,6 +37,8 @@ def load_dap(regions="delta_islands_wDAP_simplified_0005.geojson",
 	                           )
 
 	load_water_agency_groups(model_area)
+	load_multipliers(model_area)
+
 
 def old_load_dap(
 			regions="delta_islands_wDAP_simplified_0005.geojson",
@@ -123,3 +125,14 @@ def correct_dlis_ids(RegionModel=models.Region):
 	RegionModel.objects.filter(external_id=None, name="NORTH DELTA AGGREGATE AREA").update(external_id=-1)
 	RegionModel.objects.filter(external_id=None, name="CENTRAL DELTA AGGREGATE AREA").update(external_id=-2)
 	RegionModel.objects.filter(external_id=None, name="SOUTH DELTA AGGREGATE AREA").update(external_id=-3)
+
+
+def load_multipliers(model_area,
+		data_file=core.get_data_file_path(data_name, "DAP_multipliers_processed.csv"),
+		RegionModel=models.Region,
+		CropModel=models.Crop,
+		MultipliersModel=models.EmploymentMultipliers
+		):
+
+	core.load_multipliers(data_file, model_area, RegionModel=RegionModel, CropModel=CropModel,
+						  MultipliersModel=MultipliersModel)

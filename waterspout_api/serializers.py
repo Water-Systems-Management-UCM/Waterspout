@@ -16,15 +16,14 @@ class CropSerializer(serializers.ModelSerializer):
 		fields = '__all__'
 
 
-class RegionMultipliersSerializer(serializers.ModelSerializer):
+class EmploymentMultipliersSerializer(serializers.ModelSerializer):
 	class Meta:
-		model = models.RegionMultipliers
+		model = models.EmploymentMultipliers
 		fields = "__all__"
 
 
 class RegionSerializer(serializers.ModelSerializer):
 	geometry = serializers.JSONField(read_only=True, binary=False)
-	multipliers = RegionMultipliersSerializer(read_only=True)
 
 	class Meta:
 		model = models.Region
@@ -258,6 +257,12 @@ class ModelAreaPreferencesSerializer(serializers.ModelSerializer):
 		model = models.ModelAreaPreferences
 
 
+class ModelAreaMultipliersSerializer(serializers.ModelSerializer):
+	class Meta:
+		fields = "__all__"
+		model = models.EmploymentMultipliers
+
+
 class ModelAreaSerializer(ModelActionSerializer):
 	calibration_data = CalibrationSetSerializer(read_only=True, many=True, allow_null=True)
 	rainfall_data = RainfallSetSerializer(read_only=True, many=True, allow_null=True)
@@ -265,6 +270,7 @@ class ModelAreaSerializer(ModelActionSerializer):
 	crop_set = CropSerializer(read_only=True, many=True, allow_null=True)
 	region_set = RegionSerializer(read_only=True, many=True, allow_null=True)
 	region_group_sets = RegionGroupSetSerializer(read_only=True, many=True, allow_null=True)
+	multipliers_raw = serializers.SerializerMethodField(read_only=True)
 	preferences = ModelAreaPreferencesSerializer(read_only=True)
 
 	class Meta:
@@ -275,9 +281,13 @@ class ModelAreaSerializer(ModelActionSerializer):
 		action_fields = {  # only send model results in detail view - that way the listing doesn't send massive amount
 			"retrieve": {     # of data, but we only need to load the specific model run again to get the results
 				"fields": _base_fields + ["main_help_page_content", "calibration_data", "rainfall_data", "input_data",
-				                          "crop_set", "region_set", "region_group_sets",
+				                          "crop_set", "region_set", "region_group_sets", "multipliers_raw",
 		                                    "supports_rainfall", "supports_irrigation", "background_code"]
 			}
 		}
 		depth = 0  # will still show objects that are explicitly declared as nested objects (like region_modifications)
 					# this lets us say "I don't want region geometries here" while still getting the modifications in one request
+
+	def get_multipliers_raw(self, instance):
+		multipliers = models.EmploymentMultipliers.objects.filter(region__model_area=instance)
+		return EmploymentMultipliersSerializer(multipliers, read_only=True, allow_null=True, many=True).data
