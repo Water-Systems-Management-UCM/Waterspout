@@ -280,6 +280,7 @@ class Region(models.Model):
 	description = models.TextField(null=True, blank=True)
 	# .extra_attributes reverse lookup
 	# .modifications reverse lookup
+	# .groups reverse lookup
 
 	default_behavior = models.SmallIntegerField(default=MODELED, choices=REGION_DEFAULT_MODELING_CHOICES)
 
@@ -292,7 +293,7 @@ class Region(models.Model):
 
 	serializer_fields = ("id", "name", "internal_id", "description", "geometry", "model_area",
 	                     "supports_rainfall", "supports_irrigation", "multipliers", "default_behavior",
-	                     "MODELED", "FIXED", "REMOVED", "LINEAR_SCALED")
+	                     "MODELED", "FIXED", "REMOVED", "LINEAR_SCALED", "groups")
 
 	def __str__(self):
 		return "Area {}: Region {}".format(self.model_area.name, self.name)
@@ -318,15 +319,21 @@ class RegionGroupSet(models.Model):
 
 	serializer_fields = ["name", "groups"]
 
+	def __str__(self):
+		return f"Region Group Set {self.model_area.name}/{self.name}"
+
 
 class RegionGroup(models.Model):
 	name = models.CharField(max_length=255, null=False, blank=False)
 	group_set = models.ForeignKey(RegionGroupSet, on_delete=models.CASCADE, related_name="groups")
-	regions = models.ManyToManyField(Region)
+	regions = models.ManyToManyField(Region, related_name="groups")
 
 	geometry = models.JSONField(null=True, blank=True)  # this will just store GeoJSON and then we'll combine into collections manually
 
 	serializer_fields = ["id", "name", "regions", "geometry"]
+
+	def __str__(self):
+		return f"Region Group {self.group_set.model_area.name}/{self.group_set.name}/{self.name}"
 
 
 class Crop(models.Model):
