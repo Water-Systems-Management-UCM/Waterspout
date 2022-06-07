@@ -5,7 +5,7 @@ from waterspout_api import models
 # equivalent to a basic plan - which features are available for anyone with an account?
 DEFAULT = {'enforce_price_yield_constraints': True,
 		'lock_price_yield_ratio': False,
-		'include_net_revenue': False,
+		'include_net_revenue': True,
 		'region_linked_crops': False,
 		'allow_model_run_creation_code_view': False,
 		'allow_viz_multiple_comparisons': False,
