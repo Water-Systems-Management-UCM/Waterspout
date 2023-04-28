@@ -29,6 +29,9 @@ FULL_PUBLIC['allow_removed_regions'] = True
 FULL_PUBLIC['region_linked_crops'] = True
 FULL_PUBLIC['use_default_region_behaviors'] = True
 
+# need to go audit that permissions are correct in the isolated public case. Theoretically someone
+# in an account in one of these orgs might be able to modify the runs of another person if they know
+# the model run ID (somehow), if we didn't handle the permissions correctly
 ISOLATED_PUBLIC = copy.deepcopy(FULL_PUBLIC)
 ISOLATED_PUBLIC['shared_model_runs'] = False
 

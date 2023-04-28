@@ -22,8 +22,8 @@ class Command(BaseCommand):
 		self.process_runs()
 
 	def process_runs(self):
-		try:
-			while True:
+		while True:
+			try:
 				self._get_runs()
 
 				if len(self._waiting_runs) == 0:  # if we don't have any runs, go to sleep for a few seconds, then check again
@@ -34,12 +34,10 @@ class Command(BaseCommand):
 					log.info(f"Running model run {run.id}")
 
 					run.run()
-		except:
-			log.error(traceback.format_exc())
-			if settings.DEBUG:  # if we're in production, don't raise the error, we'll get it in email
-				raise
-
-			self.process_runs()
+			except:
+				log.error(traceback.format_exc())
+				if settings.DEBUG:  # if we're in production, don't raise the error, we'll get it in email
+					raise
 
 	def _get_runs(self):
 		log.debug("Checking for new model runs")

@@ -951,6 +951,8 @@ class ModelRun(models.Model):
 
 			self.complete = True
 			log.info("Model run complete")
+		except:
+			self.ready = False  # if we hit an exception, mark it as not ready to run - someone will need to make a fix before it can be run - this ensures we don't run into infinite loops trying to run the same items over and over
 		finally:  # make sure to mark it as not running regardless of its status or if it crashes
 			self.running = False
 			self.save()
