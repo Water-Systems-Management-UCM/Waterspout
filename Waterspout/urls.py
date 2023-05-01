@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.conf.urls import url
 
 from rest_framework import routers
 
@@ -36,7 +35,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('application-variables/', ws_views.GetApplicationVariables.as_view()),
     path('api/', include(router.urls)),
-    url(r'^api-token-auth/', ws_views.CustomAuthToken.as_view()),  # POST a username and password here, get a token back
+    path('api-token-auth/', ws_views.CustomAuthToken.as_view()),  # POST a username and password here, get a token back
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^auto-login/', ws_views.AutoLogin.as_view())
+    path('auto-login/', ws_views.AutoLogin.as_view())
 ]

@@ -142,4 +142,4 @@ def compare_runs(run1, run2, compare_digits=3, keep_fields=False):
 		sorted_df1 = sorted_df1[keep_fields]
 		sorted_df2 = sorted_df2[keep_fields]
 
-	return pandas.testing.assert_frame_equal(sorted_df1, sorted_df2, check_like=True, check_column_type=False, check_dtype=False, check_less_precise=compare_digits)
+	return pandas.testing.assert_frame_equal(sorted_df1, sorted_df2, check_like=True, check_column_type=False, check_dtype=False, check_exact=False, rtol=1/(10^compare_digits))
