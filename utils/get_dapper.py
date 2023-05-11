@@ -5,7 +5,13 @@ import subprocess
 import requests
 
 BASE_URL = "https://wsm-ucm-dapper.s3-us-west-1.amazonaws.com/"
-EXTENSION = "-linux_x86_64.whl.txt"
+
+if sys.platform == "win32":
+	EXTENSION = "-win_amd64.whl.txt"
+elif sys.platform == "linux":
+	EXTENSION = "-linux_x86_64.whl.txt"
+else:
+	raise NotImplementedError(f"Platform {sys.platform} is not supported")
 
 version_string = f"{sys.version_info.major}{sys.version_info.minor}"
 full_url = f"{BASE_URL}latest_cp{version_string}-cp{version_string}m{EXTENSION}"
