@@ -22,6 +22,14 @@ LOG_FOLDER = os.path.join(BASE_DIR, "..", "logs")
 # a successful deployment because it can tell you useful messages while handling the deployment
 DEBUG = True
 
+# These must be set correctly in order to be able to access the admin interface
+# See https://docs.djangoproject.com/en/4.2/ref/csrf/ for more on CSRF protection and
+# https://docs.djangoproject.com/en/4.2/ref/settings/#std-setting-CSRF_TRUSTED_ORIGINS
+# and https://docs.djangoproject.com/en/4.2/ref/settings/#std-setting-CSRF_COOKIE_DOMAIN
+# for these specific settings
+CSRF_COOKIE_DOMAIN = "openag.ucmerced.edu"
+CSRF_TRUSTED_ORIGINS = ["https://openag.ucmerced.edu", "https://openag-dev.ucmerced.edu", "https://dap.ucmerced.edu"]
+
 # You'll want to leave the SERVE_ADDRESS alone in most cases, but ALLOWED_HOSTS is a bit misleading - it's
 # *really* referring to the allowed host*names* that someone can use to connect to this application. So make sure to
 # expand the list with any IPs, domains, etc, that may be used to access the application in a browser
