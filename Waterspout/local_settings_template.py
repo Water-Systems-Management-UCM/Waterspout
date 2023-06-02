@@ -30,7 +30,10 @@ DEBUG = True
 CSRF_COOKIE_DOMAIN = "openag.ucmerced.edu"
 CSRF_TRUSTED_ORIGINS = ["https://openag.ucmerced.edu", "https://openag-dev.ucmerced.edu", "https://dap.ucmerced.edu"]
 
-# You'll want to leave the SERVE_ADDRESS alone in most cases, but ALLOWED_HOSTS is a bit misleading - it's
+# You'll want to leave the SERVE_ADDRESS alone in most cases, except when you know that you need to change the port. If you
+# change the port, make sure to adjust any reverse proxies/forwarders (ie, nginx or IIS) that access this application via
+# WSGI or FastCGI.
+# ALLOWED_HOSTS is a bit misleading - it's
 # *really* referring to the allowed host*names* that someone can use to connect to this application. So make sure to
 # expand the list with any IPs, domains, etc, that may be used to access the application in a browser
 SERVE_ADDRESS = "*:8010"
