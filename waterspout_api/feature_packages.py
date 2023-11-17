@@ -15,6 +15,7 @@ DEFAULT = {'enforce_price_yield_constraints': True,
 		'allow_static_regions': False,
 		'allow_removed_regions': False,
 		'allow_linear_scaled_regions': False,
+		'create_model_runs': True,
 		'shared_model_runs': True,  # should model runs be visible to all organization members?
 }
 
@@ -39,6 +40,9 @@ ISOLATED_PUBLIC['shared_model_runs'] = False
 DEBUG = copy.deepcopy(FULL_PUBLIC)
 DEBUG['include_net_revenue'] = True
 DEBUG['allow_model_run_creation_code_view'] = True
+
+READ_ONLY = copy.deepcopy(FULL_PUBLIC)  # READ_ONLY means they can't create new models, but they can use all the other tools
+READ_ONLY['create_or_modify_model_runs'] = False
 
 DAP_DSC = copy.deepcopy(FULL_PUBLIC)
 

@@ -73,3 +73,34 @@ class IsInSameOrganization(permissions.BasePermission):
 			# request_data["calibration_set"] = calibration_set  # replace it with the object so we can assign it later
 
 		return True
+
+
+class CanCreateOrModifyModelRuns(permissions.BasePermission):
+	def has_permission(self, request, view):
+		if request.method in permissions.SAFE_METHODS:  # allow them to read model runs with this permission
+			return True
+		else:  # but if they want to create, we need to check if the ModelArea allows creation
+			if "pk" in view.kwargs:  # then we're checking against an existing object
+				item_id = view.kwargs['pk']
+				item_class = view.serializer_class.Meta.model
+				try:
+					item = item_class.objects.get(pk=item_id)
+				except item_class.DoesNotExist:
+					return PermissionError("Model Run doesn't exist")
+
+				if hasattr(item, "model_area"):
+					model_area = item.model_area
+				elif hasattr(item, "calibration_set"):
+					model_area = item.calibration_set.model_area
+				else:
+					raise RuntimeError(f"Can't get model area from {view.serializer_class}")
+			else:
+				if type(request.data) is not dict:
+					request_data = json.loads(request.data)
+				else:
+					request_data = request.data
+				calibration_set = models.CalibrationSet.objects.get(pk=request_data["calibration_set"])
+				model_area = calibration_set.model_area
+
+			preferences = model_area.preferences
+			return preferences.create_or_modify_model_runs

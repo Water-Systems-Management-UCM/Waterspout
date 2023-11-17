@@ -255,9 +255,9 @@ class ModelRunViewSet(viewsets.ModelViewSet):
 
 	Test
 
-	Permissions: Must be in same organization to specifically request an item
+	Permissions: Must be in same organization to specifically request an item, and ModelArea must allow model run creation to send destructive actions to the model run
 	"""
-	permission_classes = [permissions.IsInSameOrganization]
+	permission_classes = [permissions.IsInSameOrganization, permissions.CanCreateOrModifyModelRuns]
 	serializer_class = serializers.ModelRunSerializer
 
 	def get_queryset(self):

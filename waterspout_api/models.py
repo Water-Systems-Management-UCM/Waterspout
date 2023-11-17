@@ -189,6 +189,11 @@ class ModelAreaPreferences(models.Model):
 	# should all users of this model area be able to see the model runs of all other users?
 	shared_model_runs = models.BooleanField(default=True)
 
+	# should users of this model area be able to create new model runs in the model area or just view model
+	# runs we've already loaded? Useful to disable when we want to premake some model runs then release
+	# the results without releasing the tools to create model runs
+	create_or_modify_model_runs = models.BooleanField(default=True)
+
 	# prevent users from reducing price/yield below the value that would make profits negative
 	# basically forces stormchaser to create cards for crops when All Crops
 	# goes to negative profits for the crop
