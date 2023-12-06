@@ -121,6 +121,10 @@ class ModelArea(models.Model):
 	map_center_longitude = models.DecimalField(max_digits=5, decimal_places=2)
 	map_default_zoom = models.SmallIntegerField()
 
+	# these are embedded with other region data, so a flag would help us not assume later on
+	# that the spatial data is included. Right now it's True by default and not in use (11/2023)
+	has_spatial_data = models.BooleanField(default=True)
+
 	# these values define the ranges available when creating a model run in this region
 	min_water = models.PositiveSmallIntegerField(default=50)
 	max_water = models.PositiveSmallIntegerField(default=120)
@@ -137,6 +141,9 @@ class ModelArea(models.Model):
 
 	main_help_page_content = models.TextField(null=True, blank=True)
 
+	# The feature package name doesn't, itself, set the available features.
+	# Instead, it defines what feature package gets applied at updates. It will
+	# override any custom settings to the model area preferences
 	feature_package_name = models.CharField(max_length=100, default="DEFAULT")
 
 	def __str__(self):
@@ -630,7 +637,7 @@ class Result(ModelItem):
 		Holds the results for a single region/crop
 	"""
 
-	omegawater = models.DecimalField(max_digits=10, decimal_places=2)
+	omegawater = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 	resource_flag = models.CharField(max_length=5, null=True, blank=True)
 	# we may be able to drop these fields later, but they help us while we're comparing to the original DAP and our validation
 	xlandsc = models.DecimalField(max_digits=18, decimal_places=10, null=True, blank=True)

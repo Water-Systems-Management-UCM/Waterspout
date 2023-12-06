@@ -8,7 +8,7 @@ log = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-	help = 'Loads default data into the database. Provide the region name to load (dap, agwa) as the --region argument'
+	help = 'Loads default data into the database. Provide the region name to load (dap, agwa, ca_cv) as the --region argument'
 
 	def add_arguments(self, parser):
 		parser.add_argument('--area', nargs='+', type=str, dest="area", default=None,)

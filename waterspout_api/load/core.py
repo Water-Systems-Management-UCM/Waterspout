@@ -3,6 +3,7 @@ import os
 import csv
 import logging
 
+import pandas
 import django
 
 from waterspout_api import models, load
@@ -287,7 +288,8 @@ def load_multipliers(multipliers_file,
 
 def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_file, crop_file,
 				years, latitude, longitude, default_zoom, region_field_map, feature_package, rainfall_file=None,
-                          multipliers_file=None, organization=None, help_page_content_file=None):
+                          multipliers_file=None, organization=None, help_page_content_file=None,
+						  **kwargs):
 	"""
 
 	:param area_name:
@@ -335,10 +337,18 @@ def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_
 	load_crops(get_data_file_path(data_name, crop_file), model_area)
 
 
-	log.info("Loading Calibration Set")
-	calibration_set = load_input_data_set(csv_file=get_data_file_path(data_name, calibration_file),
+	if calibration_file:
+		log.info("Loading Calibration Set")
+		calibration_set = load_input_data_set(csv_file=get_data_file_path(data_name, calibration_file),
 	                          model_area=model_area,
 	                          years=years)
+	else:
+		if kwargs["features"]["has_calibration_data"]:
+			raise ValueError("No calibration file specified, but input says it has calibration data")
+		else:  # if no file and has_calibration_data is False
+			# we just make an empty calibration set, but it has no data -
+			# this holds assumptions about the data model together for the most part
+			calibration_set = models.CalibrationSet.objects.create(model_area=model_area)
 
 	if rainfall_file is not None:
 		log.info("Loading Rainfall Data")
@@ -356,20 +366,25 @@ def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_
 		load_multipliers(multipliers_file=get_data_file_path(data_name, multipliers_file),
 		                               model_area=model_area)
 
-
-	log.info("Loading Input Data")
-	input_data_set = load_input_data_set(csv_file=get_data_file_path(data_name, data_file),
+	if data_file:
+		log.info("Loading Input Data")
+		input_data_set = load_input_data_set(csv_file=get_data_file_path(data_name, data_file),
 									model_area=model_area,
 									years=years,
 									item_model=models.InputDataItem,
 									set_model=models.InputDataSet,
 	                                set_lookup="dataset")
+	else:
+		if kwargs["features"]["has_input_data"]:
+			raise ValueError("No input data file specified, but input says it has an input data file")
 
-	log.info("Detecting Rainfall and Irrigation Split")
-	detect_rainfall_and_irrigation(model_area)
+	if not "detect_rainfall_irrigation_split" in kwargs or kwargs["detect_rainfall_irrigation_split"] is True:
+		log.info("Detecting Rainfall and Irrigation Split")
+		detect_rainfall_and_irrigation(model_area)
 
-	log.info("Creating Base Case")
-	create_base_case(calibration_set=calibration_set,
+	if "create_base_case" not in kwargs or kwargs["create_base_case"] is True:
+		log.info("Creating Base Case")
+		create_base_case(calibration_set=calibration_set,
 	                 rainfall_set=rainfall_set,
 	                  organization=organization)
 
@@ -467,3 +482,35 @@ def load_region_group_file(group_file_path, member_file_path, config_path, model
 				region_group.regions.add(region)
 
 	# function should check that group set name doesn't already exist in model area and gracefully exit if it does
+
+def preload_model_runs(model_runs, data_name, model_area):
+	for preload_run in model_runs:  # keys are CSV files in the base_folder, values are params
+		if preload_run.startswith("_"):  # skip the comments
+			continue
+
+		preload_run_data = model_runs[preload_run]
+		user = models.User.objects.get(username=preload_run_data["user"])
+		if "model_run_kwargs" in preload_run_data:
+			kwargs = preload_run_data["model_run_kwargs"]
+		else:
+			kwargs = {}
+
+		kwargs["complete"] = False
+		kwargs["user"] = user
+
+		preload_file = get_data_file_path(data_name, preload_run)
+		load_single_model_run(preload_file, model_runs[preload_run], model_area, model_run_kwargs=kwargs)
+
+
+def load_single_model_run(filepath, params, model_area, model_run_kwargs):
+	calibration_set = model_area.calibration_data.first()
+
+	results = pandas.read_csv(filepath)
+	model_run = models.ModelRun.objects.create(name=params['name'],
+											   calibration_set=calibration_set,
+											   organization=calibration_set.model_area.organization,
+											   **model_run_kwargs
+											   )
+	model_run.load_records(results_df=results)
+	model_run.complete = True
+	model_run.save()

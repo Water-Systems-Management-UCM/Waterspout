@@ -1,0 +1,102 @@
+{
+  "area_name": "California Central Valley",
+  "area_name": "ca_cv",
+  "data_name": "ca_cv",
+  "regions": "cv_regions_DP25m_arc.geojsonl.json",
+  "_regions_comment": "Path to a geojsonl file with the regions data",
+  "region_field_map": [
+      ["OpenAgName", "name"],
+      ["Subregion", "internal_id"],
+      ["Basin_Subb", "external_id"],
+      ["Area_Acre", "Area_Acre"]
+  ],
+  "_regions_field_map_comment": "",
+  "calibration_file": null,
+  "data_file": null,
+  "crop_file": "crops.csv",
+  "years": null,
+  "rainfall_file": null,
+  "multipliers_file": null,
+  "mapping": {
+    "latitude": 38,
+    "longitude": -120.3,
+    "default_zoom": 8
+  },
+  "feature_package": "READ_ONLY",
+  "help_page_content_file":"help_content.html",
+  "features": {
+    "_comment": "These flags may not be used by the application, but we plan to have them be used by the loading code",
+    "has_spatial_data": true,
+    "has_calibration_data": false,
+    "has_input_data": false,
+    "has_multipliers": true
+  },
+  "create_base_case": false,
+  "detect_rainfall_irrigation_split": false,
+  "_preload_model_run_results_comment": "Model run results to load. These aren't runs that will be created then run by Dapper, but runs that will be completed by loading all results records",
+  "preload_model_run_results": {
+    "_files_comment": "filename: model run name",
+    "files": {
+      "scenario_1_p_results_base_case.csv": {
+        "name": "Base Case - No Cutbacks",
+        "user": "system",
+        "model_run_kwargs": {
+          "is_base": true
+        }
+      },
+      "drought_2021_results.csv": {
+        "name": "2021 California Drought",
+        "user": "system"
+      },
+      "drought_2022_results.csv": {
+        "name": "2022 California Drought",
+        "user": "system"
+      },
+      "scenario_50_p_results.csv": {
+        "name": "50% Across the Board Water Cutback",
+        "user": "system",
+        "modifications": {
+          "All Crops":{
+            "water": 0.5
+          }
+        }
+      },
+      "scenario_60_p_results.csv": {
+        "name": "40% Across the Board Water Cutback",
+        "user": "system",
+        "modifications": {
+          "All Crops": {
+            "water": 0.6
+          }
+        }
+      },
+      "scenario_70_p_results.csv": {
+        "name": "30% Across the Board Water Cutback",
+        "user": "system",
+        "modifications": {
+          "All Crops": {
+            "water": 0.7
+          }
+        }
+      },
+      "scenario_80_p_results.csv": {
+        "name": "20% Across the Board Water Cutback",
+        "user": "system",
+        "modifications": {
+          "All Crops": {
+            "water": 0.8
+          }
+        }
+      },
+      "scenario_90_p_results.csv": {
+        "name": "10% Across the Board Water Cutback",
+        "user": "system",
+        "modifications": {
+          "All Crops": {
+            "water": 0.9
+          }
+        }
+      }
+    }
+  }
+}
