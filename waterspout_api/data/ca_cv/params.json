@@ -16,7 +16,7 @@
   "crop_file": "crops.csv",
   "years": null,
   "rainfall_file": null,
-  "multipliers_file": null,
+  "multipliers_file": "multipliers/multipliers_by_region_and_crop.csv",
   "mapping": {
     "latitude": 38,
     "longitude": -120.3,
