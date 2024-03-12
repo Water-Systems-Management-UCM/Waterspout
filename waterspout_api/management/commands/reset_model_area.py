@@ -10,7 +10,7 @@ log = logging.getLogger(__name__)
 
 class Command(BaseCommand):
 	help = 'Removes an existing model area and replaces it, keeping the same user access and permissions.' \
-	       'Loads all its default data into the database anew. Provide the region name to load (dap, agwa) as the --region argument'
+	       'Loads all its default data into the database anew. Provide the model area name to load (dap, agwa) as the --model_area argument and the one to replace as --model_area_id'
 
 	def add_arguments(self, parser):
 		parser.add_argument('--model_area_id', nargs='+', type=str, dest="model_area_id", default=None,)

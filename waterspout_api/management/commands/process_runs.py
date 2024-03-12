@@ -2,6 +2,7 @@ import logging
 import time
 import traceback
 
+import psycopg2
 from django.db import connection
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import F, RowRange, Window
@@ -34,8 +35,12 @@ class Command(BaseCommand):
 					log.info(f"Running model run {run.id}")
 
 					run.run()
-			except:
+			except psycopg2.InterfaceError:  # if we get an error from psycopg2 that basically says the connection is closed, then log the error and wait 60 seconds before starting the loop again
 				log.error(traceback.format_exc())
+				time.sleep(60)
+			except:  # bare exception to make sure we catch any unexpected situations here and return to the production loop
+				log.error(traceback.format_exc())
+				time.sleep(10)  # give it a few seconds after an exception before returning to work to avoid hammering systems when a problem occurs
 				if settings.DEBUG:  # if we're in production, don't raise the error, we'll get it in email
 					raise
 
