@@ -65,8 +65,8 @@ POLL_CHECK_INTERVAL = 1  # how often should we poll the actual database for comp
 # Set the values for your SMTP server here to enable emails to be sent to the people
 # specified in the ADMINS setting when errors occur
 EMAIL_SUBJECT_PREFIX = '[Waterspout] '
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587  # the port email should be sent through
+EMAIL_HOST = 'smtp.ucmerced.edu'
+EMAIL_PORT = 25  # the port email should be sent through
 EMAIL_HOST_USER = ''  # username for email sending login
 EMAIL_HOST_PASSWORD = ''  # the password for the account to send email through
 EMAIL_USE_TLS = True  # specify whether to encrypt the traffic to the email server
