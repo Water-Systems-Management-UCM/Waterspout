@@ -6,8 +6,7 @@ Waterspout is a Django application, so the folder structure follows Django Model
 though we do not use Django's templating engine. 
 
 ## Deployment
-Deployment is only supported using the Ansible scripts in this repository's `deployment` folder, except for
-local development.
+Deployment code and process are currently private
 
 ## Developing with Waterspout
 First, you'll need a copy of the Dapper repository installed - contact Nick about that since it's currently private.
