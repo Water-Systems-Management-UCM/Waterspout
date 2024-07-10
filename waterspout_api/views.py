@@ -7,10 +7,9 @@ from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import get_user_model
 from django.db.models import Q, Prefetch
 from django.utils.encoding import force_bytes
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.contrib.auth.tokens import PasswordResetTokenGenerator #https://github.com/django/django/blob/429d089d0a8fbd400e0c010708df4f0d16218970/django/contrib/auth/tokens.py#L87
 from django.urls import reverse
 from django.utils.http import urlsafe_base64_encode
-
 from rest_framework import viewsets, renderers, authentication
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
@@ -41,16 +40,25 @@ def get_user_info_dict(user, token):
 
 
 class GetPasswordReset(APIView):
-	serializers_class_email = serializers.EmailSerializer
+	"""
+	Returns a link to reset password
+	"""
+	serializer_class = serializers.EmailSerializer
+
+	# this allows for users to not be signed in
+	permission_classes = [AllowAny]
 
 	def post(self, request):
-		serializers = self.serializers_class_email(data=request.data)
+
+		serializers = self.serializer_class(data=request.data)
 		serializers.is_valid(raise_exception=True)
 
 		user_email = serializers.data["email"]
 		user = get_user_model().objects.filter(email=user_email).first()
 
+		# if the email is found
 		if user:
+
 			encoded_pk = urlsafe_base64_encode(force_bytes(user.pk))
 			new_token = PasswordResetTokenGenerator().make_token(user)
 
@@ -58,20 +66,27 @@ class GetPasswordReset(APIView):
 				"password-reset",
 				kwargs={"encoded_pk": encoded_pk, "token": new_token}
 			)
+			# temporary while I do testing
 			reset_url = f"localhost:8000{password_reset_url}"
 
 			return Response(
-				{"message": f"Password reset: {reset_url}"}
+				{"message": {reset_url}}
 			)
 		else:
 			return Response({"message": "User not found"})
 
 
 class DoPasswordReset(APIView):
-	serializers_class = serializers.ResetPasswordSerializer
+	"""
+	Checks token, password, and user.pk to make changes to the user's password
+	"""
+
+	serializer_class = serializers.ResetPasswordSerializer
+	permission_classes = [AllowAny]
 
 	def patch(self, request, *args, **kwargs):
-		serializers = self.serializers_class(
+
+		serializers = self.serializer_class(
 			data=request.data, context={"kwargs": kwargs}
 		)
 		serializers.is_valid(raise_exception=True)
