@@ -6,6 +6,10 @@ from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import get_user_model
 from django.db.models import Q, Prefetch
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.urls import reverse
+from django.utils.http import urlsafe_base64_encode
 
 from rest_framework import viewsets, renderers, authentication
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -21,6 +25,7 @@ from waterspout_api import serializers
 from waterspout_api import support
 from waterspout_api import permissions
 
+
 log = logging.getLogger("waterspout.views")
 
 
@@ -33,6 +38,45 @@ def get_user_info_dict(user, token):
 			'is_superuser': user.is_superuser,
 			'email': user.email
 		}
+
+
+class GetPasswordReset(APIView):
+	serializers_class_email = serializers.EmailSerializer
+
+	def post(self, request):
+		serializers = self.serializers_class_email(data=request.data)
+		serializers.is_valid(raise_exception=True)
+
+		user_email = serializers.data["email"]
+		user = get_user_model().objects.filter(email=user_email).first()
+
+		if user:
+			encoded_pk = urlsafe_base64_encode(force_bytes(user.pk))
+			new_token = PasswordResetTokenGenerator().make_token(user)
+
+			password_reset_url = reverse(
+				"password-reset",
+				kwargs={"encoded_pk": encoded_pk, "token": new_token}
+			)
+			reset_url = f"localhost:8000{password_reset_url}"
+
+			return Response(
+				{"message": f"Password reset: {reset_url}"}
+			)
+		else:
+			return Response({"message": "User not found"})
+
+
+class DoPasswordReset(APIView):
+	serializers_class = serializers.ResetPasswordSerializer
+
+	def patch(self, request, *args, **kwargs):
+		serializers = self.serializers_class(
+			data=request.data, context={"kwargs": kwargs}
+		)
+		serializers.is_valid(raise_exception=True)
+
+		return Response({"message:" "Password has been reset"})
 
 
 class CustomAuthToken(ObtainAuthToken):

@@ -37,5 +37,7 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api-token-auth/', ws_views.CustomAuthToken.as_view()),  # POST a username and password here, get a token back
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('auto-login/', ws_views.AutoLogin.as_view())
+    path('auto-login/', ws_views.AutoLogin.as_view()),
+    path('password-reset/', ws_views.GetPasswordReset.as_view(), name='password-reset'),
+    path('password-reset/<str:encoded_pk>/<str:token>/', ws_views.DoPasswordReset.as_view(), name='password-reset')
 ]

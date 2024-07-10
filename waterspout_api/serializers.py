@@ -3,11 +3,56 @@ import logging
 
 from rest_framework import serializers
 from action_serializer import ModelActionSerializer
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 from Waterspout import settings
 from waterspout_api import models
 
 log = logging.getLogger("waterspout.serializers")
+
+
+class EmailSerializer(serializers.Serializer):
+
+	email = serializers.EmailField()
+
+	class Meta:
+		fields = ("email",)
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+
+	password = serializers.CharField(
+		write_only=True
+	)
+	# confirm_password = serializers.CharField(
+	# 	write_only=True
+	# )
+
+	class Meta:
+		fields = ("password",)
+
+	def validate(self, data):
+		password = data.get("password")
+		token = self.context.get("kwargs").get("token")
+		encoded_pk = self.context.get("kwargs").get("encoded_pk")
+
+		if token is None:
+			raise serializers.ValidationError("Missing token")
+		elif encoded_pk is None:
+			raise serializers.ValidationError("Missing encoded_pk")
+
+		pk = urlsafe_base64_decode(encoded_pk).decode()
+
+		user = get_user_model() .objects.get(pk=pk)
+
+		if PasswordResetTokenGenerator().check_token(user, token):
+			user.set_password(password)
+			user.save()
+			return data
+		else:
+			raise serializers.ValidationError("Token is not valid")
 
 
 class CropSerializer(serializers.ModelSerializer):
