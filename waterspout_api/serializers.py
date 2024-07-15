@@ -105,8 +105,9 @@ class ResetPasswordSerializer(serializers.Serializer):
 
 		# user's new password
 		password = data.get("password")
-		token = self.context.get("kwargs").get("token")
-		encoded_pk = self.context.get("kwargs").get("encoded_pk")
+		kwargs = self.context.get("kwargs", {})
+		token = kwargs.get("token")
+		encoded_pk = kwargs.get("encoded_pk")
 
 		if token is None:
 			raise serializers.ValidationError("Missing token")

@@ -17,6 +17,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import BasePermission, DjangoObjectPermissions, IsAuthenticated, IsAdminUser, SAFE_METHODS, AllowAny
 from rest_framework.views import APIView
+from django.core.mail import send_mail
 
 from Waterspout import settings
 from waterspout_api import models
@@ -40,40 +41,45 @@ def get_user_info_dict(user, token):
 
 
 class GetPasswordReset(APIView):
-	"""
-	Returns a link to reset password
-	"""
-	serializer_class = serializers.EmailSerializer
+    """
+    Returns a link to reset password
+    """
+    serializer_class = serializers.EmailSerializer
 
-	# this allows for users to not be signed in
-	permission_classes = [AllowAny]
+    # this allows for users to not be signed in
+    permission_classes = [AllowAny]
 
-	def post(self, request):
+    def post(self, request):
 
-		serializers = self.serializer_class(data=request.data)
-		serializers.is_valid(raise_exception=True)
+        serializers = self.serializer_class(data=request.data)
+        serializers.is_valid(raise_exception=True)
 
-		user_email = serializers.data["email"]
-		user = get_user_model().objects.filter(email=user_email).first()
+        user_email = serializers.data["email"]
+        user = get_user_model().objects.filter(email=user_email).first()
 
-		# if the email is found
-		if user:
+        # if the email is found
+        if user:
 
-			encoded_pk = urlsafe_base64_encode(force_bytes(user.pk))
-			new_token = PasswordResetTokenGenerator().make_token(user)
+            encoded_pk = urlsafe_base64_encode(force_bytes(user.pk))
+            new_token = PasswordResetTokenGenerator().make_token(user)
 
-			password_reset_url = reverse(
-				"password-reset",
-				kwargs={"encoded_pk": encoded_pk, "token": new_token}
-			)
-			# temporary while I do testing
-			reset_url = f"localhost:8000{password_reset_url}"
+            domain = request.get_host()
+            # temporary while I do testing
+            reset_url = f"http://localhost:5173/#/password-reset#{encoded_pk}/{new_token}"
 
-			return Response(
-				{"message": {reset_url}}
-			)
-		else:
-			return Response({"message": "User not found"})
+            email = send_mail( #Sending email with password reset link
+                "Password Reset Request",
+                reset_url,
+                "smtp.ucmerced.edu",
+                [user_email],
+                fail_silently=False
+            )
+
+            return Response(
+                {"message": {reset_url}}
+            )
+        else:
+            return Response({"message": "Email not found"}, status=400)
 
 
 class DoPasswordReset(APIView):
@@ -87,7 +93,7 @@ class DoPasswordReset(APIView):
 	def patch(self, request, *args, **kwargs):
 
 		serializers = self.serializer_class(
-			data=request.data, context={"kwargs": kwargs}
+			data=request.data, context={"kwargs": {'token': request.data['token'], 'encoded_pk': request.data['encoded_pk']}}
 		)
 		serializers.is_valid(raise_exception=True)
 
