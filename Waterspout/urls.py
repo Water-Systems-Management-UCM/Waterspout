@@ -39,5 +39,6 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('auto-login/', ws_views.AutoLogin.as_view()),
     path('api/reset-password/', ws_views.GetPasswordReset.as_view(), name='password-reset'),
-    path('api/password-reset/', ws_views.DoPasswordReset.as_view(), name='password-reset')
+    path('api/password-reset/', ws_views.DoPasswordReset.as_view(), name='password-reset'),
+    path('api/password-change/', ws_views.DoPasswordChange.as_view(), name='password-change'),
 ]

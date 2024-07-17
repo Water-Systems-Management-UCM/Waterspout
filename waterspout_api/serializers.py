@@ -94,10 +94,6 @@ class ResetPasswordSerializer(serializers.Serializer):
 		write_only=True
 	)
 
-	# confirm_password = serializers.CharField(
-	# 	write_only=True
-	# )
-
 	class Meta:
 		fields = ("password",)
 
@@ -124,6 +120,27 @@ class ResetPasswordSerializer(serializers.Serializer):
 			return data
 		else:
 			raise serializers.ValidationError("Token is not valid")
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+	password = serializers.CharField(
+		write_only=True
+	)
+
+	class Meta:
+		model = get_user_model()
+		fields = ("password",)
+
+	def validate(self, data):
+		if self.Meta.model.objects.filter(auth_token=data.get("token")) != "": # Check if user is signed in
+			return data
+		else:
+			return {"message": "user not found"}
+
+	def update(self, instance, validated_data):
+		instance.set_password(validated_data.get('password'))
+		instance.save()
+		return instance
 
 
 class CropModificationSerializer(serializers.ModelSerializer):

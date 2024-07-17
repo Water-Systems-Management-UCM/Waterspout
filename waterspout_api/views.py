@@ -59,27 +59,36 @@ class GetPasswordReset(APIView):
 
         # if the email is found
         if user:
-
             encoded_pk = urlsafe_base64_encode(force_bytes(user.pk))
             new_token = PasswordResetTokenGenerator().make_token(user)
 
             domain = request.get_host()
             # temporary while I do testing
-            reset_url = f"http://localhost:5173/#/password-reset#{encoded_pk}/{new_token}"
+            reset_url = f'''
+					<p>Click the following button to reset your password:</p>
+					<a href="http://localhost:5173/#/password-reset#{encoded_pk}/{new_token}" style="text-decoration: none;">
+					<button style="background-color: #f5f5f5; border: none; color: black; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;">
+					Reset Password
+					</button>
+					</a>
+					<p>If the page does not load, copy and paste the following link into your browser:</p>
+					<p>http://localhost:5173/#/password-reset#{encoded_pk}/{new_token}</p>
+					'''
 
-            email = send_mail( #Sending email with password reset link
+            email = send_mail(  # Sending email with password reset link
                 "Password Reset Request",
-                reset_url,
-                "smtp.ucmerced.edu",
+                "",
+                "smtp.google.com",
                 [user_email],
-                fail_silently=False
+                fail_silently=False,
+	            html_message=reset_url,
             )
 
             return Response(
                 {"message": {reset_url}}
             )
         else:
-            return Response({"message": "Email not found"}, status=400)
+            return Response({"error": "Email not found"}, status=400)
 
 
 class DoPasswordReset(APIView):
@@ -98,6 +107,23 @@ class DoPasswordReset(APIView):
 		serializers.is_valid(raise_exception=True)
 
 		return Response({"message:" "Password has been reset"})
+
+
+class DoPasswordChange(APIView):
+	"""
+	Allows for user to change password when already signed in
+	"""
+	serializer_class = serializers.ChangePasswordSerializer
+	permission_classes = [IsAuthenticated]
+
+	def patch(self, request):
+		instance = self.request.user
+		serializer = self.serializer_class(instance, data=request.data, partial=True)
+		serializer.is_valid(raise_exception=True)
+
+		serializer.save()
+
+		return Response({'message': 'password changed'})
 
 
 class CustomAuthToken(ObtainAuthToken):
