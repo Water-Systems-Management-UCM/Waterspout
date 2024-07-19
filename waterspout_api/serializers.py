@@ -113,6 +113,8 @@ class ResetPasswordSerializer(serializers.Serializer):
 		pk = urlsafe_base64_decode(encoded_pk).decode()
 
 		user = get_user_model().objects.get(pk=pk)
+		if not user:
+			raise serializers.ValidationError("User PK not found")
 
 		if PasswordResetTokenGenerator().check_token(user, token):
 			user.set_password(password)
@@ -132,7 +134,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 		fields = ("password",)
 
 	def validate(self, data):
-		if self.Meta.model.objects.filter(auth_token=data.get("token")) != "": # Check if user is signed in
+		if self.Meta.model.objects.filter(auth_token=data.get("token")) != "":  # Check if user is signed in
 			return data
 		else:
 			return {"message": "user not found"}
