@@ -42,4 +42,3 @@ urlpatterns = [
     path('api/password-reset/', ws_views.DoPasswordReset.as_view(), name='password-reset'),
     path('api/password-change/', ws_views.DoPasswordChange.as_view(), name='password-change'),
 ]
-# http://localhost:5173/#/password-reset#Mw/caf6l4-1224fb93f5056e57fabc170dffc268ec
