@@ -6,7 +6,7 @@ from action_serializer import ModelActionSerializer
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-
+from django.contrib.auth.hashers import check_password
 from Waterspout import settings
 from waterspout_api import models
 
@@ -131,11 +131,24 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 	class Meta:
 		model = get_user_model()
-		fields = ("password",)
+		fields = ("password", "token", "old_password")
 
 	def validate(self, data):
-		if self.Meta.model.objects.filter(auth_token=data.get("token")) != "":  # Check if user is signed in
-			return data
+		kwargs = self.context.get("kwargs", {})
+		token = kwargs.get("token")
+		old_password = kwargs.get("old_password")
+
+		if token is None:
+			raise serializers.ValidationError("Missing token")
+		elif old_password is None:
+			raise serializers.ValidationError("Missing encoded_pk")
+
+		if self.Meta.model.objects.filter(auth_token=token) != "":  # Check if user is signed in
+			user = self.Meta.model.objects.get(auth_token=token)  # Get user using token
+			if check_password(old_password, user.password):  # Compare passwords
+				return data  # Then proceed to updating password
+			else:
+				return {"message": "Please enter the current password."}
 		else:
 			return {"message": "user not found"}
 

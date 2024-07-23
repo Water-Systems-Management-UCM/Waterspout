@@ -118,7 +118,11 @@ class DoPasswordChange(APIView):
 
 	def patch(self, request):
 		instance = self.request.user
-		serializer = self.serializer_class(instance, data=request.data, partial=True)
+		serializer = self.serializer_class(
+			instance,
+			data=request.data,
+			context={"kwargs": {'token': request.data['token'], 'old_password': request.data['old_password']}},
+			partial=True)
 		serializer.is_valid(raise_exception=True)
 
 		serializer.save()
