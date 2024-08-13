@@ -141,7 +141,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 		if token is None:
 			raise serializers.ValidationError("Missing token")
 		elif old_password is None:
-			raise serializers.ValidationError("Missing encoded_pk")
+			raise serializers.ValidationError("Passwords must match")
 
 		if self.Meta.model.objects.filter(auth_token=token) != "":  # Check if user is signed in
 			user = self.Meta.model.objects.get(auth_token=token)  # Get user using token
