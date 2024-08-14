@@ -1,0 +1,101 @@
+{
+  "area_name": "ca_cv_drought",
+  "data_name": "ca_cv_dr",
+  "regions": "",
+  "_regions_comment": "Path to a geojsonl file with the regions data",
+  "region_field_map": [
+      ["OpenAgName", "name"],
+      ["Subregion", "internal_id"],
+      ["Basin_Subb", "external_id"],
+      ["Area_Acre", "Area_Acre"]
+  ],
+  "_regions_field_map_comment": "",
+  "calibration_file": "OPENAG_Calib__threeinputs_df.csv",
+  "data_file": null,
+  "crop_file": "crops.csv",
+  "years": null,
+  "rainfall_file": null,
+  "multipliers_file": null,
+  "mapping": {
+    "latitude": 38,
+    "longitude": -120.3,
+    "default_zoom": 8
+  },
+  "feature_package": "READ_ONLY",
+  "help_page_content_file":null,
+  "features": {
+    "_comment": "These flags may not be used by the application, but we plan to have them be used by the loading code",
+    "has_spatial_data": true,
+    "has_calibration_data": false,
+    "has_input_data": false,
+    "has_multipliers": true
+  },
+  "create_base_case": false,
+  "detect_rainfall_irrigation_split": false,
+  "_preload_model_run_results_comment": "Model run results to load. These aren't runs that will be created then run by Dapper, but runs that will be completed by loading all results records",
+  "preload_model_run_results": {
+    "_files_comment": "filename: model run name",
+    "files": {
+      "et_fallow_results_2020_2021_2022_wrt_2019_outside_cv_10102022.csv": {
+        "name": "Base Case - No Cutbacks",
+        "user": "system",
+        "model_run_kwargs": {
+          "is_base": true
+        }
+      },
+      "et_fallow_results_2021_2022_wrt_2018_crop_subregion_fkc_update_10112022.csv": {
+        "name": "2021-2022 crop subregions",
+        "user": "system"
+      },
+      "et_fallow_results_2021_2022_wrt_2018_hr_fkc_update_10112022.csv": {
+        "name": "2022 California Drought",
+        "user": "system"
+      },
+      "et_fallow_results_2021_2022_wrt_2018_subregion_fkc_10112022.csv": {
+        "name": "2018 Subregion",
+        "user": "system",
+        "modifications": {
+          "All Crops":{
+            "water": 0.5
+          }
+        }
+      },
+      "et_fallow_results_2021_2022_wrt_2019_crop_subregion_fkc_update_10112022.csv": {
+        "name": "Crops subregion",
+        "user": "system",
+        "modifications": {
+          "All Crops":{
+            "water": 0.5
+          }
+        }
+      },
+      "et_fallow_results_2021_2022_wrt_2019_hr_fkc_update_10112022.csv": {
+        "name": "2019 results",
+        "user": "system",
+        "modifications": {
+          "All Crops":{
+            "water": 0.5
+          }
+        }
+      },
+      "et_fallow_results_2021_2022_wrt_2019_subregion_fkc_update_10112022.csv": {
+        "name": "Subregion 2019",
+        "user": "system",
+        "modifications": {
+          "All Crops":{
+            "water": 0.5
+          }
+        }
+      },
+      "scenario_60_p_results.csv": {
+        "name": "40% Across the Board Water Cutback",
+        "user": "system",
+        "modifications": {
+          "All Crops": {
+            "water": 0.6
+          }
+        }
+      }
+    }
+  }
+}
