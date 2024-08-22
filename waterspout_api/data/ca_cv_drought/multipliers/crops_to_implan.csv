@@ -1,0 +1,25 @@
+crop,implan_category
+Alfalfa,PPIC_01_Feed_Crops
+Almonds,PPIC_04_Trees
+Beans Dry,PPIC_05_OtherField
+Berries,PPIC_02_Vegetables
+Corn,PPIC_03_Grain
+Cotton,PPIC_05_OtherField
+Cucurbits,PPIC_02_Vegetables
+Field and Grain,PPIC_05_OtherField
+Grapes Table,PPIC_04_Trees
+Grapes Wine,PPIC_04_Trees
+Lettuce,PPIC_02_Vegetables
+Onions and Garlic,PPIC_02_Vegetables
+Orchards,PPIC_04_Trees
+Pasture,PPIC_01_Feed_Crops
+Pistachios,PPIC_04_Trees
+Potatoes,PPIC_02_Vegetables
+Rice,PPIC_03_Grain
+Safflower,PPIC_05_OtherField
+Subtropical,PPIC_04_Trees
+Sunflowers,PPIC_05_OtherField
+Tomatoes Fresh,PPIC_02_Vegetables
+Tomatoes Processing,PPIC_02_Vegetables
+Truck,PPIC_02_Vegetables
+Walnuts,PPIC_04_Trees
