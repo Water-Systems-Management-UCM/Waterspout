@@ -13,7 +13,7 @@
   "calibration_file": null,
   "data_file": null,
   "crop_file": "crops.csv",
-  "years": [2018,2019,2020,2021,2022],
+  "years": null,
   "rainfall_file": null,
   "multipliers_file": "multipliers/multipliers_by_region_and_crop.csv",
   "mapping": {
@@ -28,7 +28,7 @@
     "has_spatial_data": true,
     "has_calibration_data": false,
     "has_input_data": false,
-    "has_multipliers": false
+    "has_multipliers": true
   },
   "create_base_case": false,
   "detect_rainfall_irrigation_split": false,

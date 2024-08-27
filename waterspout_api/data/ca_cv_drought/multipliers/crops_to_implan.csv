@@ -7,8 +7,7 @@ Corn,PPIC_03_Grain
 Cotton,PPIC_05_OtherField
 Cucurbits,PPIC_02_Vegetables
 Field and Grain,PPIC_05_OtherField
-Grapes Table,PPIC_04_Trees
-Grapes Wine,PPIC_04_Trees
+Grapes,PPIC_04_Trees
 Lettuce,PPIC_02_Vegetables
 Onions and Garlic,PPIC_02_Vegetables
 Orchards,PPIC_04_Trees
@@ -19,7 +18,7 @@ Rice,PPIC_03_Grain
 Safflower,PPIC_05_OtherField
 Subtropical,PPIC_04_Trees
 Sunflowers,PPIC_05_OtherField
-Tomatoes Fresh,PPIC_02_Vegetables
-Tomatoes Processing,PPIC_02_Vegetables
+Tomatoes,PPIC_02_Vegetables
+Young Perennial,PPIC_02_Vegetables
 Truck,PPIC_02_Vegetables
 Walnuts,PPIC_04_Trees

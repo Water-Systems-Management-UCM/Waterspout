@@ -1,23 +1,26 @@
 code,name
-Alfalfa,Alfalfa
-Almonds,Almonds
 Beans Dry,Beans Dry
-Berries,Berries
-Corn,Corn
 Cotton,Cotton
-Cucurbits,Cucurbits
 Field and Grain,Field and Grain
+Safflower,Safflower
+Sunflowers,Sunflowers
+Almonds,Almonds
+Young Perennial,Young Perennial
 Grapes,Grapes
+Orchards,Orchards
+Pistachios,Pistachios
+Subtropical,Subtropical
+Walnuts,Walnuts
+Berries,Berries
+Cucurbits,Cucurbits
 Lettuce,Lettuce
 Onions and Garlic,Onions and Garlic
-Orchards,Orchards
-Pasture,Pasture
 Potatoes,Potatoes
-Rice,Rice
-Safflower,Safflower
-Subtropical,Subtropical
-Sunflowers,Sunflowers
 Tomatoes,Tomatoes
 Truck,Truck
-Walnuts,Walnuts
-Young Perennial,Young Perennial
+Corn,Corn
+Rice,Rice
+Alfalfa,Alfalfa
+Pasture,Pasture
+Fallow,Fallow
+N/A,N/A
