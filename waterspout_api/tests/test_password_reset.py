@@ -6,7 +6,7 @@ from rest_framework import status
 from django.urls import reverse
 
 import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Waterspout.settings")
 
 import django
 django.setup()
