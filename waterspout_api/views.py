@@ -10,6 +10,7 @@ from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import PasswordResetTokenGenerator #https://github.com/django/django/blob/429d089d0a8fbd400e0c010708df4f0d16218970/django/contrib/auth/tokens.py#L87
 from django.urls import reverse
 from django.utils.http import urlsafe_base64_encode
+from django.contrib.auth.hashers import check_password
 from rest_framework import viewsets, renderers, authentication
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
@@ -24,6 +25,8 @@ from waterspout_api import models
 from waterspout_api import serializers
 from waterspout_api import support
 from waterspout_api import permissions
+
+from django.utils.http import urlsafe_base64_decode
 
 
 log = logging.getLogger("waterspout.views")
@@ -100,14 +103,16 @@ class DoPasswordReset(APIView):
 	permission_classes = [AllowAny]
 
 	def patch(self, request, *args, **kwargs):
+		pk = urlsafe_base64_decode(request.data['encoded_pk']).decode()
 
-		serializers = self.serializer_class(
-			data=request.data, context={"kwargs": {'token': request.data['token'], 'encoded_pk': request.data['encoded_pk']}}
-		)
-		serializers.is_valid(raise_exception=True)
+		if get_user_model().objects.get(pk=pk):
+			serializers = self.serializer_class(
+				data=request.data, context={"kwargs": {'token': request.data['token'], 'encoded_pk': request.data['encoded_pk']}}
+			)
+			serializers.is_valid(raise_exception=True)
+			return Response({"message:" "Password has been reset"})
 
-		return Response({"message:" "Password has been reset"})
-
+		return Response({"message": "User not found"}, status=400)
 
 class DoPasswordChange(APIView):
 	"""
@@ -118,17 +123,24 @@ class DoPasswordChange(APIView):
 
 	def patch(self, request):
 		instance = self.request.user
-		serializer = self.serializer_class(
-			instance,
-			data=request.data,
-			context={"kwargs": {'token': request.data['token'], 'old_password': request.data['old_password']}},
-			partial=True)
-		serializer.is_valid(raise_exception=True)
 
-		serializer.save()
+		if instance.is_authenticated: # Check if the user is logged in
+			if instance.check_password(request.data['old_password']):  # Compare passwords
+				serializer = self.serializer_class(
+					instance,
+					data=request.data,
+					context={"kwargs": {'token': request.data['token'], 'old_password': request.data['old_password']}},
+					partial=True
+				)
+				serializer.is_valid(raise_exception=True)
 
-		return Response({'message': 'password changed'})
+				serializer.save()
 
+				return Response({'message': 'password changed'})
+			else:
+				return Response({"message": "Please enter the current password."}, 500)
+		else:
+			return Response({"message": "User not found"})
 
 class CustomAuthToken(ObtainAuthToken):
 	"""

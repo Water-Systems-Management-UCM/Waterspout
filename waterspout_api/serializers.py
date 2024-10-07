@@ -111,10 +111,7 @@ class ResetPasswordSerializer(serializers.Serializer):
 			raise serializers.ValidationError("Missing encoded_pk")
 
 		pk = urlsafe_base64_decode(encoded_pk).decode()
-
 		user = get_user_model().objects.get(pk=pk)
-		if not user:
-			raise serializers.ValidationError("User PK not found")
 
 		if PasswordResetTokenGenerator().check_token(user, token):
 			user.set_password(password)
@@ -143,14 +140,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 		elif old_password is None:
 			raise serializers.ValidationError("Missing encoded_pk")
 
-		if self.Meta.model.objects.filter(auth_token=token) != "":  # Check if user is signed in
-			user = self.Meta.model.objects.get(auth_token=token)  # Get user using token
-			if check_password(old_password, user.password):  # Compare passwords
-				return data  # Then proceed to updating password
-			else:
-				return {"message": "Please enter the current password."}
-		else:
-			return {"message": "user not found"}
+		return data  # Then proceed to updating password
 
 	def update(self, instance, validated_data):
 		instance.set_password(validated_data.get('password'))
