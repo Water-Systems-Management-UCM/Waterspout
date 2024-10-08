@@ -111,14 +111,12 @@ class ResetPasswordSerializer(serializers.Serializer):
 			raise serializers.ValidationError("Missing encoded_pk")
 
 		pk = urlsafe_base64_decode(encoded_pk).decode()
-		user = get_user_model().objects.get(pk=pk)
 
-		if PasswordResetTokenGenerator().check_token(user, token):
-			user.set_password(password)
-			user.save()
-			return data
-		else:
-			raise serializers.ValidationError("Token is not valid")
+		if get_user_model().objects.get(pk=pk) is None:
+			raise serializers.ValidationError("Invalid token")
+
+		if not PasswordResetTokenGenerator().check_token(get_user_model().objects.get(pk=pk), data.get('token')):
+			raise serializers.ValidationError("Invalid Token")
 
 
 class ChangePasswordSerializer(serializers.Serializer):
