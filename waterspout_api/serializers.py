@@ -145,6 +145,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 		instance.save()
 		return instance
 
+# After lunch test out password reset changes
 
 class CropModificationSerializer(serializers.ModelSerializer):
 
