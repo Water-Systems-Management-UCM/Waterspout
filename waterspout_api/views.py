@@ -6,7 +6,11 @@ from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import get_user_model
 from django.db.models import Q, Prefetch
-
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import PasswordResetTokenGenerator #https://github.com/django/django/blob/429d089d0a8fbd400e0c010708df4f0d16218970/django/contrib/auth/tokens.py#L87
+from django.urls import reverse
+from django.utils.http import urlsafe_base64_encode
+from django.contrib.auth.hashers import check_password
 from rest_framework import viewsets, renderers, authentication
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
@@ -14,12 +18,16 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import BasePermission, DjangoObjectPermissions, IsAuthenticated, IsAdminUser, SAFE_METHODS, AllowAny
 from rest_framework.views import APIView
+from django.core.mail import send_mail
 
 from Waterspout import settings
 from waterspout_api import models
 from waterspout_api import serializers
 from waterspout_api import support
 from waterspout_api import permissions
+
+from django.utils.http import urlsafe_base64_decode
+
 
 log = logging.getLogger("waterspout.views")
 
@@ -34,6 +42,95 @@ def get_user_info_dict(user, token):
 			'email': user.email
 		}
 
+
+class GetPasswordReset(APIView):
+    """
+    Returns a link to reset password
+    """
+    serializer_class = serializers.EmailSerializer
+
+    # this allows for users to not be signed in
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+
+        serializers = self.serializer_class(data=request.data)
+        serializers.is_valid(raise_exception=True)
+
+        user_email = serializers.data["email"]
+        user = get_user_model().objects.filter(email=user_email).first()
+
+        # if the email is found
+        if user:
+            encoded_pk = urlsafe_base64_encode(force_bytes(user.pk))
+            new_token = PasswordResetTokenGenerator().make_token(user)
+
+            domain = request.get_host()
+            # temporary while I do testing
+            reset_url = f'''
+					<p>Click the following button to reset your password:</p>
+					<a href="https://openag.ucmerced.edu/api/password-reset?encoded_pk={encoded_pk}&token={new_token}" style="text-decoration: none;">
+					<button style="background-color: #f5f5f5; border: none; color: black; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;">
+					Reset Password
+					</button>
+					</a>
+					<p>If the page does not load, copy and paste the following link into your browser:</p>
+					<p>https://openag.ucmerced.edu/api/password-reset?encoded_pk={encoded_pk}&token={new_token}</p>
+					'''
+
+            email = send_mail(  # Sending email with password reset link
+                "Password Reset Request",
+                "",
+                "smtp.google.com",
+                [user_email],
+                fail_silently=False,
+	            html_message=reset_url,
+            )
+
+            return Response(
+                {"message": {reset_url}}
+            )
+        else:
+            return Response({"error": "Email not found"}, status=400)
+
+
+class DoPasswordReset(APIView):
+	"""
+	Checks token, password, and user.pk to make changes to the user's password
+	"""
+
+	serializer_class = serializers.ResetPasswordSerializer
+	permission_classes = [AllowAny]
+
+	def patch(self, request, *args, **kwargs):
+
+		serializers = self.serializer_class(
+			data=request.data, context={"kwargs": {'token': request.data['token'], 'encoded_pk': request.data['encoded_pk']}}
+		)
+		serializers.is_valid(raise_exception=True)
+
+		return Response({"message:" "Password has been reset"})
+
+
+class DoPasswordChange(APIView):
+	"""
+	Allows for user to change password when already signed in
+	"""
+	serializer_class = serializers.ChangePasswordSerializer
+	permission_classes = [IsAuthenticated]
+
+	def patch(self, request):
+		instance = self.request.user
+		serializer = self.serializer_class(
+			instance,
+			data=request.data,
+			context={"kwargs": {'token': request.data['token'], 'old_password': request.data['old_password']}},
+			partial=True)
+		serializer.is_valid(raise_exception=True)
+
+		serializer.save()
+
+		return Response({'message': 'password changed'})
 
 class CustomAuthToken(ObtainAuthToken):
 	"""

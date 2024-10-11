@@ -3,11 +3,15 @@ import logging
 
 from rest_framework import serializers
 from action_serializer import ModelActionSerializer
-
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.contrib.auth.hashers import check_password
 from Waterspout import settings
 from waterspout_api import models
 
 log = logging.getLogger("waterspout.serializers")
+
 
 
 class CropSerializer(serializers.ModelSerializer):
@@ -77,6 +81,71 @@ class UserProfileSerializer(serializers.ModelSerializer):
 		instance.save()
 		return instance
 
+
+class EmailSerializer(serializers.Serializer):
+	email = serializers.EmailField()
+
+	class Meta:
+		fields = ("email",)
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+	password = serializers.CharField(
+		write_only=True
+	)
+
+	class Meta:
+		fields = ("password",)
+
+	def validate(self, data):
+
+		# user's new password
+		password = data.get("password")
+		kwargs = self.context.get("kwargs", {})
+		token = kwargs.get("token")
+		encoded_pk = kwargs.get("encoded_pk")
+
+		if token is None:
+			raise serializers.ValidationError("Missing token")
+		elif encoded_pk is None:
+			raise serializers.ValidationError("Missing encoded_pk")
+
+		pk = urlsafe_base64_decode(encoded_pk).decode()
+
+		if get_user_model().objects.get(pk=pk) is None:
+			raise serializers.ValidationError("Invalid token")
+
+		if not PasswordResetTokenGenerator().check_token(get_user_model().objects.get(pk=pk), data.get('token')):
+			raise serializers.ValidationError("Invalid Token")
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+	password = serializers.CharField(
+		write_only=True
+	)
+
+	class Meta:
+		model = get_user_model()
+		fields = ("password", "token", "old_password")
+
+	def validate(self, data):
+		kwargs = self.context.get("kwargs", {})
+		token = kwargs.get("token")
+		old_password = kwargs.get("old_password")
+
+		if token is None:
+			raise serializers.ValidationError("Missing token")
+		elif old_password is None:
+			raise serializers.ValidationError("Missing encoded_pk")
+
+		return data  # Then proceed to updating password
+
+	def update(self, instance, validated_data):
+		instance.set_password(validated_data.get('password'))
+		instance.save()
+		return instance
+
+# After lunch test out password reset changes
 
 class CropModificationSerializer(serializers.ModelSerializer):
 
