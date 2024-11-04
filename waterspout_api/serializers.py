@@ -133,7 +133,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 		kwargs = self.context.get("kwargs", {})
 		token = kwargs.get("token")
 		old_password = kwargs.get("old_password")
-		# user = get_user_model().objects.get(auth_toke=token)
+
 
 		if token is None:
 			raise serializers.ValidationError("Missing token")
@@ -141,7 +141,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 			raise serializers.ValidationError("Missing old password")
 		elif not get_user_model().objects.get(auth_token=token).check_password(old_password):
 			raise serializers.ValidationError("Incorrect password")
-		return data  # Then proceed to updating password
+		return data
 
 	def update(self, instance, validated_data):
 		instance.set_password(validated_data.get('password'))

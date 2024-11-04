@@ -75,7 +75,7 @@ class GetPasswordReset(APIView):
 					</button>
 					</a>
 					<p>If the page does not load, copy and paste the following link into your browser:</p>
-					<p>http://localhost:5173/#/password-reset?encoded_pk={encoded_pk}&token={new_token}</p>
+					<p>https://openag.ucmerced.edu/#/password-reset?encoded_pk={encoded_pk}&token={new_token}</p>
 					'''
 
             email = send_mail(  # Sending email with password reset link
