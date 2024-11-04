@@ -69,24 +69,23 @@ class GetPasswordReset(APIView):
             # temporary while I do testing
             reset_url = f'''
 					<p>Click the following button to reset your password:</p>
-					<a href="https://openag.ucmerced.edu/api/password-reset?encoded_pk={encoded_pk}&token={new_token}" style="text-decoration: none;">
+					<a href="https://openag.ucmerced.edu/#/password-reset?encoded_pk={encoded_pk}&token={new_token}" style="text-decoration: none;">
 					<button style="background-color: #f5f5f5; border: none; color: black; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;">
 					Reset Password
 					</button>
 					</a>
 					<p>If the page does not load, copy and paste the following link into your browser:</p>
-					<p>https://openag.ucmerced.edu/api/password-reset?encoded_pk={encoded_pk}&token={new_token}</p>
+					<p>http://localhost:5173/#/password-reset?encoded_pk={encoded_pk}&token={new_token}</p>
 					'''
 
             email = send_mail(  # Sending email with password reset link
                 "Password Reset Request",
                 "",
-                "smtp.google.com",
+                "smtp.ucmerced.edu",
                 [user_email],
                 fail_silently=False,
 	            html_message=reset_url,
             )
-
             return Response(
                 {"message": {reset_url}}
             )
@@ -103,14 +102,22 @@ class DoPasswordReset(APIView):
 	permission_classes = [AllowAny]
 
 	def patch(self, request, *args, **kwargs):
+		pk = urlsafe_base64_decode(request.data['encoded_pk']).decode()
+		print("request.data", request.data['token'], PasswordResetTokenGenerator().check_token(get_user_model().objects.get(pk=pk),request.data['token']))
+		if get_user_model().objects.get(pk=pk):
+			serializers = self.serializer_class(
+				data=request.data, context={"kwargs": {'token': request.data['token'], 'encoded_pk': request.data['encoded_pk']}}
+			)
+			serializers.is_valid(raise_exception=True) # If data passes validation continue
 
-		serializers = self.serializer_class(
-			data=request.data, context={"kwargs": {'token': request.data['token'], 'encoded_pk': request.data['encoded_pk']}}
-		)
-		serializers.is_valid(raise_exception=True)
+			user = get_user_model().objects.get(pk=pk)
 
-		return Response({"message:" "Password has been reset"})
-
+			if user:
+				user.set_password(request.data['password'])
+				user.save()
+				return Response({"message:" "Password has been reset"})
+			else:
+				return Response({"message": "User not found"}, status=400)
 
 class DoPasswordChange(APIView):
 	"""
@@ -118,9 +125,9 @@ class DoPasswordChange(APIView):
 	"""
 	serializer_class = serializers.ChangePasswordSerializer
 	permission_classes = [IsAuthenticated]
-
 	def patch(self, request):
 		instance = self.request.user
+		print("checking request", instance, request.data['token'], request.data['password'])
 		serializer = self.serializer_class(
 			instance,
 			data=request.data,

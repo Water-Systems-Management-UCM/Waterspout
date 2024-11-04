@@ -114,10 +114,11 @@ class ResetPasswordSerializer(serializers.Serializer):
 
 		if get_user_model().objects.get(pk=pk) is None:
 			raise serializers.ValidationError("Invalid token")
-
-		if not PasswordResetTokenGenerator().check_token(get_user_model().objects.get(pk=pk), data.get('token')):
+		print("in serial", token)
+		if PasswordResetTokenGenerator().check_token(get_user_model().objects.get(pk=pk), token) is False:
 			raise serializers.ValidationError("Invalid Token")
 
+		return data
 
 class ChangePasswordSerializer(serializers.Serializer):
 	password = serializers.CharField(
