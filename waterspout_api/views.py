@@ -103,7 +103,7 @@ class DoPasswordReset(APIView):
 
 	def patch(self, request, *args, **kwargs):
 		pk = urlsafe_base64_decode(request.data['encoded_pk']).decode()
-		print("request.data", request.data['token'], PasswordResetTokenGenerator().check_token(get_user_model().objects.get(pk=pk),request.data['token']))
+
 		if get_user_model().objects.get(pk=pk):
 			serializers = self.serializer_class(
 				data=request.data, context={"kwargs": {'token': request.data['token'], 'encoded_pk': request.data['encoded_pk']}}
@@ -115,7 +115,7 @@ class DoPasswordReset(APIView):
 			if user:
 				user.set_password(request.data['password'])
 				user.save()
-				return Response({"message:" "Password has been reset"})
+				return Response({"message:" "Password has been reset"}, status=200)
 			else:
 				return Response({"message": "User not found"}, status=400)
 
@@ -127,7 +127,6 @@ class DoPasswordChange(APIView):
 	permission_classes = [IsAuthenticated]
 	def patch(self, request):
 		instance = self.request.user
-		print("checking request", instance, request.data['token'], request.data['password'])
 		serializer = self.serializer_class(
 			instance,
 			data=request.data,

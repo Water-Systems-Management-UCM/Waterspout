@@ -114,8 +114,8 @@ class ResetPasswordSerializer(serializers.Serializer):
 
 		if get_user_model().objects.get(pk=pk) is None:
 			raise serializers.ValidationError("Invalid token")
-		print("in serial", token)
-		if PasswordResetTokenGenerator().check_token(get_user_model().objects.get(pk=pk), token) is False:
+
+		if not PasswordResetTokenGenerator().check_token(get_user_model().objects.get(pk=pk), token):
 			raise serializers.ValidationError("Invalid Token")
 
 		return data
@@ -133,12 +133,14 @@ class ChangePasswordSerializer(serializers.Serializer):
 		kwargs = self.context.get("kwargs", {})
 		token = kwargs.get("token")
 		old_password = kwargs.get("old_password")
+		# user = get_user_model().objects.get(auth_toke=token)
 
 		if token is None:
 			raise serializers.ValidationError("Missing token")
 		elif old_password is None:
-			raise serializers.ValidationError("Missing encoded_pk")
-
+			raise serializers.ValidationError("Missing old password")
+		elif not get_user_model().objects.get(auth_token=token).check_password(old_password):
+			raise serializers.ValidationError("Incorrect password")
 		return data  # Then proceed to updating password
 
 	def update(self, instance, validated_data):
