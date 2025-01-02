@@ -46,7 +46,7 @@ class UserProfile(models.Model):
 	user = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE)
 
 	_serializer_fields = ["id", "user", "show_organization_model_runs", "show_organization_model_runs_tooltip",
-	                      "dense_tables", "dense_tables_tooltip", "show_net_revenues", "show_net_revenues_tooltip"]
+	                      "dense_tables", "dense_tables_tooltip", "show_net_revenues", "show_net_revenues_tooltip", "show_map_popup"]
 	# basic settings
 	show_organization_model_runs = models.BooleanField(default=True)
 	show_organization_model_runs_tooltip = "By default, the application shows all model runs from within your organization" \
@@ -63,6 +63,9 @@ class UserProfile(models.Model):
 								"are difficult to interpret correctly. See documentation for more before using " \
 								"net revenue data."
 
+	show_map_popup = models.BooleanField(default=False)
+	show_map_popup_tooltip = "Display a popup when hovering over a region to see information like: " \
+								"Region name, Water value, Land value, and Revenue." \
 
 # set up the signal receivers that get triggered after a user is created so that everyone has a userprofile
 @receiver(post_save, sender=User)
