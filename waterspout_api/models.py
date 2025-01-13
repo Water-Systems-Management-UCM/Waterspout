@@ -46,7 +46,7 @@ class UserProfile(models.Model):
 	user = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE)
 
 	_serializer_fields = ["id", "user", "show_organization_model_runs", "show_organization_model_runs_tooltip",
-	                      "dense_tables", "dense_tables_tooltip", "show_net_revenues", "show_net_revenues_tooltip", "show_map_popup"]
+	                      "dense_tables", "dense_tables_tooltip", "show_net_revenues", "show_net_revenues_tooltip", "show_map_popup", "bulk_create"]
 	# basic settings
 	show_organization_model_runs = models.BooleanField(default=True)
 	show_organization_model_runs_tooltip = "By default, the application shows all model runs from within your organization" \
@@ -67,7 +67,10 @@ class UserProfile(models.Model):
 	show_map_popup_tooltip = "Display a popup when hovering over a region to see information like: " \
 								"Region name, Water value, Land value, and Revenue." \
 
-# set up the signal receivers that get triggered after a user is created so that everyone has a userprofile
+	bulk_create = models.BooleanField(default=False)
+	bulk_create_tooltip = "Advance feature to help speed up model creation." \
+
+		# set up the signal receivers that get triggered after a user is created so that everyone has a userprofile
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
 	if created:
