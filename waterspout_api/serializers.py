@@ -142,6 +142,8 @@ class ChangePasswordSerializer(serializers.Serializer):
 		elif not get_user_model().objects.get(auth_token=token).check_password(old_password):
 			raise serializers.ValidationError("Incorrect password")
 		return data
+  
+
 
 	def update(self, instance, validated_data):
 		instance.set_password(validated_data.get('password'))
