@@ -138,25 +138,23 @@ class ChangePasswordSerializer(serializers.Serializer):
 		token = kwargs.get("token")
 		old_password = kwargs.get("old_password")
 
+
 		if token is None:
 			raise serializers.ValidationError("Missing token")
 		elif old_password is None:
-			raise serializers.ValidationError("Passwords must match")
+			raise serializers.ValidationError("Missing old password")
+		elif not get_user_model().objects.get(auth_token=token).check_password(old_password):
+			raise serializers.ValidationError("Incorrect password")
+		return data
+  
 
-		if self.Meta.model.objects.filter(auth_token=token) != "":  # Check if user is signed in
-			user = self.Meta.model.objects.get(auth_token=token)  # Get user using token
-			if check_password(old_password, user.password):  # Compare passwords
-				return data  # Then proceed to updating password
-			else:
-				return {"message": "Please enter the current password."}
-		else:
-			return {"message": "user not found"}
 
 	def update(self, instance, validated_data):
 		instance.set_password(validated_data.get('password'))
 		instance.save()
 		return instance
 
+# After lunch test out password reset changes
 
 class CropModificationSerializer(serializers.ModelSerializer):
 
