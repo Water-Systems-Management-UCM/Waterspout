@@ -79,7 +79,7 @@ class GetPasswordReset(APIView):
 					'''
 
             email = send_mail(  # Sending email with password reset link
-                "Password Reset Request",
+                "[OpenAg] Password Reset Request",
                 "",
                 "smtp.ucmerced.edu",
                 [user_email],
@@ -87,7 +87,7 @@ class GetPasswordReset(APIView):
 	            html_message=reset_url,
             )
             return Response(
-                {"message": {reset_url}}
+                {"message": {"Email has been sent!"}}
             )
         else:
             return Response({"error": "Email not found"}, status=400)
