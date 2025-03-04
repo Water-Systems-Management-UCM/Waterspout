@@ -38,7 +38,7 @@
     "_files_comment": "filename: model run name",
     "files": {
       "scenario_4_inputs_80p_shtg_results.csv": {
-        "name": "80% Shortage",
+        "name": "Base Case - 80% Shortage",
         "user": "system",
         "model_run_kwargs": {
           "is_base": true
