@@ -21,7 +21,7 @@
     "longitude": -120.3,
     "default_zoom": 8
   },
-  "feature_package": "READ_ONLY",
+  "feature_package": "ISOLATED_PUBLIC",
   "help_page_content_file":"help_content.html",
   "features": {
     "_comment": "These flags may not be used by the application, but we plan to have them be used by the loading code",
@@ -40,7 +40,7 @@
         "name": "Base Case 80% Shortage",
         "user": "system",
         "model_run_kwargs": {
-          "is_base": true
+          "is_base": false
         }
       }
     }
