@@ -30,7 +30,7 @@
     "has_input_data": false,
     "has_multipliers": true
   },
-  "create_base_case": false,
+  "create_base_case": true,
   "detect_rainfall_irrigation_split": false,
   "_preload_model_run_results_comment": "Model run results to load. These aren't runs that will be created then run by Dapper, but runs that will be completed by loading all results records",
   "preload_model_run_results": {
