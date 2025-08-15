@@ -288,7 +288,7 @@ def load_multipliers(multipliers_file,
 
 def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_file, crop_file,
 				years, latitude, longitude, default_zoom, region_field_map, feature_package, rainfall_file=None,
-                          multipliers_file=None, organization=None, help_page_content_file=None,
+                          multipliers_file=None, organization=None, help_page_content_file=None, region_groups=None,
 						  **kwargs):
 	"""
 
@@ -336,6 +336,14 @@ def load_dap_style_inputs(area_name, data_name, regions, calibration_file, data_
 	log.info("Loading Crops")
 	load_crops(get_data_file_path(data_name, crop_file), model_area)
 
+	# In incorporating region group when loading inputs. Keeping the format and structure the same so it is important to name folders and files the same as below.
+	if region_groups:
+		log.info("Loading Region Groups")
+		group_definition_file = get_data_file_path(data_name, os.path.join("region_groups", "groups.geojsonl"))
+		group_membership_file = get_data_file_path(data_name, os.path.join("region_groups", "groups.csv"))
+		group_config_file = get_data_file_path(data_name, os.path.join("region_groups", "groups.json"))
+
+		load_region_group_file(group_definition_file, group_membership_file, group_config_file, model_area)
 
 	if calibration_file:
 		log.info("Loading Calibration Set")

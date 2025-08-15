@@ -1,0 +1,7 @@
+{
+	"group_set_name": "Overdrafted regions",
+	"region_key": "internal_id",
+	"region_match_key": "Subregion",
+	"group_name_field": "OpenAgName",
+	"null_group_name": "All Other Regions"
+}
