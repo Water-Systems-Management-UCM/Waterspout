@@ -1,6 +1,6 @@
 Django >= 4.2, < 4.3
 pandas>=2.0.1
-psycopg2
+psycopg2-binary
 arrow
 Markdown
 Pygments
