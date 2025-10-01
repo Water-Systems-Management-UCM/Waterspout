@@ -1,7 +1,7 @@
 {
   "area_name": "CDFA",
   "data_name": "cdfa",
-  "regions": "ca_regions.geojsonl.json",
+  "regions": "ca_regions.geojson",
   "region_groups": false,
   "_regions_comment": "Path to a geojsonl file with the regions data",
   "region_field_map": [
@@ -11,10 +11,10 @@
       ["Area_Acre", "Area_Acre"]
   ],
   "_regions_field_map_comment": "",
-  "calibration_file": "OPENAG_Calib.csv",
+  "calibration_file": null,
   "data_file": null,
   "crop_file": "crops.csv",
-  "years": [2019],
+  "years": null,
   "rainfall_file": null,
   "multipliers_file": "multipliers/multipliers_by_region_and_crop.csv",
   "mapping": {
@@ -29,9 +29,9 @@
     "has_spatial_data": true,
     "has_calibration_data": false,
     "has_input_data": false,
-    "has_multipliers": false
+    "has_multipliers": true
   },
-  "create_base_case": true,
+  "create_base_case": false,
   "detect_rainfall_irrigation_split": false,
   "_preload_model_run_results_comment": "Model run results to load. These aren't runs that will be created then run by Dapper, but runs that will be completed by loading all results records",
   "preload_model_run_results": {
