@@ -6,12 +6,12 @@
   "_regions_comment": "Path to a geojsonl file with the regions data",
   "region_field_map": [
       ["OpenAgName", "name"],
-      ["Subregion", "internal_id"],
+      ["Basin_Su_1", "internal_id"],
       ["Basin_Subb", "external_id"],
       ["Area_Acre", "Area_Acre"]
   ],
   "_regions_field_map_comment": "",
-  "calibration_file": "test.csv",
+  "calibration_file": "OPENAG_Calib_CV_GWB_df.csv",
   "data_file": null,
   "crop_file": "crops.csv",
   "years": [2020],
