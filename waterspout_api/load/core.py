@@ -141,7 +141,6 @@ def load_input_data_set(csv_file, model_area, years,
                     setattr(param, key, row[key])
 
             if not continue_outer:
-                print("DEBUG param save", key, row[key])
                 param.save()
 
     return item_set
