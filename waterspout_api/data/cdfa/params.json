@@ -37,23 +37,7 @@
   "preload_model_run_results": {
     "_files_comment": "filename: model run name",
     "files": {
-      "drought_2021_results.csv": {
-        "name": "2021 California Drought",
-        "user": "system"
-      },
-      "drought_2022_results.csv": {
-        "name": "2022 California Drought",
-        "user": "system"
-      },
-      "scenario_50_p_results.csv": {
-        "name": "50% Across the Board Water Cutback",
-        "user": "system",
-        "modifications": {
-          "All Crops":{
-            "water": 0.5
-          }
-        }
-      }
+
     }
   }
 }

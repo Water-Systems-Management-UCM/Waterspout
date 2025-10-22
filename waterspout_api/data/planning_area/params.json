@@ -11,7 +11,7 @@
       ["ShapeSTAre", "Area_Acre"]
   ],
   "_regions_field_map_comment": "",
-  "calibration_file": "OPENAG_Calib_CV_PA_df_.csv",
+  "calibration_file": "OPENAG_Calib_CV_PA_df_new_10_20.csv",
   "data_file": null,
   "crop_file": "crops.csv",
   "years": [2020],
