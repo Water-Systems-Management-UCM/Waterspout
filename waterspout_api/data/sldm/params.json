@@ -6,10 +6,10 @@
   "_regions_comment": "Path to a geojsonl file with the regions data",
   "region_field_map": [
       ["WDNAME", "name"],
-      ["OBJECTID_1", "internal_id"]
+      ["WDNAME", "internal_id"]
   ],
   "_regions_field_map_comment": "",
-  "calibration_file": "OPENAG_Calib_SLDMWA_DB_df.csv",
+  "calibration_file": "OPENAG_Calib_SLDMWA_DB_blended_df.csv",
   "data_file": null,
   "crop_file": "crops.csv",
   "years": [2020],
