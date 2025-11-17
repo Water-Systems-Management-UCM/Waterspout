@@ -125,34 +125,20 @@ class ResetPasswordSerializer(serializers.Serializer):
 
 
 class ChangePasswordSerializer(serializers.Serializer):
-	password = serializers.CharField(
-		write_only=True
-	)
+	old_password = serializers.CharField(write_only=True)
+	password = serializers.CharField(write_only=True)
 
-	class Meta:
-		model = get_user_model()
-		fields = ("password", "token", "old_password")
-
-	def validate(self, data):
-		kwargs = self.context.get("kwargs", {})
-		token = kwargs.get("token")
-		old_password = kwargs.get("old_password")
-
-
-		if token is None:
-			raise serializers.ValidationError("Missing token")
-		elif old_password is None:
-			raise serializers.ValidationError("Missing old password")
-		elif not get_user_model().objects.get(auth_token=token).check_password(old_password):
-			raise serializers.ValidationError("Incorrect password")
-		return data
-  
-
+	def validate_old_password(self, value):
+		user = self.instance
+		if not user.check_password(value):
+			raise serializers.ValidationError("Incorrect old password")
+		return value
 
 	def update(self, instance, validated_data):
-		instance.set_password(validated_data.get('password'))
+		instance.set_password(validated_data['password'])
 		instance.save()
 		return instance
+
 
 # After lunch test out password reset changes
 
@@ -354,13 +340,13 @@ class ModelAreaSerializer(ModelActionSerializer):
 	class Meta:
 		model = models.ModelArea
 		_base_fields = ["id", "organization_id", "name", "description", "map_center_latitude",
-		                "map_center_longitude", "map_default_zoom", "model_defaults", "preferences"]
+						"map_center_longitude", "map_default_zoom", "model_defaults", "preferences"]
 		fields = _base_fields
 		action_fields = {  # only send model results in detail view - that way the listing doesn't send massive amount
 			"retrieve": {     # of data, but we only need to load the specific model run again to get the results
 				"fields": _base_fields + ["main_help_page_content", "calibration_data", "rainfall_data", "input_data",
-				                          "crop_set", "region_set", "region_group_sets", "multipliers_raw",
-		                                    "supports_rainfall", "supports_irrigation", "background_code"]
+										  "crop_set", "region_set", "region_group_sets", "multipliers_raw",
+											"supports_rainfall", "supports_irrigation", "background_code"]
 			}
 		}
 		depth = 0  # will still show objects that are explicitly declared as nested objects (like region_modifications)
