@@ -5,8 +5,8 @@
   "region_groups": false,
   "_regions_comment": "Path to a geojsonl file with the regions data",
   "region_field_map": [
-      ["PA_NO", "name"],
-      ["Subregion", "internal_id"],
+      ["NAME", "name"],
+      ["PA_NO", "internal_id"],
       ["Basin_Subb", "external_id"],
       ["ShapeSTAre", "Area_Acre"]
   ],

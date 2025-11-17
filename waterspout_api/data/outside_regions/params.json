@@ -1,7 +1,7 @@
 {
-  "area_name": "CDFA",
-  "data_name": "cdfa",
-  "regions": "ca_regions.geojson",
+  "area_name": "outside_regions",
+  "data_name": "outside_regions",
+  "regions": "outside_regions.geojson",
   "region_groups": false,
   "_regions_comment": "Path to a geojsonl file with the regions data",
   "region_field_map": [
@@ -31,7 +31,7 @@
     "has_input_data": false,
     "has_multipliers": true
   },
-  "create_base_case": true,
+  "create_base_case": false,
   "detect_rainfall_irrigation_split": false,
   "_preload_model_run_results_comment": "Model run results to load. These aren't runs that will be created then run by Dapper, but runs that will be completed by loading all results records",
   "preload_model_run_results": {
