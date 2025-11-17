@@ -44,30 +44,30 @@ def get_user_info_dict(user, token):
 
 
 class GetPasswordReset(APIView):
-    """
-    Returns a link to reset password
-    """
-    serializer_class = serializers.EmailSerializer
+	"""
+	Returns a link to reset password
+	"""
+	serializer_class = serializers.EmailSerializer
 
-    # this allows for users to not be signed in
-    permission_classes = [AllowAny]
+	# this allows for users to not be signed in
+	permission_classes = [AllowAny]
 
-    def post(self, request):
+	def post(self, request):
 
-        serializers = self.serializer_class(data=request.data)
-        serializers.is_valid(raise_exception=True)
+		serializers = self.serializer_class(data=request.data)
+		serializers.is_valid(raise_exception=True)
 
-        user_email = serializers.data["email"]
-        user = get_user_model().objects.filter(email=user_email).first()
+		user_email = serializers.data["email"]
+		user = get_user_model().objects.filter(email=user_email).first()
 
-        # if the email is found
-        if user:
-            encoded_pk = urlsafe_base64_encode(force_bytes(user.pk))
-            new_token = PasswordResetTokenGenerator().make_token(user)
+		# if the email is found
+		if user:
+			encoded_pk = urlsafe_base64_encode(force_bytes(user.pk))
+			new_token = PasswordResetTokenGenerator().make_token(user)
 
-            domain = request.get_host()
-            # temporary while I do testing
-            reset_url = f'''
+			domain = request.get_host()
+			# temporary while I do testing
+			reset_url = f'''
 					<p>Click the following button to reset your password:</p>
 					<a href="http://169.236.225.235/#/password-reset?encoded_pk={encoded_pk}&token={new_token}" style="text-decoration: none;">
 					<button style="background-color: #f5f5f5; border: none; color: black; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;">
@@ -78,19 +78,19 @@ class GetPasswordReset(APIView):
 					<p>https://openag.ucmerced.edu/#/password-reset?encoded_pk={encoded_pk}&token={new_token}</p>
 					'''
 
-            email = send_mail(  # Sending email with password reset link
-                "[OpenAg] Password Reset Request",
-                "",
-                "smtp.ucmerced.edu",
-                [user_email],
-                fail_silently=False,
-	            html_message=reset_url,
-            )
-            return Response(
-                {"message": {"Email has been sent!"}}
-            )
-        else:
-            return Response({"error": "Email not found"}, status=400)
+			email = send_mail(  # Sending email with password reset link
+				"[OpenAg] Password Reset Request",
+				"",
+				"smtp.ucmerced.edu",
+				[user_email],
+				fail_silently=False,
+				html_message=reset_url,
+			)
+			return Response(
+				{"message": {"Email has been sent!"}}
+			)
+		else:
+			return Response({"error": "Email not found"}, status=400)
 
 
 class DoPasswordReset(APIView):
@@ -123,17 +123,18 @@ class DoPasswordChange(APIView):
 	"""
 	Allows for user to change password when already signed in
 	"""
-	serializer_class = serializers.ChangePasswordSerializer
 	permission_classes = [IsAuthenticated]
-	def patch(self, request):
-		instance = self.request.user
-		serializer = self.serializer_class(
-			instance,
-			data=request.data,
-			context={"kwargs": {'token': request.data['token'], 'old_password': request.data['old_password']}},
-			partial=True)
-		serializer.is_valid(raise_exception=True)
+	serializer_class = serializers.ChangePasswordSerializer
 
+	def patch(self, request):
+		user = request.user
+
+		serializer = self.serializer_class(
+			user,
+			data=request.data,
+			partial=True
+		)
+		serializer.is_valid(raise_exception=True)
 		serializer.save()
 
 		return Response({'message': 'password changed'})
@@ -145,7 +146,7 @@ class CustomAuthToken(ObtainAuthToken):
 	"""
 	def post(self, request, *args, **kwargs):
 		serializer = self.serializer_class(data=request.data,
-		                                   context={'request': request})
+										   context={'request': request})
 		serializer.is_valid(raise_exception=True)
 		user = serializer.validated_data['user']
 		token, created = Token.objects.get_or_create(user=user)
@@ -174,9 +175,9 @@ class GetApplicationVariables(APIView):
 		calibration_set = model_area.calibration_data.first()
 
 		application_variables = {
-		    "model_area_id": model_area.id,
-		    "organization_id": organization.id,
-		    "calibration_set_id": calibration_set.id,
+			"model_area_id": model_area.id,
+			"organization_id": organization.id,
+			"calibration_set_id": calibration_set.id,
 			"user_api_token": f"{support.get_or_create_token(request.user)}",
 		}
 		for url in settings.API_URLS:

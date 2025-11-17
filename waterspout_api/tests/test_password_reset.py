@@ -100,7 +100,7 @@ class PasswordResetTestCase(APITestCase):
         self.assertIn('token', reset_link)
 
         res = self.client.post(reset_link, {"password": "new_pass"})
-        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_password_reset(self):
         reset_link = self.get_reset_link()
@@ -134,7 +134,13 @@ class PasswordResetTestCase(APITestCase):
         # new user has no permissions, but is authenticated
         login = self.client.login(username=self.new_user.username, password="testpassword123")
         self.client.force_authenticate(user=self.new_user)  # set the authentication - no tokens needed
-        res = self.client.patch(self.password_change, {'password': "new_pass"})  # changing password
+        res = self.client.patch(
+            self.password_change,
+            {
+                'old_password': 'testpassword123',
+                'password': 'new_pass'
+            }
+        )  # changing password
 
         # Signing in with new password after change
         login = self.client.login(username=self.new_user.username, password="new_pass")

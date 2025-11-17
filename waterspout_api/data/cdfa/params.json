@@ -1,8 +1,8 @@
 {
-  "area_name": "cali",
-  "data_name": "cali",
-  "regions": "ca_regions.geojsonl.json",
-  "region_groups": true,
+  "area_name": "CDFA",
+  "data_name": "cdfa",
+  "regions": "ca_regions.geojson",
+  "region_groups": false,
   "_regions_comment": "Path to a geojsonl file with the regions data",
   "region_field_map": [
       ["OpenAgName", "name"],
@@ -11,18 +11,18 @@
       ["Area_Acre", "Area_Acre"]
   ],
   "_regions_field_map_comment": "",
-  "calibration_file": "OPENAG_Calib.csv",
+  "calibration_file": "OPENAG_Calib_Out_of_CV_df.csv",
   "data_file": null,
   "crop_file": "crops.csv",
-  "years": [2019],
+  "years": [2020],
   "rainfall_file": null,
-  "multipliers_file": "multipliers/multipliers_by_region_and_crop.csv",
+  "multipliers_file": null,
   "mapping": {
     "latitude": 38,
     "longitude": -120.3,
     "default_zoom": 8
   },
-  "feature_package": "ISOLATED_PUBLIC",
+  "feature_package": "DAP_DSC",
   "help_page_content_file":"help_content.html",
   "features": {
     "_comment": "These flags may not be used by the application, but we plan to have them be used by the loading code",
@@ -37,13 +37,7 @@
   "preload_model_run_results": {
     "_files_comment": "filename: model run name",
     "files": {
-      "scenario_4_inputs_80p_results.csv": {
-        "name": "80% Shortage",
-        "user": "system",
-        "model_run_kwargs": {
-          "is_base": false
-        }
-      }
+
     }
   }
 }
