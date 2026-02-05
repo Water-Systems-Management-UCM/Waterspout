@@ -25,8 +25,8 @@ FULL_PUBLIC['allow_viz_multiple_comparisons'] = True
 FULL_PUBLIC['allow_viz_region_filter'] = True
 FULL_PUBLIC['allow_viz_normalization'] = True
 FULL_PUBLIC['allow_static_regions'] = False
-FULL_PUBLIC['allow_linear_scaled_regions'] = False
-FULL_PUBLIC['allow_removed_regions'] = False
+FULL_PUBLIC['allow_linear_scaled_regions'] = True
+FULL_PUBLIC['allow_removed_regions'] = True
 FULL_PUBLIC['region_linked_crops'] = True
 FULL_PUBLIC['use_default_region_behaviors'] = True
 
