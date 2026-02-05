@@ -1,0 +1,559 @@
+internal_id,crop_code,hr,direct_jobs,direct_value_add,total_jobs,total_revenue,total_value_add
+1,Alfalfa,Sacramento River,1,1,1.373747,1,3.221614
+1,Almonds,Sacramento River,1,1,1.199049,1,1.1948
+1,Berries,Sacramento River,1,1,1.68112,1,1.728657
+1,Cucurbits,Sacramento River,1,1,1.93033,1,1.928356
+1,Field and Grain,Sacramento River,1,1,2.297911,1,1.667022
+1,Grapes,Sacramento River,1,1,1.68112,1,1.728657
+1,Orchards,Sacramento River,1,1,1.68112,1,1.728657
+1,Pasture,Sacramento River,1,1,1.746634,1,1.760549
+1,Pistachios,Sacramento River,1,1,1.199049,1,1.1948
+1,Subtropical,Sacramento River,1,1,1.68112,1,1.728657
+1,Truck,Sacramento River,1,1,1.93033,1,1.928356
+1,Walnuts,Sacramento River,1,1,1.199049,1,1.1948
+10,Alfalfa,San Joaquin River,1,1,1.974478,1,2.989137
+10,Almonds,San Joaquin River,1,1,1.395582,1,1.214135
+10,Beans Dry,San Joaquin River,1,1,1.974478,1,2.989137
+10,Corn,San Joaquin River,1,1,2.197284,1,1.680125
+10,Cotton,San Joaquin River,1,1,1.698209,1,1.431111
+10,Cucurbits,San Joaquin River,1,1,2.365597,1,1.970829
+10,Field and Grain,San Joaquin River,1,1,2.197284,1,1.680125
+10,Grapes,San Joaquin River,1,1,2.164433,1,1.781283
+10,Lettuce,San Joaquin River,1,1,2.365597,1,1.970829
+10,Onions and Garlic,San Joaquin River,1,1,2.365597,1,1.970829
+10,Orchards,San Joaquin River,1,1,2.164433,1,1.781283
+10,Pasture,San Joaquin River,1,1,2.2786443,1,2.445792
+10,Pistachios,San Joaquin River,1,1,1.395582,1,1.214135
+10,Potatoes,San Joaquin River,1,1,2.365597,1,1.970829
+10,Rice,San Joaquin River,1,1,2.197284,1,1.680125
+10,Safflower,San Joaquin River,1,1,1.292013,1,1.132276
+10,Subtropical,San Joaquin River,1,1,2.164433,1,1.781283
+10,Tomatoes,San Joaquin River,1,1,2.365597,1,1.970829
+10,Truck,San Joaquin River,1,1,2.365597,1,1.970829
+10,Walnuts,San Joaquin River,1,1,1.395582,1,1.214135
+11,Alfalfa,San Joaquin River,1,1,1.974478,1,2.989137
+11,Almonds,San Joaquin River,1,1,1.395582,1,1.214135
+11,Beans Dry,San Joaquin River,1,1,1.974478,1,2.989137
+11,Berries,San Joaquin River,1,1,2.164433,1,1.781283
+11,Corn,San Joaquin River,1,1,2.197284,1,1.680125
+11,Cucurbits,San Joaquin River,1,1,2.365597,1,1.970829
+11,Field and Grain,San Joaquin River,1,1,2.197284,1,1.680125
+11,Grapes,San Joaquin River,1,1,2.164433,1,1.781283
+11,Lettuce,San Joaquin River,1,1,2.365597,1,1.970829
+11,Onions and Garlic,San Joaquin River,1,1,2.365597,1,1.970829
+11,Orchards,San Joaquin River,1,1,2.164433,1,1.781283
+11,Pasture,San Joaquin River,1,1,2.2786443,1,2.445792
+11,Pistachios,San Joaquin River,1,1,1.395582,1,1.214135
+11,Potatoes,San Joaquin River,1,1,2.365597,1,1.970829
+11,Rice,San Joaquin River,1,1,2.197284,1,1.680125
+11,Safflower,San Joaquin River,1,1,1.292013,1,1.132276
+11,Subtropical,San Joaquin River,1,1,2.164433,1,1.781283
+11,Truck,San Joaquin River,1,1,2.365597,1,1.970829
+11,Walnuts,San Joaquin River,1,1,1.395582,1,1.214135
+12,Alfalfa,San Joaquin River,1,1,1.974478,1,2.989137
+12,Almonds,San Joaquin River,1,1,1.395582,1,1.214135
+12,Beans Dry,San Joaquin River,1,1,1.974478,1,2.989137
+12,Berries,San Joaquin River,1,1,2.164433,1,1.781283
+12,Corn,San Joaquin River,1,1,2.197284,1,1.680125
+12,Cucurbits,San Joaquin River,1,1,2.365597,1,1.970829
+12,Field and Grain,San Joaquin River,1,1,2.197284,1,1.680125
+12,Grapes,San Joaquin River,1,1,2.164433,1,1.781283
+12,Orchards,San Joaquin River,1,1,2.164433,1,1.781283
+12,Pasture,San Joaquin River,1,1,2.2786443,1,2.445792
+12,Pistachios,San Joaquin River,1,1,1.395582,1,1.214135
+12,Potatoes,San Joaquin River,1,1,2.365597,1,1.970829
+12,Safflower,San Joaquin River,1,1,1.292013,1,1.132276
+12,Subtropical,San Joaquin River,1,1,2.164433,1,1.781283
+12,Truck,San Joaquin River,1,1,2.365597,1,1.970829
+12,Walnuts,San Joaquin River,1,1,1.395582,1,1.214135
+13,Alfalfa,San Joaquin River,1,1,1.974478,1,2.989137
+13,Almonds,San Joaquin River,1,1,1.395582,1,1.214135
+13,Beans Dry,San Joaquin River,1,1,1.974478,1,2.989137
+13,Berries,San Joaquin River,1,1,2.164433,1,1.781283
+13,Corn,San Joaquin River,1,1,2.197284,1,1.680125
+13,Cotton,San Joaquin River,1,1,1.698209,1,1.431111
+13,Cucurbits,San Joaquin River,1,1,2.365597,1,1.970829
+13,Field and Grain,San Joaquin River,1,1,2.197284,1,1.680125
+13,Grapes,San Joaquin River,1,1,2.164433,1,1.781283
+13,Onions and Garlic,San Joaquin River,1,1,2.365597,1,1.970829
+13,Orchards,San Joaquin River,1,1,2.164433,1,1.781283
+13,Pasture,San Joaquin River,1,1,2.2786443,1,2.445792
+13,Pistachios,San Joaquin River,1,1,1.395582,1,1.214135
+13,Potatoes,San Joaquin River,1,1,2.365597,1,1.970829
+13,Rice,San Joaquin River,1,1,2.197284,1,1.680125
+13,Safflower,San Joaquin River,1,1,1.292013,1,1.132276
+13,Subtropical,San Joaquin River,1,1,2.164433,1,1.781283
+13,Tomatoes,San Joaquin River,1,1,2.365597,1,1.970829
+13,Truck,San Joaquin River,1,1,2.365597,1,1.970829
+13,Walnuts,San Joaquin River,1,1,1.395582,1,1.214135
+14,Alfalfa,Tulare Lake,1,1,1.974478,1,2.989137
+14,Almonds,Tulare Lake,1,1,1.395582,1,1.214135
+14,Beans Dry,Tulare Lake,1,1,1.974478,1,2.989137
+14,Berries,Tulare Lake,1,1,2.164433,1,1.781283
+14,Corn,Tulare Lake,1,1,2.197284,1,1.680125
+14,Cotton,Tulare Lake,1,1,1.698209,1,1.431111
+14,Cucurbits,Tulare Lake,1,1,2.365597,1,1.970829
+14,Field and Grain,Tulare Lake,1,1,2.197284,1,1.680125
+14,Grapes,Tulare Lake,1,1,2.164433,1,1.781283
+14,Lettuce,Tulare Lake,1,1,2.365597,1,1.970829
+14,Onions and Garlic,Tulare Lake,1,1,2.365597,1,1.970829
+14,Orchards,Tulare Lake,1,1,2.164433,1,1.781283
+14,Pasture,Tulare Lake,1,1,2.2786443,1,2.445792
+14,Pistachios,Tulare Lake,1,1,1.395582,1,1.214135
+14,Potatoes,Tulare Lake,1,1,2.365597,1,1.970829
+14,Subtropical,Tulare Lake,1,1,2.164433,1,1.781283
+14,Tomatoes,Tulare Lake,1,1,2.365597,1,1.970829
+14,Truck,Tulare Lake,1,1,2.365597,1,1.970829
+14,Walnuts,Tulare Lake,1,1,1.395582,1,1.214135
+15,Alfalfa,Tulare Lake,1,1,1.974478,1,2.989137
+15,Almonds,Tulare Lake,1,1,1.395582,1,1.214135
+15,Beans Dry,Tulare Lake,1,1,1.974478,1,2.989137
+15,Berries,Tulare Lake,1,1,2.164433,1,1.781283
+15,Corn,Tulare Lake,1,1,2.197284,1,1.680125
+15,Cotton,Tulare Lake,1,1,1.698209,1,1.431111
+15,Cucurbits,Tulare Lake,1,1,2.365597,1,1.970829
+15,Field and Grain,Tulare Lake,1,1,2.197284,1,1.680125
+15,Grapes,Tulare Lake,1,1,2.164433,1,1.781283
+15,Lettuce,Tulare Lake,1,1,2.365597,1,1.970829
+15,Onions and Garlic,Tulare Lake,1,1,2.365597,1,1.970829
+15,Orchards,Tulare Lake,1,1,2.164433,1,1.781283
+15,Pasture,Tulare Lake,1,1,2.2786443,1,2.445792
+15,Pistachios,Tulare Lake,1,1,1.395582,1,1.214135
+15,Potatoes,Tulare Lake,1,1,2.365597,1,1.970829
+15,Safflower,Tulare Lake,1,1,1.292013,1,1.132276
+15,Subtropical,Tulare Lake,1,1,2.164433,1,1.781283
+15,Tomatoes,Tulare Lake,1,1,2.365597,1,1.970829
+15,Truck,Tulare Lake,1,1,2.365597,1,1.970829
+15,Walnuts,Tulare Lake,1,1,1.395582,1,1.214135
+16,Alfalfa,Tulare Lake,1,1,1.974478,1,2.989137
+16,Almonds,Tulare Lake,1,1,1.395582,1,1.214135
+16,Beans Dry,Tulare Lake,1,1,1.974478,1,2.989137
+16,Berries,Tulare Lake,1,1,2.164433,1,1.781283
+16,Corn,Tulare Lake,1,1,2.197284,1,1.680125
+16,Cotton,Tulare Lake,1,1,1.698209,1,1.431111
+16,Cucurbits,Tulare Lake,1,1,2.365597,1,1.970829
+16,Field and Grain,Tulare Lake,1,1,2.197284,1,1.680125
+16,Grapes,Tulare Lake,1,1,2.164433,1,1.781283
+16,Lettuce,Tulare Lake,1,1,2.365597,1,1.970829
+16,Onions and Garlic,Tulare Lake,1,1,2.365597,1,1.970829
+16,Orchards,Tulare Lake,1,1,2.164433,1,1.781283
+16,Pasture,Tulare Lake,1,1,2.2786443,1,2.445792
+16,Pistachios,Tulare Lake,1,1,1.395582,1,1.214135
+16,Safflower,Tulare Lake,1,1,1.292013,1,1.132276
+16,Subtropical,Tulare Lake,1,1,2.164433,1,1.781283
+16,Tomatoes,Tulare Lake,1,1,2.365597,1,1.970829
+16,Truck,Tulare Lake,1,1,2.365597,1,1.970829
+16,Walnuts,Tulare Lake,1,1,1.395582,1,1.214135
+17,Alfalfa,Tulare Lake,1,1,1.974478,1,2.989137
+17,Almonds,Tulare Lake,1,1,1.395582,1,1.214135
+17,Beans Dry,Tulare Lake,1,1,1.974478,1,2.989137
+17,Berries,Tulare Lake,1,1,2.164433,1,1.781283
+17,Corn,Tulare Lake,1,1,2.197284,1,1.680125
+17,Cotton,Tulare Lake,1,1,1.698209,1,1.431111
+17,Cucurbits,Tulare Lake,1,1,2.365597,1,1.970829
+17,Field and Grain,Tulare Lake,1,1,2.197284,1,1.680125
+17,Grapes,Tulare Lake,1,1,2.164433,1,1.781283
+17,Lettuce,Tulare Lake,1,1,2.365597,1,1.970829
+17,Onions and Garlic,Tulare Lake,1,1,2.365597,1,1.970829
+17,Orchards,Tulare Lake,1,1,2.164433,1,1.781283
+17,Pasture,Tulare Lake,1,1,2.2786443,1,2.445792
+17,Pistachios,Tulare Lake,1,1,1.395582,1,1.214135
+17,Subtropical,Tulare Lake,1,1,2.164433,1,1.781283
+17,Tomatoes,Tulare Lake,1,1,2.365597,1,1.970829
+17,Truck,Tulare Lake,1,1,2.365597,1,1.970829
+17,Walnuts,Tulare Lake,1,1,1.395582,1,1.214135
+18,Alfalfa,Tulare Lake,1,1,1.974478,1,2.989137
+18,Almonds,Tulare Lake,1,1,1.395582,1,1.214135
+18,Beans Dry,Tulare Lake,1,1,1.974478,1,2.989137
+18,Berries,Tulare Lake,1,1,2.164433,1,1.781283
+18,Corn,Tulare Lake,1,1,2.197284,1,1.680125
+18,Cotton,Tulare Lake,1,1,1.698209,1,1.431111
+18,Cucurbits,Tulare Lake,1,1,2.365597,1,1.970829
+18,Field and Grain,Tulare Lake,1,1,2.197284,1,1.680125
+18,Grapes,Tulare Lake,1,1,2.164433,1,1.781283
+18,Lettuce,Tulare Lake,1,1,2.365597,1,1.970829
+18,Orchards,Tulare Lake,1,1,2.164433,1,1.781283
+18,Pasture,Tulare Lake,1,1,2.2786443,1,2.445792
+18,Pistachios,Tulare Lake,1,1,1.395582,1,1.214135
+18,Potatoes,Tulare Lake,1,1,2.365597,1,1.970829
+18,Subtropical,Tulare Lake,1,1,2.164433,1,1.781283
+18,Tomatoes,Tulare Lake,1,1,2.365597,1,1.970829
+18,Truck,Tulare Lake,1,1,2.365597,1,1.970829
+18,Walnuts,Tulare Lake,1,1,1.395582,1,1.214135
+19,Alfalfa,Tulare Lake,1,1,1.974478,1,2.989137
+19,Almonds,Tulare Lake,1,1,1.395582,1,1.214135
+19,Beans Dry,Tulare Lake,1,1,1.974478,1,2.989137
+19,Corn,Tulare Lake,1,1,2.197284,1,1.680125
+19,Cotton,Tulare Lake,1,1,1.698209,1,1.431111
+19,Cucurbits,Tulare Lake,1,1,2.365597,1,1.970829
+19,Field and Grain,Tulare Lake,1,1,2.197284,1,1.680125
+19,Grapes,Tulare Lake,1,1,2.164433,1,1.781283
+19,Lettuce,Tulare Lake,1,1,2.365597,1,1.970829
+19,Onions and Garlic,Tulare Lake,1,1,2.365597,1,1.970829
+19,Orchards,Tulare Lake,1,1,2.164433,1,1.781283
+19,Pasture,Tulare Lake,1,1,2.2786443,1,2.445792
+19,Pistachios,Tulare Lake,1,1,1.395582,1,1.214135
+19,Potatoes,Tulare Lake,1,1,2.365597,1,1.970829
+19,Subtropical,Tulare Lake,1,1,2.164433,1,1.781283
+19,Tomatoes,Tulare Lake,1,1,2.365597,1,1.970829
+19,Truck,Tulare Lake,1,1,2.365597,1,1.970829
+19,Walnuts,Tulare Lake,1,1,1.395582,1,1.214135
+2,Alfalfa,Sacramento River,1,1,1.373747,1,3.221614
+2,Almonds,Sacramento River,1,1,1.199049,1,1.1948
+2,Beans Dry,Sacramento River,1,1,1.373747,1,3.221614
+2,Berries,Sacramento River,1,1,1.68112,1,1.728657
+2,Corn,Sacramento River,1,1,2.297911,1,1.667022
+2,Cucurbits,Sacramento River,1,1,1.93033,1,1.928356
+2,Field and Grain,Sacramento River,1,1,2.297911,1,1.667022
+2,Grapes,Sacramento River,1,1,1.68112,1,1.728657
+2,Orchards,Sacramento River,1,1,1.68112,1,1.728657
+2,Pasture,Sacramento River,1,1,1.746634,1,1.760549
+2,Pistachios,Sacramento River,1,1,1.199049,1,1.1948
+2,Rice,Sacramento River,1,1,2.297911,1,1.667022
+2,Safflower,Sacramento River,1,1,1.222109,1,1.118136
+2,Subtropical,Sacramento River,1,1,1.68112,1,1.728657
+2,Sunflowers,Sacramento River,1,1,1.222109,1,1.118136
+2,Tomatoes,Sacramento River,1,1,1.93033,1,1.928356
+2,Truck,Sacramento River,1,1,1.93033,1,1.928356
+2,Walnuts,Sacramento River,1,1,1.199049,1,1.1948
+20,Alfalfa,Tulare Lake,1,1,1.974478,1,2.989137
+20,Almonds,Tulare Lake,1,1,1.395582,1,1.214135
+20,Beans Dry,Tulare Lake,1,1,1.974478,1,2.989137
+20,Berries,Tulare Lake,1,1,2.164433,1,1.781283
+20,Corn,Tulare Lake,1,1,2.197284,1,1.680125
+20,Cotton,Tulare Lake,1,1,1.698209,1,1.431111
+20,Cucurbits,Tulare Lake,1,1,2.365597,1,1.970829
+20,Field and Grain,Tulare Lake,1,1,2.197284,1,1.680125
+20,Grapes,Tulare Lake,1,1,2.164433,1,1.781283
+20,Lettuce,Tulare Lake,1,1,2.365597,1,1.970829
+20,Onions and Garlic,Tulare Lake,1,1,2.365597,1,1.970829
+20,Orchards,Tulare Lake,1,1,2.164433,1,1.781283
+20,Pasture,Tulare Lake,1,1,2.2786443,1,2.445792
+20,Pistachios,Tulare Lake,1,1,1.395582,1,1.214135
+20,Potatoes,Tulare Lake,1,1,2.365597,1,1.970829
+20,Safflower,Tulare Lake,1,1,1.292013,1,1.132276
+20,Subtropical,Tulare Lake,1,1,2.164433,1,1.781283
+20,Tomatoes,Tulare Lake,1,1,2.365597,1,1.970829
+20,Truck,Tulare Lake,1,1,2.365597,1,1.970829
+20,Walnuts,Tulare Lake,1,1,1.395582,1,1.214135
+21,Alfalfa,Tulare Lake,1,1,1.974478,1,2.989137
+21,Almonds,Tulare Lake,1,1,1.395582,1,1.214135
+21,Beans Dry,Tulare Lake,1,1,1.974478,1,2.989137
+21,Berries,Tulare Lake,1,1,2.164433,1,1.781283
+21,Corn,Tulare Lake,1,1,2.197284,1,1.680125
+21,Cotton,Tulare Lake,1,1,1.698209,1,1.431111
+21,Cucurbits,Tulare Lake,1,1,2.365597,1,1.970829
+21,Field and Grain,Tulare Lake,1,1,2.197284,1,1.680125
+21,Grapes,Tulare Lake,1,1,2.164433,1,1.781283
+21,Lettuce,Tulare Lake,1,1,2.365597,1,1.970829
+21,Onions and Garlic,Tulare Lake,1,1,2.365597,1,1.970829
+21,Orchards,Tulare Lake,1,1,2.164433,1,1.781283
+21,Pasture,Tulare Lake,1,1,2.2786443,1,2.445792
+21,Pistachios,Tulare Lake,1,1,1.395582,1,1.214135
+21,Potatoes,Tulare Lake,1,1,2.365597,1,1.970829
+21,Safflower,Tulare Lake,1,1,1.292013,1,1.132276
+21,Subtropical,Tulare Lake,1,1,2.164433,1,1.781283
+21,Tomatoes,Tulare Lake,1,1,2.365597,1,1.970829
+21,Truck,Tulare Lake,1,1,2.365597,1,1.970829
+21,Walnuts,Tulare Lake,1,1,1.395582,1,1.214135
+3,Alfalfa,Sacramento River,1,1,1.373747,1,3.221614
+3,Almonds,Sacramento River,1,1,1.199049,1,1.1948
+3,Beans Dry,Sacramento River,1,1,1.373747,1,3.221614
+3,Berries,Sacramento River,1,1,1.68112,1,1.728657
+3,Corn,Sacramento River,1,1,2.297911,1,1.667022
+3,Cotton,Sacramento River,1,1,2.00558,1,1.224593
+3,Cucurbits,Sacramento River,1,1,1.93033,1,1.928356
+3,Field and Grain,Sacramento River,1,1,2.297911,1,1.667022
+3,Grapes,Sacramento River,1,1,1.68112,1,1.728657
+3,Lettuce,Sacramento River,1,1,1.93033,1,1.928356
+3,Onions and Garlic,Sacramento River,1,1,1.93033,1,1.928356
+3,Orchards,Sacramento River,1,1,1.68112,1,1.728657
+3,Pasture,Sacramento River,1,1,1.746634,1,1.760549
+3,Pistachios,Sacramento River,1,1,1.199049,1,1.1948
+3,Rice,Sacramento River,1,1,2.297911,1,1.667022
+3,Safflower,Sacramento River,1,1,1.222109,1,1.118136
+3,Subtropical,Sacramento River,1,1,1.68112,1,1.728657
+3,Sunflowers,Sacramento River,1,1,1.222109,1,1.118136
+3,Tomatoes,Sacramento River,1,1,1.93033,1,1.928356
+3,Truck,Sacramento River,1,1,1.93033,1,1.928356
+3,Walnuts,Sacramento River,1,1,1.199049,1,1.1948
+4,Alfalfa,Sacramento River,1,1,1.373747,1,3.221614
+4,Almonds,Sacramento River,1,1,1.199049,1,1.1948
+4,Beans Dry,Sacramento River,1,1,1.373747,1,3.221614
+4,Corn,Sacramento River,1,1,2.297911,1,1.667022
+4,Cotton,Sacramento River,1,1,2.00558,1,1.224593
+4,Cucurbits,Sacramento River,1,1,1.93033,1,1.928356
+4,Field and Grain,Sacramento River,1,1,2.297911,1,1.667022
+4,Onions and Garlic,Sacramento River,1,1,1.93033,1,1.928356
+4,Orchards,Sacramento River,1,1,1.68112,1,1.728657
+4,Pasture,Sacramento River,1,1,1.746634,1,1.760549
+4,Rice,Sacramento River,1,1,2.297911,1,1.667022
+4,Safflower,Sacramento River,1,1,1.222109,1,1.118136
+4,Subtropical,Sacramento River,1,1,1.68112,1,1.728657
+4,Sunflowers,Sacramento River,1,1,1.222109,1,1.118136
+4,Tomatoes,Sacramento River,1,1,1.93033,1,1.928356
+4,Truck,Sacramento River,1,1,1.93033,1,1.928356
+4,Walnuts,Sacramento River,1,1,1.199049,1,1.1948
+5,Alfalfa,Sacramento River,1,1,1.373747,1,3.221614
+5,Almonds,Sacramento River,1,1,1.199049,1,1.1948
+5,Beans Dry,Sacramento River,1,1,1.373747,1,3.221614
+5,Berries,Sacramento River,1,1,1.68112,1,1.728657
+5,Corn,Sacramento River,1,1,2.297911,1,1.667022
+5,Cucurbits,Sacramento River,1,1,1.93033,1,1.928356
+5,Field and Grain,Sacramento River,1,1,2.297911,1,1.667022
+5,Grapes,Sacramento River,1,1,1.68112,1,1.728657
+5,Orchards,Sacramento River,1,1,1.68112,1,1.728657
+5,Pasture,Sacramento River,1,1,1.746634,1,1.760549
+5,Pistachios,Sacramento River,1,1,1.199049,1,1.1948
+5,Rice,Sacramento River,1,1,2.297911,1,1.667022
+5,Safflower,Sacramento River,1,1,1.222109,1,1.118136
+5,Subtropical,Sacramento River,1,1,1.68112,1,1.728657
+5,Sunflowers,Sacramento River,1,1,1.222109,1,1.118136
+5,Tomatoes,Sacramento River,1,1,1.93033,1,1.928356
+5,Truck,Sacramento River,1,1,1.93033,1,1.928356
+5,Walnuts,Sacramento River,1,1,1.199049,1,1.1948
+6,Alfalfa,Sacramento River,1,1,1.373747,1,3.221614
+6,Almonds,Sacramento River,1,1,1.199049,1,1.1948
+6,Beans Dry,Sacramento River,1,1,1.373747,1,3.221614
+6,Berries,Sacramento River,1,1,1.68112,1,1.728657
+6,Corn,Sacramento River,1,1,2.297911,1,1.667022
+6,Cucurbits,Sacramento River,1,1,1.93033,1,1.928356
+6,Field and Grain,Sacramento River,1,1,2.297911,1,1.667022
+6,Grapes,Sacramento River,1,1,1.68112,1,1.728657
+6,Lettuce,Sacramento River,1,1,1.93033,1,1.928356
+6,Onions and Garlic,Sacramento River,1,1,1.93033,1,1.928356
+6,Orchards,Sacramento River,1,1,1.68112,1,1.728657
+6,Pasture,Sacramento River,1,1,1.746634,1,1.760549
+6,Pistachios,Sacramento River,1,1,1.199049,1,1.1948
+6,Rice,Sacramento River,1,1,2.297911,1,1.667022
+6,Safflower,Sacramento River,1,1,1.222109,1,1.118136
+6,Subtropical,Sacramento River,1,1,1.68112,1,1.728657
+6,Sunflowers,Sacramento River,1,1,1.222109,1,1.118136
+6,Tomatoes,Sacramento River,1,1,1.93033,1,1.928356
+6,Truck,Sacramento River,1,1,1.93033,1,1.928356
+6,Walnuts,Sacramento River,1,1,1.199049,1,1.1948
+7,Alfalfa,Sacramento River,1,1,1.373747,1,3.221614
+7,Almonds,Sacramento River,1,1,1.199049,1,1.1948
+7,Beans Dry,Sacramento River,1,1,1.373747,1,3.221614
+7,Berries,Sacramento River,1,1,1.68112,1,1.728657
+7,Corn,Sacramento River,1,1,2.297911,1,1.667022
+7,Cucurbits,Sacramento River,1,1,1.93033,1,1.928356
+7,Field and Grain,Sacramento River,1,1,2.297911,1,1.667022
+7,Grapes,Sacramento River,1,1,1.68112,1,1.728657
+7,Orchards,Sacramento River,1,1,1.68112,1,1.728657
+7,Pasture,Sacramento River,1,1,1.746634,1,1.760549
+7,Pistachios,Sacramento River,1,1,1.199049,1,1.1948
+7,Rice,Sacramento River,1,1,2.297911,1,1.667022
+7,Safflower,Sacramento River,1,1,1.222109,1,1.118136
+7,Subtropical,Sacramento River,1,1,1.68112,1,1.728657
+7,Sunflowers,Sacramento River,1,1,1.222109,1,1.118136
+7,Tomatoes,Sacramento River,1,1,1.93033,1,1.928356
+7,Truck,Sacramento River,1,1,1.93033,1,1.928356
+7,Walnuts,Sacramento River,1,1,1.199049,1,1.1948
+8,Alfalfa,San Joaquin River,1,1,1.974478,1,2.989137
+8,Almonds,San Joaquin River,1,1,1.395582,1,1.214135
+8,Beans Dry,San Joaquin River,1,1,1.974478,1,2.989137
+8,Berries,San Joaquin River,1,1,2.164433,1,1.781283
+8,Corn,San Joaquin River,1,1,2.197284,1,1.680125
+8,Cucurbits,San Joaquin River,1,1,2.365597,1,1.970829
+8,Field and Grain,San Joaquin River,1,1,2.197284,1,1.680125
+8,Grapes,San Joaquin River,1,1,2.164433,1,1.781283
+8,Lettuce,San Joaquin River,1,1,2.365597,1,1.970829
+8,Onions and Garlic,San Joaquin River,1,1,2.365597,1,1.970829
+8,Orchards,San Joaquin River,1,1,2.164433,1,1.781283
+8,Pasture,San Joaquin River,1,1,2.2786443,1,2.445792
+8,Pistachios,San Joaquin River,1,1,1.395582,1,1.214135
+8,Potatoes,San Joaquin River,1,1,2.365597,1,1.970829
+8,Rice,San Joaquin River,1,1,2.197284,1,1.680125
+8,Safflower,San Joaquin River,1,1,1.292013,1,1.132276
+8,Subtropical,San Joaquin River,1,1,2.164433,1,1.781283
+8,Sunflowers,San Joaquin River,1,1,1.292013,1,1.132276
+8,Tomatoes,San Joaquin River,1,1,2.365597,1,1.970829
+8,Truck,San Joaquin River,1,1,2.365597,1,1.970829
+8,Walnuts,San Joaquin River,1,1,1.395582,1,1.214135
+9,Alfalfa,Sacramento River,1,1,1.373747,1,3.221614
+9,Almonds,Sacramento River,1,1,1.199049,1,1.1948
+9,Beans Dry,Sacramento River,1,1,1.373747,1,3.221614
+9,Berries,Sacramento River,1,1,1.68112,1,1.728657
+9,Corn,Sacramento River,1,1,2.297911,1,1.667022
+9,Cotton,Sacramento River,1,1,2.00558,1,1.224593
+9,Cucurbits,Sacramento River,1,1,1.93033,1,1.928356
+9,Field and Grain,Sacramento River,1,1,2.297911,1,1.667022
+9,Grapes,Sacramento River,1,1,1.68112,1,1.728657
+9,Lettuce,Sacramento River,1,1,1.93033,1,1.928356
+9,Onions and Garlic,Sacramento River,1,1,1.93033,1,1.928356
+9,Orchards,Sacramento River,1,1,1.68112,1,1.728657
+9,Pasture,Sacramento River,1,1,1.746634,1,1.760549
+9,Pistachios,Sacramento River,1,1,1.199049,1,1.1948
+9,Potatoes,Sacramento River,1,1,1.93033,1,1.928356
+9,Rice,Sacramento River,1,1,2.297911,1,1.667022
+9,Safflower,Sacramento River,1,1,1.222109,1,1.118136
+9,Subtropical,Sacramento River,1,1,1.68112,1,1.728657
+9,Sunflowers,Sacramento River,1,1,1.222109,1,1.118136
+9,Tomatoes,Sacramento River,1,1,1.93033,1,1.928356
+9,Truck,Sacramento River,1,1,1.93033,1,1.928356
+9,Walnuts,Sacramento River,1,1,1.199049,1,1.1948
+BUTV,Alfalfa,North Coast,1,1,1.395335,1,1.82832
+BUTV,Berries,North Coast,1,1,1.802422,1,1.62372
+BUTV,Field and Grain,North Coast,1,1,2.927971,1,1.320677
+BUTV,Onions and Garlic,North Coast,1,1,1.669159,1,1.513049
+BUTV,Pasture,North Coast,1,1,1.74442,1,2.02578
+BUTV,Potatoes,North Coast,1,1,1.669159,1,1.513049
+BUTV,Truck,North Coast,1,1,1.669159,1,1.513049
+COAC,Alfalfa,Colorado River,1,1,2.827795,1,2.525216
+COAC,Beans Dry,Colorado River,1,1,2.827795,1,2.525216
+COAC,Berries,Colorado River,1,1,2.02058,1,1.732461
+COAC,Corn,Colorado River,1,1,5.712464,1,1.487216
+COAC,Cucurbits,Colorado River,1,1,2.428483,1,1.844841
+COAC,Field and Grain,Colorado River,1,1,5.712464,1,1.487216
+COAC,Grapes,Colorado River,1,1,2.02058,1,1.732461
+COAC,Lettuce,Colorado River,1,1,2.428483,1,1.844841
+COAC,Onions and Garlic,Colorado River,1,1,2.428483,1,1.844841
+COAC,Orchards,Colorado River,1,1,2.02058,1,1.732461
+COAC,Pasture,Colorado River,1,1,3.97597,1,2.062156
+COAC,Potatoes,Colorado River,1,1,2.428483,1,1.844841
+COAC,Subtropical,Colorado River,1,1,2.02058,1,1.732461
+COAC,Tomatoes,Colorado River,1,1,2.428483,1,1.844841
+COAC,Truck,Colorado River,1,1,2.428483,1,1.844841
+IMP,Alfalfa,Colorado River,1,1,2.827795,1,2.525216
+IMP,Beans Dry,Colorado River,1,1,2.827795,1,2.525216
+IMP,Corn,Colorado River,1,1,5.712464,1,1.487216
+IMP,Cotton,Colorado River,1,1,2.165951,1,1.197962
+IMP,Cucurbits,Colorado River,1,1,2.428483,1,1.844841
+IMP,Field and Grain,Colorado River,1,1,5.712464,1,1.487216
+IMP,Lettuce,Colorado River,1,1,2.428483,1,1.844841
+IMP,Onions and Garlic,Colorado River,1,1,2.428483,1,1.844841
+IMP,Orchards,Colorado River,1,1,2.02058,1,1.732461
+IMP,Pasture,Colorado River,1,1,3.97597,1,2.062156
+IMP,Potatoes,Colorado River,1,1,2.428483,1,1.844841
+IMP,Safflower,Colorado River,1,1,1.438667,1,1.176764
+IMP,Subtropical,Colorado River,1,1,2.02058,1,1.732461
+IMP,Sunflowers,Colorado River,1,1,1.438667,1,1.176764
+IMP,Truck,Colorado River,1,1,2.428483,1,1.844841
+OXNV,Alfalfa,South Coast,1,1,1.281954,1,3.875502
+OXNV,Beans Dry,South Coast,1,1,1.281954,1,3.875502
+OXNV,Berries,South Coast,1,1,1.536726,1,1.858587
+OXNV,Corn,South Coast,1,1,1.34619,1,7.694659
+OXNV,Cucurbits,South Coast,1,1,1.738386,1,2.01891
+OXNV,Field and Grain,South Coast,1,1,1.34619,1,7.694659
+OXNV,Grapes,South Coast,1,1,1.536726,1,1.858587
+OXNV,Lettuce,South Coast,1,1,1.738386,1,2.01891
+OXNV,Onions and Garlic,South Coast,1,1,1.738386,1,2.01891
+OXNV,Orchards,South Coast,1,1,1.536726,1,1.858587
+OXNV,Pasture,South Coast,1,1,1.205098,1,1.787872
+OXNV,Subtropical,South Coast,1,1,1.536726,1,1.858587
+OXNV,Tomatoes,South Coast,1,1,1.738386,1,2.01891
+OXNV,Truck,South Coast,1,1,1.738386,1,2.01891
+OXNV,Walnuts,South Coast,1,1,1.246854,1,1.319481
+PALV,Alfalfa,Colorado River,1,1,2.827795,1,2.525216
+PALV,Almonds,Colorado River,1,1,1.4296,1,1.273555
+PALV,Corn,Colorado River,1,1,5.712464,1,1.487216
+PALV,Cotton,Colorado River,1,1,2.165951,1,1.197962
+PALV,Cucurbits,Colorado River,1,1,2.428483,1,1.844841
+PALV,Field and Grain,Colorado River,1,1,5.712464,1,1.487216
+PALV,Lettuce,Colorado River,1,1,2.428483,1,1.844841
+PALV,Onions and Garlic,Colorado River,1,1,2.428483,1,1.844841
+PALV,Orchards,Colorado River,1,1,2.02058,1,1.732461
+PALV,Pasture,Colorado River,1,1,3.97597,1,2.062156
+PALV,Potatoes,Colorado River,1,1,2.428483,1,1.844841
+PALV,Subtropical,Colorado River,1,1,2.02058,1,1.732461
+PALV,Truck,Colorado River,1,1,2.428483,1,1.844841
+PITRC,Alfalfa,Sacramento River,1,1,1.373747,1,3.221614
+PITRC,Field and Grain,Sacramento River,1,1,2.297911,1,1.667022
+PITRC,Orchards,Sacramento River,1,1,1.68112,1,1.728657
+PITRC,Pasture,Sacramento River,1,1,1.746634,1,1.760549
+PITRC,Rice,Sacramento River,1,1,2.297911,1,1.667022
+PITREL,Alfalfa,Sacramento River,1,1,1.373747,1,3.221614
+PITREL,Field and Grain,Sacramento River,1,1,2.297911,1,1.667022
+PITREL,Pasture,Sacramento River,1,1,1.746634,1,1.760549
+PITREL,Rice,Sacramento River,1,1,2.297911,1,1.667022
+PITREU,Alfalfa,Sacramento River,1,1,1.373747,1,3.221614
+PITREU,Field and Grain,Sacramento River,1,1,2.297911,1,1.667022
+PITREU,Orchards,Sacramento River,1,1,1.68112,1,1.728657
+PITREU,Pasture,Sacramento River,1,1,1.746634,1,1.760549
+PITREU,Rice,Sacramento River,1,1,2.297911,1,1.667022
+PITREU,Truck,Sacramento River,1,1,1.93033,1,1.928356
+PITRW,Alfalfa,Sacramento River,1,1,1.373747,1,3.221614
+PITRW,Berries,Sacramento River,1,1,1.68112,1,1.728657
+PITRW,Field and Grain,Sacramento River,1,1,2.297911,1,1.667022
+PITRW,Onions and Garlic,Sacramento River,1,1,1.93033,1,1.928356
+PITRW,Pasture,Sacramento River,1,1,1.746634,1,1.760549
+PITRW,Rice,Sacramento River,1,1,2.297911,1,1.667022
+PITRW,Truck,Sacramento River,1,1,1.93033,1,1.928356
+RUSRL,Berries,North Coast,1,1,1.802422,1,1.62372
+RUSRL,Corn,North Coast,1,1,2.927971,1,1.320677
+RUSRL,Field and Grain,North Coast,1,1,2.927971,1,1.320677
+RUSRL,Grapes,North Coast,1,1,1.802422,1,1.62372
+RUSRL,Orchards,North Coast,1,1,1.802422,1,1.62372
+RUSRL,Pasture,North Coast,1,1,1.74442,1,2.02578
+RUSRL,Subtropical,North Coast,1,1,1.802422,1,1.62372
+RUSRL,Truck,North Coast,1,1,1.669159,1,1.513049
+RUSRL,Walnuts,North Coast,1,1,1.713238,1,1.346641
+RUSRU,Alfalfa,North Coast,1,1,1.395335,1,1.82832
+RUSRU,Berries,North Coast,1,1,1.802422,1,1.62372
+RUSRU,Cucurbits,North Coast,1,1,1.669159,1,1.513049
+RUSRU,Field and Grain,North Coast,1,1,2.927971,1,1.320677
+RUSRU,Grapes,North Coast,1,1,1.802422,1,1.62372
+RUSRU,Orchards,North Coast,1,1,1.802422,1,1.62372
+RUSRU,Pasture,North Coast,1,1,1.74442,1,2.02578
+RUSRU,Subtropical,North Coast,1,1,1.802422,1,1.62372
+RUSRU,Truck,North Coast,1,1,1.669159,1,1.513049
+RUSRU,Walnuts,North Coast,1,1,1.713238,1,1.346641
+RUSSRC,Field and Grain,North Coast,1,1,2.927971,1,1.320677
+RUSSRC,Grapes,North Coast,1,1,1.802422,1,1.62372
+RUSSRC,Orchards,North Coast,1,1,1.802422,1,1.62372
+RUSSRC,Pasture,North Coast,1,1,1.74442,1,2.02578
+RUSSRC,Subtropical,North Coast,1,1,1.802422,1,1.62372
+RUSSRC,Truck,North Coast,1,1,1.669159,1,1.513049
+SAL,Alfalfa,Central Coast,1,1,1.351503,1,2.992086
+SAL,Berries,Central Coast,1,1,1.830253,1,1.820359
+SAL,Cucurbits,Central Coast,1,1,2.26423,1,1.890723
+SAL,Field and Grain,Central Coast,1,1,4.951161,1,1.504448
+SAL,Grapes,Central Coast,1,1,1.830253,1,1.820359
+SAL,Lettuce,Central Coast,1,1,2.26423,1,1.890723
+SAL,Onions and Garlic,Central Coast,1,1,2.26423,1,1.890723
+SAL,Orchards,Central Coast,1,1,1.830253,1,1.820359
+SAL,Pasture,Central Coast,1,1,3.043274,1,1.938384
+SAL,Subtropical,Central Coast,1,1,1.830253,1,1.820359
+SAL,Truck,Central Coast,1,1,2.26423,1,1.890723
+SAL,Walnuts,Central Coast,1,1,1.464095,1,1.288618
+SAN,Alfalfa,South Coast,1,1,1.281954,1,3.875502
+SAN,Berries,South Coast,1,1,1.536726,1,1.858587
+SAN,Cucurbits,South Coast,1,1,1.738386,1,2.01891
+SAN,Field and Grain,South Coast,1,1,1.34619,1,7.694659
+SAN,Grapes,South Coast,1,1,1.536726,1,1.858587
+SAN,Lettuce,South Coast,1,1,1.738386,1,2.01891
+SAN,Orchards,South Coast,1,1,1.536726,1,1.858587
+SAN,Pasture,South Coast,1,1,1.205098,1,1.787872
+SAN,Subtropical,South Coast,1,1,1.536726,1,1.858587
+SAN,Tomatoes,South Coast,1,1,1.738386,1,2.01891
+SAN,Truck,South Coast,1,1,1.738386,1,2.01891
+SCOV,Alfalfa,North Coast,1,1,1.395335,1,1.82832
+SCOV,Berries,North Coast,1,1,1.802422,1,1.62372
+SCOV,Field and Grain,North Coast,1,1,2.927971,1,1.320677
+SCOV,Orchards,North Coast,1,1,1.802422,1,1.62372
+SCOV,Pasture,North Coast,1,1,1.74442,1,2.02578
+SCOV,Truck,North Coast,1,1,1.669159,1,1.513049
+SHV,Alfalfa,North Coast,1,1,1.395335,1,1.82832
+SHV,Berries,North Coast,1,1,1.802422,1,1.62372
+SHV,Field and Grain,North Coast,1,1,2.927971,1,1.320677
+SHV,Grapes,North Coast,1,1,1.802422,1,1.62372
+SHV,Orchards,North Coast,1,1,1.802422,1,1.62372
+SHV,Pasture,North Coast,1,1,1.74442,1,2.02578
+SHV,Truck,North Coast,1,1,1.669159,1,1.513049
+TULE,Alfalfa,North Coast,1,1,1.395335,1,1.82832
+TULE,Field and Grain,North Coast,1,1,2.927971,1,1.320677
+TULE,Lettuce,North Coast,1,1,1.669159,1,1.513049
+TULE,Onions and Garlic,North Coast,1,1,1.669159,1,1.513049
+TULE,Pasture,North Coast,1,1,1.74442,1,2.02578
+TULE,Potatoes,North Coast,1,1,1.669159,1,1.513049
+WATS,Berries,Central Coast,1,1,1.830253,1,1.820359
+WATS,Field and Grain,Central Coast,1,1,4.951161,1,1.504448
+WATS,Grapes,Central Coast,1,1,1.830253,1,1.820359
+WATS,Lettuce,Central Coast,1,1,2.26423,1,1.890723
+WATS,Onions and Garlic,Central Coast,1,1,2.26423,1,1.890723
+WATS,Orchards,Central Coast,1,1,1.830253,1,1.820359
+WATS,Pasture,Central Coast,1,1,3.043274,1,1.938384
+WATS,Subtropical,Central Coast,1,1,1.830253,1,1.820359
+WATS,Truck,Central Coast,1,1,2.26423,1,1.890723
+WATS,Walnuts,Central Coast,1,1,1.464095,1,1.288618
