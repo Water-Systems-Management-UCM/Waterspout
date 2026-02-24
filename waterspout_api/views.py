@@ -69,7 +69,7 @@ class GetPasswordReset(APIView):
 			# temporary while I do testing
 			reset_url = f'''
 					<p>Click the following button to reset your password:</p>
-					<a href="http://169.236.225.235/#/password-reset?encoded_pk={encoded_pk}&token={new_token}" style="text-decoration: none;">
+					<a href="https://openag.ucmerced.edu/#/password-reset?encoded_pk={encoded_pk}&token={new_token}" style="text-decoration: none;">
 					<button style="background-color: #f5f5f5; border: none; color: black; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;">
 					Reset Password
 					</button>
