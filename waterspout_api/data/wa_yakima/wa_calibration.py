@@ -3,7 +3,7 @@ from Dapper import calibration
 
 def recalibrate():
     current_folder = os.path.dirname(os.path.abspath(__file__))
-    input_data = os.path.join(current_folder, "./2026-data/openag-wallawalla-updated.csv")
+    input_data = os.path.join(current_folder, "Yakima-0326.csv")
 
     # use the most recent years
     calibration_years = []
@@ -43,7 +43,7 @@ def recalibrate():
     calibrator.calibrate()
 
     # save it out to the input file
-    calibrator.calibration_df.to_csv(os.path.join(current_folder, "./2026-data/calibration_data_walla0319.csv"))
+    calibrator.calibration_df.to_csv(os.path.join(current_folder, "calibration_yakima0326.csv"))
 
 
 if __name__ == "__main__":
