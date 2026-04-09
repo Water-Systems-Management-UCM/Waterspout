@@ -9,10 +9,10 @@
       ["walla_id", "internal_id"]
   ],
   "_regions_field_map_comment": "",
-  "calibration_file": "calibration_data_walla0319.csv",
+  "calibration_file": "calibration_walla2024.csv",
   "data_file": null,
   "crop_file": "crops.csv",
-  "years": [2019],
+  "years": [2024],
   "rainfall_file": null,
   "multipliers_file": null,
   "mapping": {

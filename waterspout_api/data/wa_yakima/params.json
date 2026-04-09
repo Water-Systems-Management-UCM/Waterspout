@@ -9,7 +9,7 @@
       ["WRIA_NR_New", "internal_id"]
   ],
   "_regions_field_map_comment": "",
-  "calibration_file": "calibration_yakima0326.csv",
+  "calibration_file": "calibration_yakima2024.csv",
   "data_file": null,
   "crop_file": "crops.csv",
   "years": [2019],
