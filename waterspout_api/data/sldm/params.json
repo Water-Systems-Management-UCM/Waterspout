@@ -9,10 +9,10 @@
       ["WDNAME", "internal_id"]
   ],
   "_regions_field_map_comment": "",
-  "calibration_file": "OPENAG_Calib_SLDMWA_DB_blended_df.csv",
+  "calibration_file": "OPENAG_2024_SLDMWA.csv",
   "data_file": null,
   "crop_file": "crops.csv",
-  "years": [2020],
+  "years": [2024],
   "rainfall_file": null,
   "multipliers_file": null,
   "mapping": {
