@@ -1,16 +1,16 @@
 {
   "area_name": "wa_wallawalla",
   "data_name": "wa_wallawalla",
-  "regions": "WRIA/new_WRIA_300m_alt.geojsonl.json",
+  "regions": "WRIA/walla.geojsonl",
   "region_groups": false,
   "_regions_comment": "Path to a geojsonl file with the regions data",
   "region_field_map": [
-      ["WRIA_NM", "name"],
-      ["walla_id", "internal_id"]
+      ["name", "name"],
+      ["name", "internal_id"]
   ],
   "_regions_field_map_comment": "",
   "calibration_file": "calibration_walla2024.csv",
-  "data_file": null,
+  "data_file": "Walla-Walla-Input-2024-0407.csv",
   "crop_file": "crops.csv",
   "years": [2024],
   "rainfall_file": null,
