@@ -3,12 +3,12 @@ from Dapper import calibration
 
 def recalibrate():
     current_folder = os.path.dirname(os.path.abspath(__file__))
-    input_data = os.path.join(current_folder, "./2026-data/openag-wallawalla-updated.csv")
+    input_data = os.path.join(current_folder, "Walla-Walla-Input-0407.csv")
 
     # use the most recent years
-    calibration_years = []
-    for i in range(2015,2025):
-        calibration_years.append(i)
+    calibration_years = [2024]
+    # for i in range(2018,2023):
+    #     calibration_years.append(i)
 
     # temporary value - checked this price with Spencer and Alvar - will update
     price_of_water = 15
@@ -35,7 +35,7 @@ def recalibrate():
         initial_data=input_data,
         crop_elasticities=elasticities,
         price_of_water=price_of_water,
-        calibration_years=calibration_years
+        calibration_years=[2024]
     )
     # give me one record per crop/region, not one record per input record (year)
     calibrator.apply_to_original = False
@@ -43,7 +43,7 @@ def recalibrate():
     calibrator.calibrate()
 
     # save it out to the input file
-    calibrator.calibration_df.to_csv(os.path.join(current_folder, "./2026-data/calibration_data_walla0319.csv"))
+    calibrator.calibration_df.to_csv(os.path.join(current_folder, "calibration_walla2024.csv"))
 
 
 if __name__ == "__main__":

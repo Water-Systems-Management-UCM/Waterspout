@@ -1,18 +1,18 @@
 {
-  "area_name": "sldm",
-  "data_name": "sldm",
-  "regions": "sldmwa.geojsonl",
+  "area_name": "calsim",
+  "data_name": "calsim3",
+  "regions": "calsim_simplified.geojson",
   "region_groups": false,
   "_regions_comment": "Path to a geojsonl file with the regions data",
   "region_field_map": [
-      ["WDNAME", "name"],
-      ["WDNAME", "internal_id"]
+      ["NAME", "name"],
+      ["WBA_ID", "internal_id"]
   ],
   "_regions_field_map_comment": "",
-  "calibration_file": "OPENAG_2024_SLDMWA.csv",
+  "calibration_file": "calsim_calibrated.csv",
   "data_file": null,
-  "crop_file": "crops.csv",
-  "years": [2024],
+  "crop_file": "crop_codes.csv",
+  "years": [2019],
   "rainfall_file": null,
   "multipliers_file": null,
   "mapping": {
@@ -20,20 +20,22 @@
     "longitude": -120.3,
     "default_zoom": 8
   },
-  "feature_package": "READ_ONLY",
+  "feature_package": "DAP_DSC",
   "help_page_content_file":"help_content.html",
   "features": {
     "_comment": "These flags may not be used by the application, but we plan to have them be used by the loading code",
     "has_spatial_data": true,
-    "has_calibration_data": true,
+    "has_calibration_data": false,
     "has_input_data": false,
-    "has_multipliers": false
+    "has_multipliers": true
   },
   "create_base_case": true,
   "detect_rainfall_irrigation_split": false,
   "_preload_model_run_results_comment": "Model run results to load. These aren't runs that will be created then run by Dapper, but runs that will be completed by loading all results records",
   "preload_model_run_results": {
     "_files_comment": "filename: model run name",
-    "files": {}
+    "files": {
+
+    }
   }
 }

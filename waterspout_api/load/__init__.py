@@ -1,3 +1,3 @@
 # Core loading code - to be called by DAP and AGWA loading code directly
 
-from . import core, general, agwa, dap, ca_cv, ca_drought, cali, cdfa, cdfa2, planning_areas, sldm, cvpm, outside_regions
+from . import core, general, agwa, dap, ca_cv, ca_drought, calsim3, cdfa, cdfa2, planning_areas, sldm, cvpm, wa_wallawalla, wa_yakima, calvin_cvpm
