@@ -5,7 +5,7 @@
   "region_groups": false,
   "_regions_comment": "Path to a geojsonl file with the regions data",
   "region_field_map": [
-      ["WBA_ID", "name"],
+      ["NAME", "name"],
       ["WBA_ID", "internal_id"]
   ],
   "_regions_field_map_comment": "",
