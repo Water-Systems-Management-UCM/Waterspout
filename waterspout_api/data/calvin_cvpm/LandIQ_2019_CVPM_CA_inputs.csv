@@ -1,4 +1,4 @@
-region,crop,hr,xland,p,y,xwater_unit,omegaland,omegawater,omegasupplies,omegalabor,theta,omegawater_unit,CS_land,CS_labor,CS_supplies
+g,i,hr,xland,p,y,xwater,omegaland,omegawater,omegasupply,omegalabor,theta,omegawater,CS_land,CS_labor,CS_supply
 1,Alfalfa,Sacramento River,218.8354054,280.6469987,5.962401488,0.296530363,471.6662224,50,252.5143029,311.8836593,1.86,50,0.281872792,0.186385019,0.150905255
 1,Almonds,Sacramento River,32.71585715,4683.240486,0.738721068,0.328498172,752.6390797,50,323.8653982,1042.332314,0.4,50,0.217550367,0.301286212,0.093613311
 1,Berries,Sacramento River,220.6292491,5808.7562,4.15,0.513302523,1090.53087,50,10044.6968,9336.946257,0.25,50,0.045238346,0.387323291,0.416682812
