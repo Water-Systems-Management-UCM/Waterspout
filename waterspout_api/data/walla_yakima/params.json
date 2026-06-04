@@ -10,11 +10,11 @@
   ],
   "_regions_field_map_comment": "",
   "calibration_file": "calibration_walla_w_yakima2024.csv",
-  "data_file": null,
+  "data_file": "inputs-04-07.csv",
   "crop_file": "crops.csv",
   "years": [2019],
   "rainfall_file": null,
-  "multipliers_file": null,
+  "multipliers_file": "agwa_walla_yakima.csv",
   "mapping": {
     "latitude": 47.419,
     "longitude": -120.476,

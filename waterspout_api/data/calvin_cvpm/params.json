@@ -10,11 +10,11 @@
   ],
   "_regions_field_map_comment": "",
   "calibration_file": "OPENAG_Calib_CVPM_CA_df_newdelta_formula.csv",
-  "data_file": "LandIQ_2019_OpenAg_Crops_CVPM_CA_inputs.csv",
+  "data_file": "LandIQ_2019_CVPM_CA_inputs.csv",
   "crop_file": "crops.csv",
   "years": [2019],
   "rainfall_file": null,
-  "multipliers_file": null,
+  "multipliers_file": "multipliers_by_region_and_crop_2026.csv",
   "mapping": {
     "latitude": 38,
     "longitude": -120.3,
