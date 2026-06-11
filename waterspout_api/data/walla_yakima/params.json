@@ -1,24 +1,24 @@
 {
-  "area_name": "calvin_cvpm",
-  "data_name": "calvin_cvpm",
-  "regions": "cdfa_all_regions.geojsonl",
+  "area_name": "walla_yakima",
+  "data_name": "walla_yakima",
+  "regions": "WRIA/walla_yakima.geojsonl",
   "region_groups": false,
   "_regions_comment": "Path to a geojsonl file with the regions data",
   "region_field_map": [
-      ["PSA_NAME", "name"],
-      ["CVPM", "internal_id"]
+      ["name", "name"],
+      ["name", "internal_id"]
   ],
   "_regions_field_map_comment": "",
-  "calibration_file": "OPENAG_Calib_CVPM_CA_df_newdelta_formula.csv",
-  "data_file": "LandIQ_2019_CVPM_CA_inputs.csv",
+  "calibration_file": "calibration_walla_w_yakima2024.csv",
+  "data_file": "inputs-data-2024.csv",
   "crop_file": "crops.csv",
-  "years": [2019],
+  "years": [2024],
   "rainfall_file": null,
-  "multipliers_file": "multipliers_by_region_and_crop_2026.csv",
+  "multipliers_file": "agwa_walla_yakima_okan_mults.csv",
   "mapping": {
-    "latitude": 38,
-    "longitude": -120.3,
-    "default_zoom": 8
+    "latitude": 47.419,
+    "longitude": -120.476,
+    "default_zoom": 7
   },
   "feature_package": "READ_ONLY",
   "help_page_content_file":"help_content.html",
