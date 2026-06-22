@@ -2,7 +2,7 @@
   "area_name": "walla_yakima",
   "data_name": "walla_yakima",
   "regions": "WRIA/walla_yakima.geojsonl",
-  "region_groups": false,
+  "region_groups": "region_groups/groups.geojsonl",
   "_regions_comment": "Path to a geojsonl file with the regions data",
   "region_field_map": [
       ["name", "name"],
@@ -13,7 +13,7 @@
   "data_file": "inputs-data-2024.csv",
   "crop_file": "crops.csv",
   "years": [2024],
-  "rainfall_file": null,
+  "rainfall_file": "rainfall.csv",
   "multipliers_file": "agwa_walla_yakima_okan_mults.csv",
   "mapping": {
     "latitude": 47.419,
@@ -30,7 +30,7 @@
     "has_multipliers": false
   },
   "create_base_case": true,
-  "detect_rainfall_irrigation_split": false,
+  "detect_rainfall_irrigation_split": true,
   "_preload_model_run_results_comment": "Model run results to load. These aren't runs that will be created then run by Dapper, but runs that will be completed by loading all results records",
   "preload_model_run_results": {
     "_files_comment": "filename: model run name",
