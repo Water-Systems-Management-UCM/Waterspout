@@ -1,0 +1,7 @@
+{
+	"group_set_name": "WA Regions",
+	"region_key": "internal_id",
+	"region_match_key": "id",
+	"group_name_field": "group_name",
+    "null_group_name": ""
+}

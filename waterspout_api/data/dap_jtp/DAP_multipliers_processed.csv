@@ -1,0 +1,761 @@
+crop_code,internal_id,name,county,direct_jobs,direct_value_add,total_jobs,total_revenue,total_value_add
+GRAIN,DAP001,Atlas Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+ALFAL,DAP002,Bacon Island,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP002,Bacon Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP002,Bacon Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+PASTR,DAP002,Bacon Island,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+POTATO,DAP002,Bacon Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PRTOM,DAP002,Bacon Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+RICE,DAP002,Bacon Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+ALFAL,DAP003,Bethel Island,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+PASTR,DAP003,Bethel Island,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+CORN,DAP005,Bishop Tract/Dlis-14,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP005,Bishop Tract/Dlis-14,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHDEC,DAP005,Bishop Tract/Dlis-14,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+POTATO,DAP005,Bishop Tract/Dlis-14,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+ALFAL,DAP006,Bixler Tract,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+ALPIS,DAP006,Bixler Tract,Contra Costa,3.0E-05,6.8E-01,3.6E-05,1.9E+00,1.3E+00
+CORN,DAP006,Bixler Tract,Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+GRAIN,DAP006,Bixler Tract,Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+OTHTRK,DAP006,Bixler Tract,Contra Costa,7.8E-06,5.2E-01,1.2E-05,1.7E+00,9.3E-01
+PASTR,DAP006,Bixler Tract,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+PRTOM,DAP006,Bixler Tract,Contra Costa,7.8E-06,5.2E-01,1.2E-05,1.7E+00,9.3E-01
+VINE,DAP006,Bixler Tract,Contra Costa,9.2E-06,6.3E-01,1.4E-05,1.7E+00,1.1E+00
+ALFAL,DAP007,Bouldin Island,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP007,Bouldin Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP007,Bouldin Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+ALFAL,DAP008,Brack Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP008,Brack Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP008,Brack Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+GRAIN,DAP008,Brack Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHDEC,DAP008,Brack Tract,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+OTHTRK,DAP008,Brack Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP008,Brack Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+PRTOM,DAP008,Brack Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+RICE,DAP008,Brack Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+SAFLR,DAP008,Brack Tract,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+VINE,DAP008,Brack Tract,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP009,Bradford Island,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+CORN,DAP009,Bradford Island,Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+PASTR,DAP009,Bradford Island,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+ALFAL,DAP010,Brannan-Andrus,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+CORN,DAP010,Brannan-Andrus,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+GRAIN,DAP010,Brannan-Andrus,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+OTHDEC,DAP010,Brannan-Andrus,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+OTHTRK,DAP010,Brannan-Andrus,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+PASTR,DAP010,Brannan-Andrus,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+POTATO,DAP010,Brannan-Andrus,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+PRTOM,DAP010,Brannan-Andrus,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+SAFLR,DAP010,Brannan-Andrus,Sacramento,9.1E-07,9.5E-01,5.1E-06,1.7E+00,1.4E+00
+VINE,DAP010,Brannan-Andrus,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+ALFAL,DAP012,Byron Tract,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+CORN,DAP012,Byron Tract,Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+GRAIN,DAP012,Byron Tract,Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+OTHTRK,DAP012,Byron Tract,Contra Costa,7.8E-06,5.2E-01,1.2E-05,1.7E+00,9.3E-01
+PASTR,DAP012,Byron Tract,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+PRTOM,DAP012,Byron Tract,Contra Costa,7.8E-06,5.2E-01,1.2E-05,1.7E+00,9.3E-01
+SAFLR,DAP012,Byron Tract,Contra Costa,1.7E-06,9.5E-01,8.9E-06,2.3E+00,1.8E+00
+ALFAL,DAP013,Cache Haas Area,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+CORN,DAP013,Cache Haas Area,Solano,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+GRAIN,DAP013,Cache Haas Area,Solano,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+PASTR,DAP013,Cache Haas Area,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+ALFAL,DAP014,Canal Ranch Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP014,Canal Ranch Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP014,Canal Ranch Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+PRTOM,DAP014,Canal Ranch Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+RICE,DAP014,Canal Ranch Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+SUBTRP,DAP014,Canal Ranch Tract,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+OTHDEC,DAP015,Central Stockton,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP017,Clifton Court Forebay,Contra Costa,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP017,Clifton Court Forebay,Contra Costa,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP017,Clifton Court Forebay,Contra Costa,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+PASTR,DAP017,Clifton Court Forebay,Contra Costa,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+PRTOM,DAP017,Clifton Court Forebay,Contra Costa,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP017,Clifton Court Forebay,Contra Costa,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+ALFAL,DAP018,Coney Island,Contra Costa,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP018,Coney Island,Contra Costa,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP018,Coney Island,Contra Costa,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+GRAIN,DAP018,Coney Island,Contra Costa,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+PASTR,DAP018,Coney Island,Contra Costa,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+PRTOM,DAP018,Coney Island,Contra Costa,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP018,Coney Island,Contra Costa,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+CORN,DAP019,Dead Horse Island,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+POTATO,DAP019,Dead Horse Island,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+GRAIN,DAP026,Dlis-06 (Oakley Area),Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+OTHTRK,DAP026,Dlis-06 (Oakley Area),Contra Costa,7.8E-06,5.2E-01,1.2E-05,1.7E+00,9.3E-01
+PASTR,DAP026,Dlis-06 (Oakley Area),Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+VINE,DAP026,Dlis-06 (Oakley Area),Contra Costa,9.2E-06,6.3E-01,1.4E-05,1.7E+00,1.1E+00
+ALPIS,DAP027,Dlis-07 (Knightsen Area),Contra Costa,3.0E-05,6.8E-01,3.6E-05,1.9E+00,1.3E+00
+GRAIN,DAP027,Dlis-07 (Knightsen Area),Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+OTHDEC,DAP027,Dlis-07 (Knightsen Area),Contra Costa,9.2E-06,6.3E-01,1.4E-05,1.7E+00,1.1E+00
+PASTR,DAP027,Dlis-07 (Knightsen Area),Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+VINE,DAP027,Dlis-07 (Knightsen Area),Contra Costa,9.2E-06,6.3E-01,1.4E-05,1.7E+00,1.1E+00
+ALFAL,DAP028,Dlis-08 (Discovery Bay Area),Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+CORN,DAP028,Dlis-08 (Discovery Bay Area),Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+GRAIN,DAP028,Dlis-08 (Discovery Bay Area),Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+OTHDEC,DAP028,Dlis-08 (Discovery Bay Area),Contra Costa,9.2E-06,6.3E-01,1.4E-05,1.7E+00,1.1E+00
+PASTR,DAP028,Dlis-08 (Discovery Bay Area),Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+PRTOM,DAP028,Dlis-08 (Discovery Bay Area),Contra Costa,7.8E-06,5.2E-01,1.2E-05,1.7E+00,9.3E-01
+SUBTRP,DAP028,Dlis-08 (Discovery Bay Area),Contra Costa,9.2E-06,6.3E-01,1.4E-05,1.7E+00,1.1E+00
+VINE,DAP028,Dlis-08 (Discovery Bay Area),Contra Costa,9.2E-06,6.3E-01,1.4E-05,1.7E+00,1.1E+00
+ALFAL,DAP029,Dlis-09 (Byron Area),Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+ALPIS,DAP029,Dlis-09 (Byron Area),Contra Costa,3.0E-05,6.8E-01,3.6E-05,1.9E+00,1.3E+00
+CORN,DAP029,Dlis-09 (Byron Area),Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+CUCUR,DAP029,Dlis-09 (Byron Area),Contra Costa,7.8E-06,5.2E-01,1.2E-05,1.7E+00,9.3E-01
+GRAIN,DAP029,Dlis-09 (Byron Area),Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+OTHDEC,DAP029,Dlis-09 (Byron Area),Contra Costa,9.2E-06,6.3E-01,1.4E-05,1.7E+00,1.1E+00
+OTHTRK,DAP029,Dlis-09 (Byron Area),Contra Costa,7.8E-06,5.2E-01,1.2E-05,1.7E+00,9.3E-01
+PASTR,DAP029,Dlis-09 (Byron Area),Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+PRTOM,DAP029,Dlis-09 (Byron Area),Contra Costa,7.8E-06,5.2E-01,1.2E-05,1.7E+00,9.3E-01
+VINE,DAP029,Dlis-09 (Byron Area),Contra Costa,9.2E-06,6.3E-01,1.4E-05,1.7E+00,1.1E+00
+ALFAL,DAP030,Dlis-10,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+GRAIN,DAP030,Dlis-10,Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+PASTR,DAP030,Dlis-10,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+CORN,DAP031,Dlis-12 (Paradise Cut),San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP031,Dlis-12 (Paradise Cut),San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+PASTR,DAP031,Dlis-12 (Paradise Cut),San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+PRTOM,DAP031,Dlis-12 (Paradise Cut),San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP031,Dlis-12 (Paradise Cut),San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+ALFAL,DAP032,Dlis-15,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP032,Dlis-15,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+DRYBN,DAP032,Dlis-15,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP032,Dlis-15,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHTRK,DAP032,Dlis-15,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+POTATO,DAP032,Dlis-15,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PRTOM,DAP032,Dlis-15,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP032,Dlis-15,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+VINE,DAP032,Dlis-15,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP033,Dlis-16 (Lodi),San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP033,Dlis-16 (Lodi),San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP033,Dlis-16 (Lodi),San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+PASTR,DAP033,Dlis-16 (Lodi),San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+PRTOM,DAP033,Dlis-16 (Lodi),San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+CORN,DAP034,Dlis-17,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP034,Dlis-17,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+PRTOM,DAP034,Dlis-17,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+ALFAL,DAP035,Dlis-18,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP035,Dlis-18,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP035,Dlis-18,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+PASTR,DAP035,Dlis-18,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+PRTOM,DAP035,Dlis-18,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+VINE,DAP035,Dlis-18,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP036,Dlis-19 (Grizzly Slough Area),Sacramento,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALPIS,DAP036,Dlis-19 (Grizzly Slough Area),Sacramento,1.6E-05,6.6E-01,2.1E-05,1.6E+00,1.1E+00
+CORN,DAP036,Dlis-19 (Grizzly Slough Area),Sacramento,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP036,Dlis-19 (Grizzly Slough Area),Sacramento,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHTRK,DAP036,Dlis-19 (Grizzly Slough Area),Sacramento,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP036,Dlis-19 (Grizzly Slough Area),Sacramento,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+RICE,DAP036,Dlis-19 (Grizzly Slough Area),Sacramento,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+SAFLR,DAP036,Dlis-19 (Grizzly Slough Area),Sacramento,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+VINE,DAP036,Dlis-19 (Grizzly Slough Area),Sacramento,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP037,Dlis-20 (Yolo Bypass),Yolo,1.5E-05,5.2E-01,1.8E-05,1.5E+00,8.4E-01
+CORN,DAP037,Dlis-20 (Yolo Bypass),Yolo,1.2E-06,7.5E-01,4.1E-06,1.4E+00,1.0
+GRAIN,DAP037,Dlis-20 (Yolo Bypass),Yolo,1.2E-06,7.5E-01,4.1E-06,1.4E+00,1.0
+OTHDEC,DAP037,Dlis-20 (Yolo Bypass),Yolo,3.3E-06,6.3E-01,7.0E-06,1.4E+00,9.1E-01
+OTHFLD,DAP037,Dlis-20 (Yolo Bypass),Yolo,1.5E-05,5.2E-01,1.8E-05,1.5E+00,8.4E-01
+PASTR,DAP037,Dlis-20 (Yolo Bypass),Yolo,1.5E-05,5.2E-01,1.8E-05,1.5E+00,8.4E-01
+PRTOM,DAP037,Dlis-20 (Yolo Bypass),Yolo,2.5E-06,5.2E-01,5.9E-06,1.5E+00,8.1E-01
+RICE,DAP037,Dlis-20 (Yolo Bypass),Yolo,1.2E-06,7.5E-01,4.1E-06,1.4E+00,1.0
+SAFLR,DAP037,Dlis-20 (Yolo Bypass),Yolo,4.0E-07,9.5E-01,3.5E-06,1.5E+00,1.3E+00
+VINE,DAP037,Dlis-20 (Yolo Bypass),Yolo,3.3E-06,6.3E-01,7.0E-06,1.4E+00,9.1E-01
+ALFAL,DAP038,Dlis-21,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+CORN,DAP038,Dlis-21,Solano,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+GRAIN,DAP038,Dlis-21,Solano,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+OTHDEC,DAP038,Dlis-21,Solano,4.5E-06,6.3E-01,8.0E-06,1.4E+00,8.8E-01
+OTHFLD,DAP038,Dlis-21,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+PASTR,DAP038,Dlis-21,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+SAFLR,DAP038,Dlis-21,Solano,5.7E-07,9.5E-01,4.2E-06,1.5E+00,1.3E+00
+SUBTRP,DAP038,Dlis-21,Solano,4.5E-06,6.3E-01,8.0E-06,1.4E+00,8.8E-01
+PASTR,DAP039,Dlis-22 (Rio Vista),Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+ALFAL,DAP045,Drexler Pocket,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CUCUR,DAP045,Drexler Pocket,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+GRAIN,DAP045,Drexler Pocket,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+PRTOM,DAP045,Drexler Pocket,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP045,Drexler Pocket,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+ALFAL,DAP046,Drexler Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP046,Drexler Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP046,Drexler Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+GRAIN,DAP046,Drexler Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHTRK,DAP046,Drexler Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP046,Drexler Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+PRTOM,DAP046,Drexler Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP046,Drexler Tract,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+ALFAL,DAP047,Dutch Slough,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+GRAIN,DAP047,Dutch Slough,Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+PASTR,DAP047,Dutch Slough,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+VINE,DAP047,Dutch Slough,Contra Costa,9.2E-06,6.3E-01,1.4E-05,1.7E+00,1.1E+00
+ALFAL,DAP048,Egbert Tract,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+CORN,DAP048,Egbert Tract,Solano,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+GRAIN,DAP048,Egbert Tract,Solano,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+PASTR,DAP048,Egbert Tract,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+VINE,DAP048,Egbert Tract,Solano,4.5E-06,6.3E-01,8.0E-06,1.4E+00,8.8E-01
+ALFAL,DAP049,Ehrheardt Club,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+ALPIS,DAP049,Ehrheardt Club,Sacramento,2.0E-05,6.6E-01,2.5E-05,1.7E+00,1.1E+00
+CORN,DAP049,Ehrheardt Club,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+CUCUR,DAP049,Ehrheardt Club,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+GRAIN,DAP049,Ehrheardt Club,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+OTHDEC,DAP049,Ehrheardt Club,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+OTHTRK,DAP049,Ehrheardt Club,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+PASTR,DAP049,Ehrheardt Club,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+PRTOM,DAP049,Ehrheardt Club,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+SAFLR,DAP049,Ehrheardt Club,Sacramento,9.1E-07,9.5E-01,5.1E-06,1.7E+00,1.4E+00
+VINE,DAP049,Ehrheardt Club,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+ALFAL,DAP050,Empire Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP050,Empire Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP050,Empire Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHDEC,DAP050,Empire Tract,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+OTHTRK,DAP050,Empire Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP050,Empire Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+POTATO,DAP050,Empire Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+ALFAL,DAP051,Fabian Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALPIS,DAP051,Fabian Tract,San Joaquin,1.6E-05,6.6E-01,2.1E-05,1.6E+00,1.1E+00
+CORN,DAP051,Fabian Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP051,Fabian Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+GRAIN,DAP051,Fabian Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHDEC,DAP051,Fabian Tract,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+OTHTRK,DAP051,Fabian Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP051,Fabian Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+PRTOM,DAP051,Fabian Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP051,Fabian Tract,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+ALFAL,DAP054,Glanville,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+CORN,DAP054,Glanville,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+CUCUR,DAP054,Glanville,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+GRAIN,DAP054,Glanville,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+ONGAR,DAP054,Glanville,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+OTHDEC,DAP054,Glanville,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+OTHFLD,DAP054,Glanville,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+OTHTRK,DAP054,Glanville,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+PASTR,DAP054,Glanville,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+POTATO,DAP054,Glanville,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+PRTOM,DAP054,Glanville,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+SAFLR,DAP054,Glanville,Sacramento,9.1E-07,9.5E-01,5.1E-06,1.7E+00,1.4E+00
+VINE,DAP054,Glanville,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+ALFAL,DAP055,Glide District,Yolo,1.5E-05,5.2E-01,1.8E-05,1.5E+00,8.4E-01
+CORN,DAP055,Glide District,Yolo,1.2E-06,7.5E-01,4.1E-06,1.4E+00,1.0
+GRAIN,DAP055,Glide District,Yolo,1.2E-06,7.5E-01,4.1E-06,1.4E+00,1.0
+PASTR,DAP055,Glide District,Yolo,1.5E-05,5.2E-01,1.8E-05,1.5E+00,8.4E-01
+PRTOM,DAP055,Glide District,Yolo,2.5E-06,5.2E-01,5.9E-06,1.5E+00,8.1E-01
+SAFLR,DAP055,Glide District,Yolo,4.0E-07,9.5E-01,3.5E-06,1.5E+00,1.3E+00
+ALFAL,DAP056,Grand Island,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+CORN,DAP056,Grand Island,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+CUCUR,DAP056,Grand Island,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+GRAIN,DAP056,Grand Island,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+OTHDEC,DAP056,Grand Island,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+OTHTRK,DAP056,Grand Island,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+PASTR,DAP056,Grand Island,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+PRTOM,DAP056,Grand Island,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+SAFLR,DAP056,Grand Island,Sacramento,9.1E-07,9.5E-01,5.1E-06,1.7E+00,1.4E+00
+VINE,DAP056,Grand Island,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+ALFAL,DAP057,Hastings Tract,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+CORN,DAP057,Hastings Tract,Solano,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+CUCUR,DAP057,Hastings Tract,Solano,3.4E-06,5.2E-01,6.5E-06,1.4E+00,7.4E-01
+GRAIN,DAP057,Hastings Tract,Solano,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+OTHFLD,DAP057,Hastings Tract,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+PASTR,DAP057,Hastings Tract,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+PRTOM,DAP057,Hastings Tract,Solano,3.4E-06,5.2E-01,6.5E-06,1.4E+00,7.4E-01
+SAFLR,DAP057,Hastings Tract,Solano,5.7E-07,9.5E-01,4.2E-06,1.5E+00,1.3E+00
+ALFAL,DAP058,Holland Tract,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+CORN,DAP058,Holland Tract,Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+GRAIN,DAP058,Holland Tract,Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+PASTR,DAP058,Holland Tract,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+ALFAL,DAP059,Holt Station,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP059,Holt Station,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP059,Holt Station,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+GRAIN,DAP059,Holt Station,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHDEC,DAP059,Holt Station,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+PRTOM,DAP059,Holt Station,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+VINE,DAP059,Holt Station,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP060,Honker Lake Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALPIS,DAP060,Honker Lake Tract,San Joaquin,1.6E-05,6.6E-01,2.1E-05,1.6E+00,1.1E+00
+CORN,DAP060,Honker Lake Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP060,Honker Lake Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+GRAIN,DAP060,Honker Lake Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHDEC,DAP060,Honker Lake Tract,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+OTHTRK,DAP060,Honker Lake Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP060,Honker Lake Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+PRTOM,DAP060,Honker Lake Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP060,Honker Lake Tract,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+SUBTRP,DAP060,Honker Lake Tract,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP061,Hotchkiss Tract,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+PASTR,DAP061,Hotchkiss Tract,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+ALFAL,DAP063,Jersey Island,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+CORN,DAP063,Jersey Island,Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+GRAIN,DAP063,Jersey Island,Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+OTHTRK,DAP063,Jersey Island,Contra Costa,7.8E-06,5.2E-01,1.2E-05,1.7E+00,9.3E-01
+PASTR,DAP063,Jersey Island,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+SAFLR,DAP063,Jersey Island,Contra Costa,1.7E-06,9.5E-01,8.9E-06,2.3E+00,1.8E+00
+ALFAL,DAP064,Jones Tract (Lower And Upper),San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP064,Jones Tract (Lower And Upper),San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP064,Jones Tract (Lower And Upper),San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+GRAIN,DAP064,Jones Tract (Lower And Upper),San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHTRK,DAP064,Jones Tract (Lower And Upper),San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP064,Jones Tract (Lower And Upper),San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+POTATO,DAP064,Jones Tract (Lower And Upper),San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PRTOM,DAP064,Jones Tract (Lower And Upper),San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP064,Jones Tract (Lower And Upper),San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+ALFAL,DAP065,Kasson District,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALPIS,DAP065,Kasson District,San Joaquin,1.6E-05,6.6E-01,2.1E-05,1.6E+00,1.1E+00
+CORN,DAP065,Kasson District,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP065,Kasson District,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHTRK,DAP065,Kasson District,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP065,Kasson District,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+SAFLR,DAP065,Kasson District,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+CORN,DAP066,King Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP066,King Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+ONGAR,DAP066,King Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+OTHDEC,DAP066,King Island,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+OTHTRK,DAP066,King Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PRTOM,DAP066,King Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+OTHDEC,DAP068,Libby Mcneil,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+PASTR,DAP068,Libby Mcneil,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+PASTR,DAP069,Liberty Island,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+ALFAL,DAP070,Lisbon District,Yolo,1.5E-05,5.2E-01,1.8E-05,1.5E+00,8.4E-01
+ALPIS,DAP070,Lisbon District,Yolo,1.2E-05,6.6E-01,1.6E-05,1.5E+00,1.0
+CORN,DAP070,Lisbon District,Yolo,1.2E-06,7.5E-01,4.1E-06,1.4E+00,1.0
+CUCUR,DAP070,Lisbon District,Yolo,2.5E-06,5.2E-01,5.9E-06,1.5E+00,8.1E-01
+GRAIN,DAP070,Lisbon District,Yolo,1.2E-06,7.5E-01,4.1E-06,1.4E+00,1.0
+OTHDEC,DAP070,Lisbon District,Yolo,3.3E-06,6.3E-01,7.0E-06,1.4E+00,9.1E-01
+PASTR,DAP070,Lisbon District,Yolo,1.5E-05,5.2E-01,1.8E-05,1.5E+00,8.4E-01
+PRTOM,DAP070,Lisbon District,Yolo,2.5E-06,5.2E-01,5.9E-06,1.5E+00,8.1E-01
+SAFLR,DAP070,Lisbon District,Yolo,4.0E-07,9.5E-01,3.5E-06,1.5E+00,1.3E+00
+VINE,DAP070,Lisbon District,Yolo,3.3E-06,6.3E-01,7.0E-06,1.4E+00,9.1E-01
+ALFAL,DAP071,Little Egbert Tract,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+CORN,DAP071,Little Egbert Tract,Solano,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+GRAIN,DAP071,Little Egbert Tract,Solano,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+OTHTRK,DAP071,Little Egbert Tract,Solano,3.4E-06,5.2E-01,6.5E-06,1.4E+00,7.4E-01
+ALFAL,DAP075,Lower Roberts Island,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALPIS,DAP075,Lower Roberts Island,San Joaquin,1.6E-05,6.6E-01,2.1E-05,1.6E+00,1.1E+00
+CORN,DAP075,Lower Roberts Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP075,Lower Roberts Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+GRAIN,DAP075,Lower Roberts Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHDEC,DAP075,Lower Roberts Island,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+OTHTRK,DAP075,Lower Roberts Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP075,Lower Roberts Island,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+PRTOM,DAP075,Lower Roberts Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+RICE,DAP075,Lower Roberts Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+SAFLR,DAP075,Lower Roberts Island,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+VINE,DAP075,Lower Roberts Island,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP076,Maintenance Area 9 North,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+SAFLR,DAP076,Maintenance Area 9 North,Sacramento,9.1E-07,9.5E-01,5.1E-06,1.7E+00,1.4E+00
+ALFAL,DAP077,Maintenance Area 9 South,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+CORN,DAP077,Maintenance Area 9 South,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+CUCUR,DAP077,Maintenance Area 9 South,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+GRAIN,DAP077,Maintenance Area 9 South,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+OTHDEC,DAP077,Maintenance Area 9 South,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+OTHTRK,DAP077,Maintenance Area 9 South,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+PASTR,DAP077,Maintenance Area 9 South,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+POTATO,DAP077,Maintenance Area 9 South,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+PRTOM,DAP077,Maintenance Area 9 South,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+SAFLR,DAP077,Maintenance Area 9 South,Sacramento,9.1E-07,9.5E-01,5.1E-06,1.7E+00,1.4E+00
+SUBTRP,DAP077,Maintenance Area 9 South,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+VINE,DAP077,Maintenance Area 9 South,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+ALFAL,DAP078,Mandeville Island,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP078,Mandeville Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+DRYBN,DAP078,Mandeville Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP078,Mandeville Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHDEC,DAP078,Mandeville Island,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+OTHTRK,DAP078,Mandeville Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP078,Mandeville Island,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+POTATO,DAP078,Mandeville Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PRTOM,DAP078,Mandeville Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP078,Mandeville Island,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+VINE,DAP078,Mandeville Island,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+CORN,DAP079,Mccormack-Williamson Tract,Sacramento,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP079,Mccormack-Williamson Tract,Sacramento,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHTRK,DAP079,Mccormack-Williamson Tract,Sacramento,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PRTOM,DAP079,Mccormack-Williamson Tract,Sacramento,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+ALFAL,DAP080,Mcdonald Island,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALPIS,DAP080,Mcdonald Island,San Joaquin,1.6E-05,6.6E-01,2.1E-05,1.6E+00,1.1E+00
+CORN,DAP080,Mcdonald Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP080,Mcdonald Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHDEC,DAP080,Mcdonald Island,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+OTHTRK,DAP080,Mcdonald Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP080,Mcdonald Island,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+POTATO,DAP080,Mcdonald Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PRTOM,DAP080,Mcdonald Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SUBTRP,DAP080,Mcdonald Island,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+VINE,DAP080,Mcdonald Island,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP081,Mcmullin Ranch,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALPIS,DAP081,Mcmullin Ranch,San Joaquin,1.6E-05,6.6E-01,2.1E-05,1.6E+00,1.1E+00
+CORN,DAP081,Mcmullin Ranch,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP081,Mcmullin Ranch,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+DRYBN,DAP081,Mcmullin Ranch,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP081,Mcmullin Ranch,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHTRK,DAP081,Mcmullin Ranch,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP081,Mcmullin Ranch,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+POTATO,DAP081,Mcmullin Ranch,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PRTOM,DAP081,Mcmullin Ranch,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP081,Mcmullin Ranch,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+CORN,DAP082,Medford Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+PASTR,DAP082,Medford Island,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALFAL,DAP083,Merritt Island,Yolo,1.5E-05,5.2E-01,1.8E-05,1.5E+00,8.4E-01
+CORN,DAP083,Merritt Island,Yolo,1.2E-06,7.5E-01,4.1E-06,1.4E+00,1.0
+CUCUR,DAP083,Merritt Island,Yolo,2.5E-06,5.2E-01,5.9E-06,1.5E+00,8.1E-01
+DRYBN,DAP083,Merritt Island,Yolo,1.2E-06,7.5E-01,4.1E-06,1.4E+00,1.0
+GRAIN,DAP083,Merritt Island,Yolo,1.2E-06,7.5E-01,4.1E-06,1.4E+00,1.0
+OTHDEC,DAP083,Merritt Island,Yolo,3.3E-06,6.3E-01,7.0E-06,1.4E+00,9.1E-01
+OTHTRK,DAP083,Merritt Island,Yolo,2.5E-06,5.2E-01,5.9E-06,1.5E+00,8.1E-01
+PASTR,DAP083,Merritt Island,Yolo,1.5E-05,5.2E-01,1.8E-05,1.5E+00,8.4E-01
+PRTOM,DAP083,Merritt Island,Yolo,2.5E-06,5.2E-01,5.9E-06,1.5E+00,8.1E-01
+SAFLR,DAP083,Merritt Island,Yolo,4.0E-07,9.5E-01,3.5E-06,1.5E+00,1.3E+00
+VINE,DAP083,Merritt Island,Yolo,3.3E-06,6.3E-01,7.0E-06,1.4E+00,9.1E-01
+ALFAL,DAP084,Middle & Upper Roberts Island,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALPIS,DAP084,Middle & Upper Roberts Island,San Joaquin,1.6E-05,6.6E-01,2.1E-05,1.6E+00,1.1E+00
+CORN,DAP084,Middle & Upper Roberts Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP084,Middle & Upper Roberts Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+DRYBN,DAP084,Middle & Upper Roberts Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP084,Middle & Upper Roberts Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHDEC,DAP084,Middle & Upper Roberts Island,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+OTHTRK,DAP084,Middle & Upper Roberts Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP084,Middle & Upper Roberts Island,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+POTATO,DAP084,Middle & Upper Roberts Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PRTOM,DAP084,Middle & Upper Roberts Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP084,Middle & Upper Roberts Island,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+SUBTRP,DAP084,Middle & Upper Roberts Island,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+VINE,DAP084,Middle & Upper Roberts Island,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP085,Middle Delta Extra,Contra Costa,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALPIS,DAP085,Middle Delta Extra,Contra Costa,1.6E-05,6.6E-01,2.1E-05,1.6E+00,1.1E+00
+CORN,DAP085,Middle Delta Extra,Contra Costa,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP085,Middle Delta Extra,Contra Costa,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+GRAIN,DAP085,Middle Delta Extra,Contra Costa,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHDEC,DAP085,Middle Delta Extra,Contra Costa,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+OTHTRK,DAP085,Middle Delta Extra,Contra Costa,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP085,Middle Delta Extra,Contra Costa,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+PRTOM,DAP085,Middle Delta Extra,Contra Costa,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SUBTRP,DAP085,Middle Delta Extra,Contra Costa,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+VINE,DAP085,Middle Delta Extra,Contra Costa,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP087,Mossdale Island,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP087,Mossdale Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP087,Mossdale Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+PRTOM,DAP087,Mossdale Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+ALFAL,DAP088,Netherlands,Yolo,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+ALPIS,DAP088,Netherlands,Yolo,1.6E-05,6.6E-01,2.1E-05,1.5E+00,9.9E-01
+CORN,DAP088,Netherlands,Yolo,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+CUCUR,DAP088,Netherlands,Yolo,3.4E-06,5.2E-01,6.5E-06,1.4E+00,7.4E-01
+GRAIN,DAP088,Netherlands,Yolo,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+ONGAR,DAP088,Netherlands,Yolo,3.4E-06,5.2E-01,6.5E-06,1.4E+00,7.4E-01
+OTHDEC,DAP088,Netherlands,Yolo,4.5E-06,6.3E-01,8.0E-06,1.4E+00,8.8E-01
+OTHFLD,DAP088,Netherlands,Yolo,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+OTHTRK,DAP088,Netherlands,Yolo,3.4E-06,5.2E-01,6.5E-06,1.4E+00,7.4E-01
+PASTR,DAP088,Netherlands,Yolo,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+POTATO,DAP088,Netherlands,Yolo,3.4E-06,5.2E-01,6.5E-06,1.4E+00,7.4E-01
+PRTOM,DAP088,Netherlands,Yolo,3.4E-06,5.2E-01,6.5E-06,1.4E+00,7.4E-01
+SAFLR,DAP088,Netherlands,Yolo,5.7E-07,9.5E-01,4.2E-06,1.5E+00,1.3E+00
+VINE,DAP088,Netherlands,Yolo,4.5E-06,6.3E-01,8.0E-06,1.4E+00,8.8E-01
+ALFAL,DAP089,New Hope Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALPIS,DAP089,New Hope Tract,San Joaquin,1.6E-05,6.6E-01,2.1E-05,1.6E+00,1.1E+00
+CORN,DAP089,New Hope Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP089,New Hope Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+GRAIN,DAP089,New Hope Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+ONGAR,DAP089,New Hope Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+OTHDEC,DAP089,New Hope Tract,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+OTHTRK,DAP089,New Hope Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP089,New Hope Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+POTATO,DAP089,New Hope Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PRTOM,DAP089,New Hope Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP089,New Hope Tract,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+SUBTRP,DAP089,New Hope Tract,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+VINE,DAP089,New Hope Tract,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP090,North Delta Extra,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+ALPIS,DAP090,North Delta Extra,Solano,1.6E-05,6.6E-01,2.1E-05,1.5E+00,9.9E-01
+CORN,DAP090,North Delta Extra,Solano,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+GRAIN,DAP090,North Delta Extra,Solano,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+OTHDEC,DAP090,North Delta Extra,Solano,4.5E-06,6.3E-01,8.0E-06,1.4E+00,8.8E-01
+OTHFLD,DAP090,North Delta Extra,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+OTHTRK,DAP090,North Delta Extra,Solano,3.4E-06,5.2E-01,6.5E-06,1.4E+00,7.4E-01
+PASTR,DAP090,North Delta Extra,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+VINE,DAP090,North Delta Extra,Solano,4.5E-06,6.3E-01,8.0E-06,1.4E+00,8.8E-01
+ALFAL,DAP092,Palm-Orwood,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+CORN,DAP092,Palm-Orwood,Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+CUCUR,DAP092,Palm-Orwood,Contra Costa,7.8E-06,5.2E-01,1.2E-05,1.7E+00,9.3E-01
+GRAIN,DAP092,Palm-Orwood,Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+OTHTRK,DAP092,Palm-Orwood,Contra Costa,7.8E-06,5.2E-01,1.2E-05,1.7E+00,9.3E-01
+PASTR,DAP092,Palm-Orwood,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+PRTOM,DAP092,Palm-Orwood,Contra Costa,7.8E-06,5.2E-01,1.2E-05,1.7E+00,9.3E-01
+SAFLR,DAP092,Palm-Orwood,Contra Costa,1.7E-06,9.5E-01,8.9E-06,2.3E+00,1.8E+00
+VINE,DAP092,Palm-Orwood,Contra Costa,9.2E-06,6.3E-01,1.4E-05,1.7E+00,1.1E+00
+ALFAL,DAP093,Paradise Junction,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALPIS,DAP093,Paradise Junction,San Joaquin,1.6E-05,6.6E-01,2.1E-05,1.6E+00,1.1E+00
+CORN,DAP093,Paradise Junction,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP093,Paradise Junction,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHTRK,DAP093,Paradise Junction,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP093,Paradise Junction,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+PRTOM,DAP093,Paradise Junction,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP093,Paradise Junction,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+ALFAL,DAP094,Pearson District,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+CORN,DAP094,Pearson District,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+CUCUR,DAP094,Pearson District,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+GRAIN,DAP094,Pearson District,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+ONGAR,DAP094,Pearson District,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+OTHDEC,DAP094,Pearson District,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+OTHTRK,DAP094,Pearson District,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+PASTR,DAP094,Pearson District,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+POTATO,DAP094,Pearson District,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+PRTOM,DAP094,Pearson District,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+SAFLR,DAP094,Pearson District,Sacramento,9.1E-07,9.5E-01,5.1E-06,1.7E+00,1.4E+00
+VINE,DAP094,Pearson District,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+ALFAL,DAP095,Pescadero District,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALPIS,DAP095,Pescadero District,San Joaquin,1.6E-05,6.6E-01,2.1E-05,1.6E+00,1.1E+00
+CORN,DAP095,Pescadero District,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP095,Pescadero District,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+DRYBN,DAP095,Pescadero District,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP095,Pescadero District,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHDEC,DAP095,Pescadero District,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+OTHTRK,DAP095,Pescadero District,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP095,Pescadero District,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+PRTOM,DAP095,Pescadero District,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP095,Pescadero District,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+PASTR,DAP096,Peters Pocket,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+ALFAL,DAP097,Pico-Naglee,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALPIS,DAP097,Pico-Naglee,San Joaquin,1.6E-05,6.6E-01,2.1E-05,1.6E+00,1.1E+00
+CORN,DAP097,Pico-Naglee,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP097,Pico-Naglee,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+DRYBN,DAP097,Pico-Naglee,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP097,Pico-Naglee,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHDEC,DAP097,Pico-Naglee,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+OTHTRK,DAP097,Pico-Naglee,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP097,Pico-Naglee,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+PRTOM,DAP097,Pico-Naglee,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP097,Pico-Naglee,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+VINE,DAP097,Pico-Naglee,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP098,Prospect Island,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+CORN,DAP098,Prospect Island,Solano,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+GRAIN,DAP098,Prospect Island,Solano,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+SAFLR,DAP098,Prospect Island,Solano,5.7E-07,9.5E-01,4.2E-06,1.5E+00,1.3E+00
+ALFAL,DAP099,Quimby Island,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+CORN,DAP099,Quimby Island,Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+PASTR,DAP099,Quimby Island,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+OTHDEC,DAP100,Randall Island,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+ALFAL,DAP101,Reclamation District 17,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALPIS,DAP101,Reclamation District 17,San Joaquin,1.6E-05,6.6E-01,2.1E-05,1.6E+00,1.1E+00
+CORN,DAP101,Reclamation District 17,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP101,Reclamation District 17,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+DRYBN,DAP101,Reclamation District 17,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP101,Reclamation District 17,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHDEC,DAP101,Reclamation District 17,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+OTHTRK,DAP101,Reclamation District 17,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP101,Reclamation District 17,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+POTATO,DAP101,Reclamation District 17,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PRTOM,DAP101,Reclamation District 17,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP101,Reclamation District 17,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+VINE,DAP101,Reclamation District 17,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP102,Rindge Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP102,Rindge Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP102,Rindge Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHTRK,DAP102,Rindge Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+POTATO,DAP102,Rindge Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+RICE,DAP102,Rindge Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHDEC,DAP103,Rio Blanco Tract,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+VINE,DAP103,Rio Blanco Tract,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP104,River Junction,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALPIS,DAP104,River Junction,San Joaquin,1.6E-05,6.6E-01,2.1E-05,1.6E+00,1.1E+00
+CORN,DAP104,River Junction,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP104,River Junction,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+DRYBN,DAP104,River Junction,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP104,River Junction,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHDEC,DAP104,River Junction,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+OTHTRK,DAP104,River Junction,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP104,River Junction,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+PRTOM,DAP104,River Junction,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+VINE,DAP104,River Junction,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+CORN,DAP105,Rough And Ready Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP105,Rough And Ready Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+ALFAL,DAP106,Ryer Island,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+CORN,DAP106,Ryer Island,Solano,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+CUCUR,DAP106,Ryer Island,Solano,3.4E-06,5.2E-01,6.5E-06,1.4E+00,7.4E-01
+GRAIN,DAP106,Ryer Island,Solano,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+ONGAR,DAP106,Ryer Island,Solano,3.4E-06,5.2E-01,6.5E-06,1.4E+00,7.4E-01
+OTHDEC,DAP106,Ryer Island,Solano,4.5E-06,6.3E-01,8.0E-06,1.4E+00,8.8E-01
+OTHTRK,DAP106,Ryer Island,Solano,3.4E-06,5.2E-01,6.5E-06,1.4E+00,7.4E-01
+PASTR,DAP106,Ryer Island,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+PRTOM,DAP106,Ryer Island,Solano,3.4E-06,5.2E-01,6.5E-06,1.4E+00,7.4E-01
+SAFLR,DAP106,Ryer Island,Solano,5.7E-07,9.5E-01,4.2E-06,1.5E+00,1.3E+00
+SUBTRP,DAP106,Ryer Island,Solano,4.5E-06,6.3E-01,8.0E-06,1.4E+00,8.8E-01
+VINE,DAP106,Ryer Island,Solano,4.5E-06,6.3E-01,8.0E-06,1.4E+00,8.8E-01
+ALFAL,DAP107,Sherman Island,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+CORN,DAP107,Sherman Island,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+GRAIN,DAP107,Sherman Island,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+PASTR,DAP107,Sherman Island,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+SAFLR,DAP107,Sherman Island,Sacramento,9.1E-07,9.5E-01,5.1E-06,1.7E+00,1.4E+00
+VINE,DAP107,Sherman Island,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+ALFAL,DAP108,Shima Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP108,Shima Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP108,Shima Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHDEC,DAP108,Shima Tract,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+PASTR,DAP108,Shima Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP109,Shin Kee Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP109,Shin Kee Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+PASTR,DAP109,Shin Kee Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+PRTOM,DAP109,Shin Kee Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+VINE,DAP109,Shin Kee Tract,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP110,South Delta Extra,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALPIS,DAP110,South Delta Extra,San Joaquin,1.6E-05,6.6E-01,2.1E-05,1.6E+00,1.1E+00
+CORN,DAP110,South Delta Extra,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP110,South Delta Extra,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+DRYBN,DAP110,South Delta Extra,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP110,South Delta Extra,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHDEC,DAP110,South Delta Extra,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+OTHTRK,DAP110,South Delta Extra,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP110,South Delta Extra,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+PRTOM,DAP110,South Delta Extra,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP110,South Delta Extra,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+SUBTRP,DAP110,South Delta Extra,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+VINE,DAP110,South Delta Extra,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP111,Stark Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CUCUR,DAP111,Stark Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+GRAIN,DAP111,Stark Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHTRK,DAP111,Stark Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP111,Stark Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+PRTOM,DAP111,Stark Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP111,Stark Tract,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+ALFAL,DAP112,Staten Island,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP112,Staten Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP112,Staten Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+PASTR,DAP112,Staten Island,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+POTATO,DAP112,Staten Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+ALFAL,DAP113,Stewart Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP113,Stewart Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP113,Stewart Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+DRYBN,DAP113,Stewart Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP113,Stewart Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHTRK,DAP113,Stewart Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP113,Stewart Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+PRTOM,DAP113,Stewart Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP113,Stewart Tract,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+ALFAL,DAP114,Sutter Island,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+CUCUR,DAP114,Sutter Island,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+GRAIN,DAP114,Sutter Island,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+OTHDEC,DAP114,Sutter Island,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+OTHTRK,DAP114,Sutter Island,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+PRTOM,DAP114,Sutter Island,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+SAFLR,DAP114,Sutter Island,Sacramento,9.1E-07,9.5E-01,5.1E-06,1.7E+00,1.4E+00
+SUBTRP,DAP114,Sutter Island,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+VINE,DAP114,Sutter Island,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+ALFAL,DAP115,Terminous Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP115,Terminous Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP115,Terminous Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+GRAIN,DAP115,Terminous Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHTRK,DAP115,Terminous Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP115,Terminous Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+POTATO,DAP115,Terminous Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PRTOM,DAP115,Terminous Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SUBTRP,DAP115,Terminous Tract,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+VINE,DAP115,Terminous Tract,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP116,Twitchell Island,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+CORN,DAP116,Twitchell Island,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+OTHDEC,DAP116,Twitchell Island,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+PASTR,DAP116,Twitchell Island,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+RICE,DAP116,Twitchell Island,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+SAFLR,DAP116,Twitchell Island,Sacramento,9.1E-07,9.5E-01,5.1E-06,1.7E+00,1.4E+00
+ALFAL,DAP117,Tyler Island,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+CORN,DAP117,Tyler Island,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+CUCUR,DAP117,Tyler Island,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+GRAIN,DAP117,Tyler Island,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+OTHDEC,DAP117,Tyler Island,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+OTHTRK,DAP117,Tyler Island,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+PASTR,DAP117,Tyler Island,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+POTATO,DAP117,Tyler Island,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+PRTOM,DAP117,Tyler Island,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+SAFLR,DAP117,Tyler Island,Sacramento,9.1E-07,9.5E-01,5.1E-06,1.7E+00,1.4E+00
+VINE,DAP117,Tyler Island,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+ALFAL,DAP118,Union Island East,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALPIS,DAP118,Union Island East,San Joaquin,1.6E-05,6.6E-01,2.1E-05,1.6E+00,1.1E+00
+CORN,DAP118,Union Island East,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP118,Union Island East,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+GRAIN,DAP118,Union Island East,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHDEC,DAP118,Union Island East,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+OTHTRK,DAP118,Union Island East,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP118,Union Island East,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+POTATO,DAP118,Union Island East,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PRTOM,DAP118,Union Island East,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP118,Union Island East,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+VINE,DAP118,Union Island East,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP119,Union Island West,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALPIS,DAP119,Union Island West,San Joaquin,1.6E-05,6.6E-01,2.1E-05,1.6E+00,1.1E+00
+CORN,DAP119,Union Island West,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP119,Union Island West,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+GRAIN,DAP119,Union Island West,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHTRK,DAP119,Union Island West,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP119,Union Island West,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+POTATO,DAP119,Union Island West,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PRTOM,DAP119,Union Island West,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+RICE,DAP119,Union Island West,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+SAFLR,DAP119,Union Island West,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+VINE,DAP119,Union Island West,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP120,Upper Andrus Island,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+CORN,DAP120,Upper Andrus Island,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+CUCUR,DAP120,Upper Andrus Island,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+GRAIN,DAP120,Upper Andrus Island,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+OTHDEC,DAP120,Upper Andrus Island,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+PASTR,DAP120,Upper Andrus Island,Sacramento,3.2E-05,5.2E-01,3.6E-05,1.7E+00,9.0E-01
+SAFLR,DAP120,Upper Andrus Island,Sacramento,9.1E-07,9.5E-01,5.1E-06,1.7E+00,1.4E+00
+VINE,DAP120,Upper Andrus Island,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+ALFAL,DAP121,Veale Tract,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+CORN,DAP121,Veale Tract,Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+GRAIN,DAP121,Veale Tract,Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+OTHTRK,DAP121,Veale Tract,Contra Costa,7.8E-06,5.2E-01,1.2E-05,1.7E+00,9.3E-01
+PASTR,DAP121,Veale Tract,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+PRTOM,DAP121,Veale Tract,Contra Costa,7.8E-06,5.2E-01,1.2E-05,1.7E+00,9.3E-01
+CORN,DAP122,Venice Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP122,Venice Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+ALFAL,DAP123,Victoria Island,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALPIS,DAP123,Victoria Island,San Joaquin,1.6E-05,6.6E-01,2.1E-05,1.6E+00,1.1E+00
+CORN,DAP123,Victoria Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP123,Victoria Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHTRK,DAP123,Victoria Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PRTOM,DAP123,Victoria Island,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+VINE,DAP123,Victoria Island,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+CORN,DAP124,Walnut Grove,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+GRAIN,DAP124,Walnut Grove,Sacramento,2.1E-06,7.5E-01,5.5E-06,1.6E+00,1.1E+00
+OTHDEC,DAP124,Walnut Grove,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+PRTOM,DAP124,Walnut Grove,Sacramento,4.6E-06,5.2E-01,8.0E-06,1.5E+00,8.3E-01
+SAFLR,DAP124,Walnut Grove,Sacramento,9.1E-07,9.5E-01,5.1E-06,1.7E+00,1.4E+00
+VINE,DAP124,Walnut Grove,Sacramento,5.8E-06,6.3E-01,9.1E-06,1.5E+00,9.1E-01
+ALFAL,DAP125,Walthall,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+ALPIS,DAP125,Walthall,San Joaquin,1.6E-05,6.6E-01,2.1E-05,1.6E+00,1.1E+00
+CORN,DAP125,Walthall,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+CUCUR,DAP125,Walthall,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+DRYBN,DAP125,Walthall,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP125,Walthall,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHDEC,DAP125,Walthall,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+OTHTRK,DAP125,Walthall,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+PASTR,DAP125,Walthall,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+PRTOM,DAP125,Walthall,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+SAFLR,DAP125,Walthall,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+CORN,DAP126,Webb Tract,Contra Costa,3.4E-06,7.5E-01,8.5E-06,1.9E+00,1.3E+00
+PASTR,DAP126,Webb Tract,Contra Costa,5.7E-05,5.2E-01,6.2E-05,1.8E+00,1.0
+ALFAL,DAP127,West Sacramento,Yolo,1.5E-05,5.2E-01,1.8E-05,1.5E+00,8.4E-01
+CORN,DAP127,West Sacramento,Yolo,1.2E-06,7.5E-01,4.1E-06,1.4E+00,1.0
+CUCUR,DAP127,West Sacramento,Yolo,2.5E-06,5.2E-01,5.9E-06,1.5E+00,8.1E-01
+GRAIN,DAP127,West Sacramento,Yolo,1.2E-06,7.5E-01,4.1E-06,1.4E+00,1.0
+ONGAR,DAP127,West Sacramento,Yolo,2.5E-06,5.2E-01,5.9E-06,1.5E+00,8.1E-01
+OTHDEC,DAP127,West Sacramento,Yolo,3.3E-06,6.3E-01,7.0E-06,1.4E+00,9.1E-01
+OTHFLD,DAP127,West Sacramento,Yolo,1.5E-05,5.2E-01,1.8E-05,1.5E+00,8.4E-01
+OTHTRK,DAP127,West Sacramento,Yolo,2.5E-06,5.2E-01,5.9E-06,1.5E+00,8.1E-01
+PASTR,DAP127,West Sacramento,Yolo,1.5E-05,5.2E-01,1.8E-05,1.5E+00,8.4E-01
+PRTOM,DAP127,West Sacramento,Yolo,2.5E-06,5.2E-01,5.9E-06,1.5E+00,8.1E-01
+RICE,DAP127,West Sacramento,Yolo,1.2E-06,7.5E-01,4.1E-06,1.4E+00,1.0
+SAFLR,DAP127,West Sacramento,Yolo,4.0E-07,9.5E-01,3.5E-06,1.5E+00,1.3E+00
+VINE,DAP127,West Sacramento,Yolo,3.3E-06,6.3E-01,7.0E-06,1.4E+00,9.1E-01
+CORN,DAP130,Woodward Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP130,Woodward Island,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+SAFLR,DAP130,Woodward Island,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+ALFAL,DAP131,Wright-Elmwood Tract,San Joaquin,2.0E-05,5.2E-01,2.4E-05,1.5E+00,8.5E-01
+CORN,DAP131,Wright-Elmwood Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+GRAIN,DAP131,Wright-Elmwood Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+OTHTRK,DAP131,Wright-Elmwood Tract,San Joaquin,3.3E-06,5.2E-01,7.0E-06,1.5E+00,8.0E-01
+RICE,DAP131,Wright-Elmwood Tract,San Joaquin,1.5E-06,7.5E-01,4.6E-06,1.4E+00,1.0
+SAFLR,DAP131,Wright-Elmwood Tract,San Joaquin,5.5E-07,9.5E-01,3.4E-06,1.4E+00,1.2E+00
+VINE,DAP131,Wright-Elmwood Tract,San Joaquin,4.3E-06,6.3E-01,8.4E-06,1.4E+00,9.2E-01
+ALFAL,DAP132,Yolano,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+ALPIS,DAP132,Yolano,Solano,1.6E-05,6.6E-01,2.1E-05,1.5E+00,9.9E-01
+CORN,DAP132,Yolano,Solano,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+CUCUR,DAP132,Yolano,Solano,3.4E-06,5.2E-01,6.5E-06,1.4E+00,7.4E-01
+DRYBN,DAP132,Yolano,Solano,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+GRAIN,DAP132,Yolano,Solano,1.6E-06,7.5E-01,4.7E-06,1.4E+00,1.0
+OTHDEC,DAP132,Yolano,Solano,4.5E-06,6.3E-01,8.0E-06,1.4E+00,8.8E-01
+OTHFLD,DAP132,Yolano,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+OTHTRK,DAP132,Yolano,Solano,3.4E-06,5.2E-01,6.5E-06,1.4E+00,7.4E-01
+PASTR,DAP132,Yolano,Solano,2.0E-05,5.2E-01,2.4E-05,1.4E+00,7.9E-01
+PRTOM,DAP132,Yolano,Solano,3.4E-06,5.2E-01,6.5E-06,1.4E+00,7.4E-01
+SUBTRP,DAP132,Yolano,Solano,4.5E-06,6.3E-01,8.0E-06,1.4E+00,8.8E-01
