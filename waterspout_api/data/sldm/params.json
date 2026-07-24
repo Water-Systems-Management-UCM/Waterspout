@@ -14,7 +14,7 @@
   "crop_file": "crops.csv",
   "years": [2024],
   "rainfall_file": null,
-  "multipliers_file": null,
+  "multipliers_file": "results_2022_mults.csv",
   "mapping": {
     "latitude": 38,
     "longitude": -120.3,
@@ -27,7 +27,7 @@
     "has_spatial_data": true,
     "has_calibration_data": true,
     "has_input_data": false,
-    "has_multipliers": false
+    "has_multipliers": true
   },
   "create_base_case": true,
   "detect_rainfall_irrigation_split": false,
