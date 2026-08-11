@@ -1,4 +1,4 @@
-region,crop,hr,xland,p,y,xwater_unit,omegaland,omegawater,omegasupplies,omegalabor,theta,omegawater_unit,sigma,CS_land,CS_labor,CS_supplies
+g,i,hr,xland,p,y,xwater,omegaland,omegawater,omegasupply,omegalabor,theta,omegawater_unit,sigma,CS_land,CS_labor,CS_supply
 BANTA-CARBONA I.D.,Alfalfa,San Joaquin River,1136.600343,290.4258221,6.981811447,4.13,571.5529897,50,305.9903326,377.9325908,1.86,50,0.17,0.281872792,0.186385019,0.150905255
 CENTRAL CALIFORNIA I.D.,Alfalfa,San Joaquin River,15502.5206,290.4258221,6.981811447,4.13,571.5529897,50,305.9903326,377.9325908,1.86,50,0.17,0.281872792,0.186385019,0.150905255
 CITY OF TRACY,Alfalfa,San Joaquin River,154.9026085,290.4258221,6.981811447,4.13,571.5529897,50,305.9903326,377.9325908,1.86,50,0.17,0.281872792,0.186385019,0.150905255
