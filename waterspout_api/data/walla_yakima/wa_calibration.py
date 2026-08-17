@@ -9,7 +9,7 @@ def recalibrate():
     calibration_years = []
     # for i in range(2015,2023):
     #     calibration_years.append(i)
-    calibration_years = [2016]
+    calibration_years = [2015]
     # temporary value - checked this price with Spencer and Alvar - will update
     price_of_water = 15
 
