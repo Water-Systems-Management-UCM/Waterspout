@@ -1,6 +1,6 @@
 {
-  "area_name": "wwyaoa2015",
-  "data_name": "WWYAOA2015",
+  "area_name": "wwyaoa2024",
+  "data_name": "WWYAOA2024",
   "regions": "WRIA/walla_yakima.geojsonl",
   "region_groups": null,
   "_regions_comment": "Path to a geojsonl file with the regions data",
@@ -9,10 +9,10 @@
       ["NAME", "internal_id"]
   ],
   "_regions_field_map_comment": "",
-  "calibration_file": "calibration_walla_okanogan_yakima2015.csv",
-  "data_file": "inputdata2015.csv",
+  "calibration_file": "calibration_data2024.csv",
+  "data_file": "inputdata_2024.csv",
   "crop_file": "crops.csv",
-  "years": [2015],
+  "years": [2024],
   "rainfall_file": null,
   "multipliers_file": "district_allocations_mult.csv",
   "mapping": {
