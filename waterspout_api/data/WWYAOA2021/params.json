@@ -1,24 +1,24 @@
 {
-  "area_name": "sldm",
-  "data_name": "sldm",
-  "regions": "sldmwa.geojsonl",
-  "region_groups": false,
+  "area_name": "wwyaoa2021",
+  "data_name": "WWYAOA2021",
+  "regions": "WRIA/walla_yakima.geojsonl",
+  "region_groups": null,
   "_regions_comment": "Path to a geojsonl file with the regions data",
   "region_field_map": [
-      ["WDNAME", "name"],
-      ["WDNAME", "internal_id"]
+      ["NAME", "name"],
+      ["NAME", "internal_id"]
   ],
   "_regions_field_map_comment": "",
-  "calibration_file": "OPENAG_Calib_sldm_df_2023.csv",
-  "data_file": "LandIQ_2023_SLDMWA_openag_20260803.csv",
+  "calibration_file": "calibration_data2021.csv",
+  "data_file": "inputdata_2021.csv",
   "crop_file": "crops.csv",
-  "years": [2023],
+  "years": [2021],
   "rainfall_file": null,
-  "multipliers_file": "results_2022_mults.csv",
+  "multipliers_file": "district_allocations_mult.csv",
   "mapping": {
-    "latitude": 38,
-    "longitude": -120.3,
-    "default_zoom": 8
+    "latitude": 47.419,
+    "longitude": -120.476,
+    "default_zoom": 7
   },
   "feature_package": "READ_ONLY",
   "help_page_content_file":"help_content.html",
@@ -27,10 +27,10 @@
     "has_spatial_data": true,
     "has_calibration_data": true,
     "has_input_data": false,
-    "has_multipliers": true
+    "has_multipliers": false
   },
   "create_base_case": true,
-  "detect_rainfall_irrigation_split": false,
+  "detect_rainfall_irrigation_split": true,
   "_preload_model_run_results_comment": "Model run results to load. These aren't runs that will be created then run by Dapper, but runs that will be completed by loading all results records",
   "preload_model_run_results": {
     "_files_comment": "filename: model run name",
