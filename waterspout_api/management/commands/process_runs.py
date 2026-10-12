@@ -2,8 +2,7 @@ import logging
 import time
 import traceback
 
-import psycopg2
-from django.db import connection
+from django.db import connection, InterfaceError, OperationalError
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import F, RowRange, Window
 from django.db.models.functions import Rank, ExtractYear
@@ -35,8 +34,9 @@ class Command(BaseCommand):
 					log.info(f"Running model run {run.id}")
 
 					run.run()
-			except psycopg2.InterfaceError:  # if we get an error from psycopg2 that basically says the connection is closed, then log the error and wait 60 seconds before starting the loop again
+			except (InterfaceError, OperationalError):  # the database connection dropped (eg, Postgres restarted) - Django wraps psycopg2's errors in its own classes, so catch those, not psycopg2's
 				log.error(traceback.format_exc())
+				connection.close()  # discard the dead connection so the next query opens a new one - outside of a web request, Django won't do this for us
 				time.sleep(60)
 			except:  # bare exception to make sure we catch any unexpected situations here and return to the production loop
 				log.error(traceback.format_exc())
