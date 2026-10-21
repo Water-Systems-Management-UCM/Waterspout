@@ -1,0 +1,10 @@
+crop_code,implan_code,implan_sector
+Berry,4,Fruit farming
+Cereal Grain,2,Grain farming
+Hay/Silage,2,Grain farming
+Herb,10,All other crop farming
+Oilseed,1,Oilseed farming
+Orchard,4,Fruit farming
+Seed,10,All other crop farming
+Vegetable,3,Vegetable and melon farming
+Vineyard,4,Fruit farming
